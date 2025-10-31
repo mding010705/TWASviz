@@ -1,9 +1,9 @@
-
-
 #' Plot Pairwise Correlations and Overlaps of Multiple Gene Sets
 #'
-#' Plots information criteria values given numeric information criteria
-#' values.
+#' Plots heatmap for pairwise complete correlations for effect sizes of
+#' multiple gene sets in lower triangle, number of pairwise complete effect
+#' sizes for multiple gene sets in upper triangle. Diagonal displays total
+#' number of effect sizes for a single gene set.
 #'
 #' @param betas A dataframe with rows of genes and columns of tissue/cell types.
 #' Entry (i, j) is the TWAS effect size of gene i in tissue j, or NULL if gene i
@@ -22,7 +22,6 @@
 #' @export
 #' @import corrplot
 #' @import psych
-#' @import RColorBrewer
 
 
 correlation_overlap_heatmap <- function(betas, cor_method = "pearson",
@@ -60,3 +59,5 @@ correlation_overlap_heatmap <- function(betas, cor_method = "pearson",
                             add = T), error=function(e){}))
 
 }
+
+# [END]
