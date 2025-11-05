@@ -1,0 +1,153 @@
+---
+title: "Introduction to TWASviz"
+author: "Megan Ding"
+date: "2025-11-04"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Introduction_TWASviz}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Instroduction
+`TWASviz` is an R package designed to produce important data exploration plots and Transcriptome Wise Association Studies (TWASs) with sparse group lasso (Simon et al., 2013). TWASs use imputed gene expression data and test for association between each gene’s expression levels against phenotype data. This process allows us to identify transcripts that are significantly correlated to a phenotype of interest. TWASviz will allow users to perform TWASs using sparse group lasso in R (Wang et al., 2024), and import their own TWAS results, and effectively visualize the output. 
+
+This package is designed to use perform sparse group lasso TWASs on individual imputed gene expression data from the external software `PrediXcan` (Gamazon et al., 2015), as well as to process the linear regression TWAS output from `PrediXcan`. For more information on `PrediXcan` and its individual level gene expression imputation and TWAS association tests visit https://github.com/hakyimlab/MetaXcan/wiki/Individual-level-PrediXcan:-introduction,-tutorials-and-manual .
+
+To download **TWASviz**, use the following commands:
+
+```{r}
+require("devtools")
+devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
+library("TWASviz")
+```
+
+To list all sample functions available in the package:
+```{r}
+ls("package:TWASviz")
+```
+
+To list all sample datasets available in the package:
+```{r}
+data(package = "TWASviz")
+```
+
+
+## Components
+
+<img src="../inst/extdata/Overview_flowchart.png" alt="Workflow of MissensePathoR" width="600"/>
+
+## Application 1
+
+Let's look at an analysis that starts from `PrediXcan` TWAS association output.
+
+### Loading PrediXcan Association Results
+
+The package comes with sample prediXcan association results (`predixcan_twasX` for sample `PrediXcan` association output).
+
+```{r}
+head(TWASviz::predixcan_twas1)
+head(TWASviz::predixcan_twas2)
+head(TWASviz::predixcan_twas3)
+```
+
+### Formatting Multiple PrediXcan TWAS Results
+
+`predixcan2adj_df` is a function that reads in multiple `PrediXcan` association files and formats them in an adjacency matrix like dataframe, thresholding on the gene associations' p-values.
+
+
+```{r}
+adj_df <- TWASviz::predixcan2adj_df(predixcan_assoc_filenames = paste0("../inst/extdata/predixcan_twas", 1:6, ".txt"), 
+                           pvalue_thresh = 0.02)
+
+head(adj_df)
+```
+
+
+### Understanding the Relationship between Multiple TWASs
+
+The `correlation_overlap_heatmap` function provides a heatmap for pairwise complete correlations for effect sizes of multiple gene sets (from TWASs) in the lower triangle, and number of pairwise complete effect sizes for multiple gene sets in the upper triangle. The diagonal displays the total number of effect sizes for a single gene set.
+
+```{r}
+TWASviz::correlation_overlap_heatmap(adj_df, tissue_names = c("a", "b", "c",
+                                                     "d", "e", "f"))
+
+```
+
+### Understanding Significance and Effect Size Relationship 
+
+`volcano_plot` produces a volcano plot of the effect size z-score against the -log10(pvalue). It labels and colors significant genes. The horizontal line is the significance threshold, and the vertical lines are at the normal 2.5 and 97.5th quantile thresholds. Notice that with `PrediXcan` association outputs, the systematic relationship between effect size and p-value is very noticeable due to the constant effect size.
+
+```{r}
+TWASviz::volcano_plot(betas_p_vals = TWASviz::predixcan_twas1[1:1000, c("zscore", "pvalue", "gene")], p_thresh = 0.02)
+```
+
+### Gene Enrichment
+
+Having a set of significant genes is not useful when you can't summarize their functional associations. `gene_enrichment` allows you to use clusterProfiler (Yu, 2024) to do functional gene set enrichment on the gene ontology with multiple separate gene set inputs and `goenrich_heatmap` plots these results in a heatmap. Notice that there are no significant enrichments from a2, a3, and a5, so they don't appear in the heatmap.
+
+```{r}
+genes <- list(a1 = TWASviz::predixcan_twas1[, "gene"],
+              a2 = TWASviz::predixcan_twas2[predixcan_twas1$pvalue < 0.05, "gene"],
+              a3 = TWASviz::predixcan_twas3[predixcan_twas1$pvalue < 0.05, "gene"],
+              a4 = TWASviz::predixcan_twas4[predixcan_twas1$pvalue < 0.001, "gene"],
+              a5 = TWASviz::predixcan_twas5[predixcan_twas1$pvalue < 0.05, "gene"])
+enrich_res <- TWASviz::gene_enrichment(genes)
+
+goenrich_heatmap(enrich_res = enrich_res)
+```
+
+
+## Application 2
+
+Let's look at an analysis that performs TWAS with this package, starting from `PrediXcan` imputed gene expression.
+
+### Formatting PrediXcan to Perform Sparse Group Lasso TWAS
+The sparse group lasso function needs specially a formatted predictor matrix and grouping information. `preprocess_expressions_pathways` duplicates genes in your imputed gene expression matrix that appear multiple times in your specified pathways, renames genes to gene_pathway, subsets and reorders your gene expression and phenotype files to match the participant ID order, and regresses out the covariates from your phenotype if you specify family_func = gaussian(link = "identity") or provides offsets from predicted values from glm(phenotype ~ ., data = covars, family = family_func).
+
+```{r}
+sgl_input <- TWASviz::preprocess_expressions_pathways(TWASviz::cell1_gene_expr, all_pathways = TWASviz::all_pathways,
+phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "anx_bin", 
+family_func = "binomial")
+
+sgl_input2 <- TWASviz::preprocess_expressions_pathways(TWASviz::cell2_gene_expr, all_pathways = TWASviz::all_pathways,
+phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "anx_bin", 
+family_func = "binomial")
+```
+
+### Performing Sparse Group Lasso TWAS
+
+```{r}
+sgl_fit1 <- TWASviz::sgl_TWAS(X = sgl_input$X, y = sgl_input$y,
+                             grouping = sgl_input$groups,
+                             family = "binomial")
+
+sgl_fit2 <- TWASviz::sgl_TWAS(X = sgl_input2$X, y = sgl_input$y,
+                             grouping = sgl_input$groups,
+                             family = "binomial")
+```
+
+### Reformat sgl_TWAS Output
+```{r}
+adj_dfs <- sgl2adj_df(c(sgl_fit1[[2]], sgl_fit2[[2]]))
+```
+
+Then you can use adj_dfs[[1]] and adj_dfs[[2]] in the analysis outlined in Approach 1 to get nice looking plots.
+
+
+## References
+Gamazon, E. R., Wheeler, H. E., Shah, K. P., Mozaffari, S. V., Aquino-Michaels, K., Carroll, R. J., Eyler, A. E., Denny, J. C., Nicolae, D. L., Cox, N. J., & Im, H. K. (2015). A gene-based association method for mapping traits using reference transcriptome data. Nature Genetics, 47(9), 1091–1098. https://doi.org/10.1038/ng.3367 
+
+Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013). A sparse-group lasso. Journal of Computational and Graphical Statistics, 22(2), 231–245. https://doi.org/10.1080/10618600.2012.681250 
+
+Yu G (2024). “Thirteen years of clusterProfiler.” The Innovation, 5(6), 100722. doi:10.1016/j.xinn.2024.100722, https://doi.org/10.1016/j.xinn.2024.100722.
+
+Wang, N., Ye, Z., & Ma, T. (2024). Tips: A novel pathway-guided joint model for transcriptome-wide association studies. Briefings in Bioinformatics, 25(6). https://doi.org/10.1093/bib/bbae587 
+------------------------------------------------------------------------
+
+```{r}
+sessionInfo()
+```

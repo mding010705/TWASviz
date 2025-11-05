@@ -25,13 +25,18 @@
 #' @return Returns a list of enrichGO() results.
 #'
 #' @examples
-#' gene_enrichment(gene_set = ,
-#' orgamism = "org.Hs.eg.db")
+#' gene_enrichment(gene_set = list(a=c("CHST2", "B3GNT1", "B3GNT2", "CHST1",
+#' "B4GALT1","B3GNT7", "ST3GAL2", "B4GALT3", "ST3GAL1", "B4GALT2", "B4GALT4",
+#' "CHST4", "ST3GAL3", "FUT8", "CHST6")),
+#' organism = "org.Hs.eg.db", gene_nom = "SYMBOL")
+#'
+#' @references
+#' G Yu. Thirteen years of clusterProfiler. The Innovation. 2024, 5(6):100722
 #'
 #' @export
 #' @import clusterProfiler
 
-gene_enrichment <- function(gene_set, orgamism, #org.Hs.eg.db
+gene_enrichment <- function(gene_set, organism = "org.Hs.eg.db",
                             tissue_types = names(gene_set),
                             background = NULL,
                                     p_adj_method = "fdr",
@@ -41,18 +46,31 @@ gene_enrichment <- function(gene_set, orgamism, #org.Hs.eg.db
                            gene_nom = "ENSEMBL"){
 
   enrich_results <- list()
-    for (i in seq(along = gene_set)){
-      enrich_results[[tissue_types[i]]] <-
-        clusterProfiler::enrichGO(
-          gene = gene_set[[i]],
-          universe = as.character(sapply(as.vector(background[[i]]),
-                                         as.character)),
-          OrgDb = organism,
-          keyType = gene_nom,
-          ont = ont_type,
-          pAdjustMethod = p_adj_method,
-          pvalueCutoff = p_cutoff,
-          readable = TRUE)
+    for (i in seq_along(gene_set)){
+      if(is.null(background[[i]])){
+        enrich_results[[tissue_types[i]]] <-
+          clusterProfiler::enrichGO(
+            gene = gene_set[[i]],
+            OrgDb = organism,
+            keyType = gene_nom,
+            ont = ont_type,
+            pAdjustMethod = p_adj_method,
+            pvalueCutoff = p_cutoff,
+            readable = TRUE)
+      } else {
+        enrich_results[[tissue_types[i]]] <-
+          clusterProfiler::enrichGO(
+            gene = gene_set[[i]],
+            universe = as.character(sapply(as.vector(background[[i]]),
+                                          as.character)),
+            OrgDb = organism,
+            keyType = gene_nom,
+            ont = ont_type,
+            pAdjustMethod = p_adj_method,
+            pvalueCutoff = p_cutoff,
+            readable = TRUE)
+      }
+
     }
     return(enrich_results)
 }
@@ -70,15 +88,18 @@ gene_enrichment <- function(gene_set, orgamism, #org.Hs.eg.db
 #' enrichment for top GO terms.
 #'
 #' @examples
-#' goenrich_heatmap(enrich_res = gene_enrichment(gene_set = ,
-#' orgamism = "org.Hs.eg.db"))
+#' goenrich_heatmap(enrich_res = gene_enrichment(gene_set = list(a=c("CHST2",
+#' "B3GNT1", "B3GNT2", "CHST1",
+#' "B4GALT1","B3GNT7", "ST3GAL2", "B4GALT3", "ST3GAL1", "B4GALT2", "B4GALT4",
+#' "CHST4", "ST3GAL3", "FUT8", "CHST6")),
+#' organism = "org.Hs.eg.db", gene_nom = "SYMBOL"))
 #'
 #' @export
 #' @import dplyr
 #' @import stringr
 #' @import ggplot2
 
-goenrich_heatmap <- function(enrich_res, top_n = 5){
+goenrich_heatmap <- function(enrich_res, top_n = 5, x_label = "Cell Type"){
   # Select top N GO terms per module
   filtered_results <- enrich_res[sapply(enrich_res,
                                         function(x) !is.null(x) && nrow(x) > 0)]
@@ -109,15 +130,15 @@ goenrich_heatmap <- function(enrich_res, top_n = 5){
   plot_data$Module <- factor(plot_data$Module, levels = ordered_modules)
 
   # Plot heatmap with GO terms on y-axis
-  ggplot2::ggplot(plot_data, aes(x = Module, y = Term)) +
-    ggplot2::geom_tile(aes(fill = -log10(p.adjust)), color = "white") +
-    ggplot2::geom_text(aes(label = Count), size = 3) +
+  ggplot2::ggplot(plot_data, ggplot2::aes(x = Module, y = Term)) +
+    ggplot2::geom_tile(ggplot2::aes(fill = -log10(p.adjust)), color = "white") +
+    ggplot2::geom_text(ggplot2::aes(label = Count), size = 3) +
     ggplot2::scale_fill_gradient(low = "white", high = "red", name = "-log10 adj p") +
-    ggplot2::labs(x = "Cell Type", y = "GO Term", title = "GO Enrichment Heatmap") +
+    ggplot2::labs(x = x_label, y = "GO Term", title = "GO Enrichment Heatmap") +
     ggplot2::theme_minimal(base_size = 12) +
     ggplot2::theme(axis.text.x = element_text(angle = 45, hjust = 1),
                    axis.text.y = element_text(size = 10),
                    panel.grid = element_blank())
 }
 
-#[END]
+# [END]

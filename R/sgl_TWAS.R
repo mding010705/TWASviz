@@ -29,13 +29,18 @@
 #' such that error is within 1 standard error of the minimum cross-validated
 #' errors).
 #'
+#' @references
+#' Liang, X., Cohen, A., Sólon Heinsfeld, A., Pestilli, F., and McDonald, D.J.
+#' 2024. sparsegl: An R Package for Estimating Sparse Group Lasso. Journal of
+#' Statistical Software, Vol. 110(6): 1–23. doi:10.18637/jss.v110.i06.
+#'
 #' @export
 #' @import sparsegl
 
 sgl_TWAS <- function(X, y, grouping = NULL,
                      family_func = gaussian(link = "identity"),
                      pred_loss = "mse", offsets = NULL, nfolds = 10){
-  sgl_fit <- sparsegl::cv.sparsegl(X, y, group = grouping, family = family,
+  sgl_fit <- sparsegl::cv.sparsegl(X, y, group = grouping, family = family_func,
                                    pred.loss = pred_loss, offset = offsets,
                                    nfolds = nfolds)
 

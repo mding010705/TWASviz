@@ -21,8 +21,8 @@
 
 sgl2adj_df <- function(gene_coefs,
                        tissue_names = seq_along(gene_coefs)){
-  gene_adj_df <- data.frame(gene = c())
-  pathway_adj_df <- data.frame(pathway = c())
+  gene_adj_df <- data.frame(gene = c(NA))
+  pathway_adj_df <- data.frame(pathway = c(NA))
 
   for(coef in gene_coefs){
     coef <- coef[coef[,1]!= 0,]
@@ -75,24 +75,27 @@ sgl2adj_df <- function(gene_coefs,
 #' @import qvalue
 
 predixcan2adj_df <- function(predixcan_assoc_filenames,
-                             tissue_names = seq_along(gene_coefs),
+                             tissue_names = seq_along(predixcan_assoc_filenames),
                              use_fdr = FALSE,
                              pvalue_thresh = 0.05){
-  gene_adj_df <- data.frame(gene = c())
+  gene_adj_df <- data.frame(gene = c(NA))
   for (f in predixcan_assoc_filenames){
-    assoc <- data.table::fread(f, header = TRUE)
+    assoc <- as.data.frame(data.table::fread(f, header = TRUE))
     if(use_fdr == TRUE){
       assoc$qvalue <- qvalue::qvalue(assoc$pvalue)
       gene_adj_df <- merge(gene_adj_df, assoc[which(assoc$qvalue < pvalue_thresh),
-                                              c("gene", "effect")],
+                                              c("gene", "se")],
                            by = c("gene"), sort = FALSE, all = TRUE)
     } else{
       gene_adj_df <- merge(gene_adj_df, assoc[which(assoc$pvalue < pvalue_thresh),
-                                              c("gene", "effect")],
+                                              c("gene", "se")],
                            by = c("gene"), sort = FALSE, all = TRUE)
     }
   }
-
+  gene_adj_df <- gene_adj_df[!is.na(gene_adj_df$gene), ]
+  colnames(gene_adj_df) <- c("gene", tissue_names)
+  rownames(gene_adj_df) <- gene_adj_df$gene
+  gene_adj_df <- gene_adj_df[, -1]
   return(gene_adj_df)
 }
 

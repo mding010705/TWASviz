@@ -4,7 +4,7 @@
 #'
 #' @param corr_mat Correlation matrix.
 #'
-#' @return Returns a reordered correlation matrix .
+#' @return Returns a reordered correlation matrix.
 
 reorder_corr_hclust <- function(corr_mat){
   dist_mat <- as.dist((1-corr_mat)/2)
@@ -29,6 +29,10 @@ reorder_corr_hclust <- function(corr_mat){
 #' from -1 to 1.
 #'
 #' @return Returns a heatmap image of gene correlations.
+#'
+#' @references
+#' Guillaume Devailly. (2021, October 14). Plotting heatmaps from big matrices
+#' in R. https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/
 #'
 #' @import parallel
 
@@ -97,7 +101,7 @@ corr_heatmap <- function(gene_expr, target_height = 300,
   cl <- parallel::makeCluster(n_core, type="PSOCK")
   corr_mat <- redim_matrix(cor(gene_expr), cl = cl,
                            summary_func = summary_func,
-                           n_core = n_core, target_height = target_height,
+                           target_height = target_height,
                            target_width = target_width)
   parallel::stopCluster(cl)
   return(image(
@@ -108,3 +112,5 @@ corr_heatmap <- function(gene_expr, target_height = 300,
     main = "Gene expression correlation matrix", asp = 1
   ))
 }
+
+# [END]

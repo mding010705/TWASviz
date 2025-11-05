@@ -16,7 +16,7 @@
 #' @return Returns a heatmap plot of correlations and overlaps
 #'
 #' @examples
-#' correlation_overlap_heatmap(betas = data.frame(x = c(1, NA, 3), y = c(1, -9, 3),
+#' correlation_overlap_heatmap(betas = data.frame(x = c(1, 7, 3), y = c(1, -9, 3),
 #'                             z = c(-1, 0, NA)), tissue_names = c("A", "B", "C"))
 #'
 #' @export
@@ -45,7 +45,6 @@ correlation_overlap_heatmap <- function(betas, cor_method = "pearson",
   p_adj <- rbind(0, p_adj)
   p_adj <- cbind(p_adj, 0)
   p_adj[is.na(p_adj)] <- 1
-  dev.new(width=5,height=5,noRStudioGD = TRUE)
   upper_plot <- corrplot::corrplot(n_mat, method = "color", addCoef.col = "grey50",
                                    type='upper', number.cex=0.5,
                                    col = corrplot::COL1("YlGn"), is.corr = F,
