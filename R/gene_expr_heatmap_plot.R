@@ -98,13 +98,20 @@ corr_heatmap <- function(gene_expr, target_height = 300,
                 col_pal =
                   grDevices::colorRampPalette(c("red", "white", "blue"))(50),
                 title = "Gene expression correlation matrix"){
+  # Input validation
+  if (!is.matrix(gene_expr)) stop("gene_expr must be a numeric matrix.")
+  if (nrow(gene_expr) < 2 || ncol(gene_expr) < 2)
+    stop("gene_expr must have at least 2 rows and 2 columns.")
 
+  # Compute correlation and downsample
   cl <- parallel::makeCluster(n_core, type="PSOCK")
   corr_mat <- redim_matrix(cor(gene_expr), cl = cl,
                            summary_func = summary_func,
                            target_height = target_height,
                            target_width = target_width)
   parallel::stopCluster(cl)
+
+  # Plot heatmap
   return(image(
     corr_mat[,seq(ncol(corr_mat), 1)],
     axes = FALSE,

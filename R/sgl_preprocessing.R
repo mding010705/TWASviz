@@ -1,138 +1,227 @@
-#' Formatting Gene Expression and Pathway Data to Use with Sparse Group Lasso
+#' Formatting Gene Expression and Pathway Data for Sparse Group Lasso
 #'
-#' Duplicates genes in your imputed gene expression matrix that appear multiple
-#' times in your specified pathways, renames genes to gene_pathway, subsets and
-#' reorders your gene expression and phenotype files to match the participant
-#' ID order, and regresses out the covariates from your phenotype if you
-#' specify family_func = gaussian(link = "identity") or provides offsets from
-#' predicted values from glm(phenotype ~ ., data = covars, family = family_func).
+#' This function prepares imputed gene expression data, phenotype data, and
+#' pathway annotations for downstream sparse group lasso analysis.
 #'
-#' @param gene_expr Dataframe with first 2 columns called FID and IID
-#' containing unique participant IDs and columns named with gene names,
-#' containing imputed gene expressions.
-#' @param all_pathways List named by pathway, where each index contains a
-#' vector of genes in the pathway.
-#' @param phenotype_filename Path to text file with a column called IID
-#' containing unique participant IDs and a column with the phenotype
-#' of interest.
-#' @param phenotype_colname Name of the column containing the phenotype of
-#' interest in the phenotype file specified above.
-#' @param covariates_filename Path to text file with a column called FID
-#' containing unique participant IDs and columns with covariates.
-#' @param covariates_colnames Vector of names of the columns containing the
-#' covariates in the covariate file specified above.
-#' @param family_func Family object specifying the type of model you
-#' want to use in the sparse group lasso function. See ?stats::family for more
-#' details.
+#' It performs the following:
+#'   1. Sorts gene expression data by IID and removes FID/IID columns.
+#'   2. Subsets and aligns phenotype and covariate files to the same individuals
+#'      and in the same order as `gene_expr`.
+#'   3. If covariates are provided:
+#'        • Fits `glm(phenotype ~ covariates, family = family_func)`
+#'        • Returns offsets = predicted values (for non-Gaussian families)
+#'        • Returns residualized phenotype (for Gaussian families only)
+#'   4. Expands pathways so genes appearing in multiple pathways are duplicated,
+#'      renamed as `gene_pathway`.
+#'   5. Constructs pathway group indices for sparse group lasso.
 #'
-#' @return Returns a list(
-#' X = gene expression matrix,
-#' y = residuals on phenotype ~ covariates if covariates_filename != NULL
-#' and family_func = gaussian(link = "identity"), or just vector of phenotype
-#' data otherwise,
-#' groups = vector of consecutive integers describing the pathway grouping of
-#' the genes,
-#' gene2pathway = list with genes as names and the
-#' length of pathways that contain the gene,
-#' FID = the IDs for the participants in order ,
-#' offsets = NULL if the no covariates are specified or
-#' family_func = "gaussian", vector of predicted values
-#' from generalized linear regression using specified covariates otherwise,
-#' processed_pathways = list with pathways as names and the genes in each
-#' pathway formatted as gene_pathway).
+#' @references
+#' Friedman, J., Hastie, T., Tibshirani, R. (2010). Regularization Paths for
+#' Generalized Linear Models via Coordinate Descent. *Journal of Statistical
+#' Software.*
+#' Meier, L., van de Geer, S., Bühlmann, P. (2008). The Group Lasso for Logistic
+#' Regression. *J. Royal Statistical Society B.*
+#'
+#' @param gene_expr Data frame containing imputed expression data.
+#'   Must contain first two columns named **FID** and **IID** and remaining
+#'   columns representing gene expression.
+#' @param all_pathways A named list where each element is a character vector
+#'   of genes belonging to a pathway. Names represent pathway names.
+#' @param phenotype_filename Path to phenotype text file containing at least
+#'   the column `IID` and the phenotype column specified by `phenotype_colname`.
+#' @param phenotype_colname Name of the phenotype column in phenotype file.
+#' @param covariates_filename (Optional) path to covariates file that must
+#'   contain `IID` and columns listed in `covariates_colnames`.
+#' @param covariates_colnames Vector of covariate column names to extract.
+#' @param family_func Model family specification (e.g., `"gaussian"`, `"binomial"`).
+#'   Passed to `glm()`. See `?stats::family` for details.
+#'
+#' @return A list containing:
+#'   \describe{
+#'     \item{X}{Processed gene expression matrix with duplicated pathway genes.}
+#'     \item{y}{Vector of phenotype values (residualized if Gaussian).}
+#'     \item{groups}{Integer vector defining pathway grouping for group lasso.}
+#'     \item{gene2pathway}{List mapping genes to the pathways they belong to.}
+#'     \item{IID}{Participant IDs used (sorted).}
+#'     \item{offsets}{NULL (Gaussian) or vector of glm predicted offsets
+#'                   (non-Gaussian).}
+#'     \item{processed_pathways}{Named list of pathway-specific duplicated genes.}
+#'   }
+#'
+#' @examples
+#' \dontrun{
+#' preprocess_expressions_pathways(
+#'   gene_expr = data.frame(
+#'     FID = 1:3, IID = 1:3,
+#'     G1 = rnorm(3), G2 = rnorm(3), G3 = rnorm(3)
+#'   ),
+#'   all_pathways = list(
+#'     PW1 = c("G1", "G2"),
+#'     PW2 = c("G2", "G3")
+#'   ),
+#'   phenotype_filename = "pheno.txt",
+#'   phenotype_colname = "BMI",
+#'   covariates_filename = "covars.txt",
+#'   covariates_colnames = c("age", "sex"),
+#'   family_func = gaussian()
+#' )
+#' }
 #'
 #' @export
 #' @import data.table
+preprocess_expressions_pathways <- function(
+    gene_expr,
+    all_pathways,
+    phenotype_filename = NULL,
+    phenotype_colname = NULL,
+    covariates_filename = NULL,
+    covariates_colnames = NULL,
+    family_func = "gaussian") {
+
+  # Input validation
+  if (missing(gene_expr)) stop("gene_expr must be provided.")
+  if (!is.data.frame(gene_expr)) stop("gene_expr must be a data frame.")
+  if (!identical(colnames(gene_expr)[1:2], c("FID", "IID")))
+    stop("First 2 columns of gene_expr must be FID and IID columns.")
+
+  if (!is.list(all_pathways) || is.null(names(all_pathways)))
+    stop("all_pathways must be a named list of gene vectors.")
+
+  if (!is.null(phenotype_filename) && is.null(phenotype_colname))
+    stop("phenotype_colname must be provided when phenotype_filename is given.")
+
+  valid_families <- c("gaussian", "binomial", "poisson")
+  if (!family_func %in% valid_families)
+    stop("family_func must be one of: ",
+         paste(valid_families, collapse = ", "), ".")
 
 
-
-preprocess_expressions_pathways <- function(gene_expr,
-                                             all_pathways,
-                                             phenotype_filename = NULL,
-                                            phenotype_colname = NULL,
-                                            covariates_filename = NULL,
-                                            covariates_colnames = NULL,
-                                            family_func = "gaussian"){
+  # Process gene expression matrix (sort, strip FID/IID)
   gene_expr <- as.data.frame(gene_expr)
-  gene_expr <- gene_expr[order(gene_expr$IID),]
+  gene_expr <- gene_expr[order(gene_expr$IID), ]
   rownames(gene_expr) <- gene_expr$IID
-  gene_expr <- gene_expr[,-(1:2)]
+  gene_expr <- gene_expr[, -(1:2)]  # remove FID/IID columns
 
-  if (is.null(phenotype_filename)){
+  # Load and align phenotype (if provided)
+  if (is.null(phenotype_filename)) {
     phenotype <- NULL
   } else {
-    phenotype <- data.table::fread(phenotype_filename, header = TRUE)
-    phenotype <- phenotype[!(duplicated(phenotype$IID)), ]
+    phenotype <- data.table::fread(phenotype_filename)
+    phenotype <- phenotype[!duplicated(phenotype$IID), ]
     phenotype <- as.data.frame(phenotype)
-    phenotype <- phenotype[(match(rownames(gene_expr), phenotype$IID)), ]
-    phenotype <- phenotype[!is.na(phenotype$IID), ]
 
+    # align to gene_expr individuals
+    phenotype <- phenotype[match(rownames(gene_expr), phenotype$IID), ]
+    phenotype <- phenotype[!is.na(phenotype$IID), ]
   }
 
-  if (is.null(covariates_filename)){
-    offsets <- NULL
-  } else {
-    covars <- data.table::fread(covariates_filename, header = TRUE)
-    covars <- covars[!(duplicated(covars$IID)), ]
+  # Load covariates + compute glm offsets or residuals
+  offsets <- NULL
+
+  if (!is.null(covariates_filename)) {
+
+    covars <- data.table::fread(covariates_filename)
+    covars <- covars[!duplicated(covars$IID), ]
     covars <- as.data.frame(covars)
-    covars <- covars[(match(phenotype$IID, covars$IID)), ]
+
+    # align covars, phenotype, gene_expr
+    covars <- covars[match(phenotype$IID, covars$IID), ]
     covars <- covars[!is.na(covars$IID), ]
-    phenotype <- phenotype[(match((covars$IID), phenotype$IID)), ]
-    covars <- covars[, covariates_colnames]
-    fit <- glm(phenotype[,phenotype_colname] ~ ., data = covars, family = family_func)
+
+    # re-align phenotype
+    phenotype <- phenotype[match(covars$IID, phenotype$IID), ]
+
+    covars <- covars[, covariates_colnames, drop = FALSE]
+
+    # Fit GLM
+    fit <- glm(
+      formula = phenotype[, phenotype_colname] ~ .,
+      data    = covars,
+      family  = family_func
+    )
+
     offsets <- predict(fit, covars)
-    if(family_func == "gaussian"){
-      phenotype <- phenotype - offsets
+
+    # For Gaussian: residualize the phenotype instead of storing offsets
+    if (family_func$family == "gaussian") {
+      phenotype[, phenotype_colname] <- phenotype[, phenotype_colname] - offsets
       offsets <- NULL
     }
+
+    # Reorder gene expression rows accordingly
     gene_expr <- gene_expr[match(phenotype$IID, rownames(gene_expr)), ]
   }
-  phenotype <- as.vector(phenotype[, phenotype_colname])
-  # pathway processing
-  all_genes <- colnames(gene_expr)
 
-  gene_pathways <- list() # key = gene, value = lengths of pathways gene is in
-  proc_pathways <- list()
-  # pathways
-
-  for (p in seq_along(all_pathways)){
-    genes <- intersect(all_pathways[[p]], all_genes)
-    if (length(genes) == 0){
-      next
-    }
-    genes_dup <- genes
-    for (g in seq_along(genes)){
-      if (genes[g] %in% names(gene_pathways)){
-        gene_pathways[[genes[g]]] <- c(gene_pathways[[genes[g]]], length(genes))
-        names(gene_pathways[[genes[g]]])[length(gene_pathways[[genes[g]]])] <- (names(all_pathways)[p])
-      } else {
-        gene_pathways[[genes[g]]] <- c(length(genes))
-        names(gene_pathways[[genes[g]]]) <- c(names(all_pathways)[p])
-      }
-      genes_dup[g] <- paste0(genes[g], "_", names(all_pathways)[p])
-
-    }
-    proc_pathways[[names(all_pathways)[p]]] <- genes_dup
+  # Extract phenotype vector
+  if (!is.null(phenotype)) {
+    y <- as.vector(phenotype[, phenotype_colname])
+  } else {
+    y <- NULL
   }
 
-  # now add singleton genes that don't belong to a pathway
-  for (g in all_genes){
-    if (!(g %in% names(gene_pathways))){
-      gene_pathways[[g]] <- c(1)
+  # Process pathways: duplicate genes, rename gene_pathway
+  all_genes <- colnames(gene_expr)
+  gene_pathways <- list()
+  proc_pathways <- list()
+
+  for (p in seq_along(all_pathways)) {
+
+    pathway_name <- names(all_pathways)[p]
+    genes <- intersect(all_pathways[[p]], all_genes)
+
+    if (length(genes) == 0) next
+
+    duplicated_genes <- character(length(genes))
+
+    for (g in seq_along(genes)) {
+      gene <- genes[g]
+
+      # record membership
+      if (gene %in% names(gene_pathways)) {
+        gene_pathways[[gene]] <- c(gene_pathways[[gene]], length(genes))
+        names(gene_pathways[[gene]])[length(gene_pathways[[gene]])] <- pathway_name
+      } else {
+        gene_pathways[[gene]] <- c(length(genes))
+        names(gene_pathways[[gene]]) <- pathway_name
+      }
+
+      # duplicate + label as gene_pathway
+      duplicated_genes[g] <- paste0(gene, "_", pathway_name)
+    }
+
+    proc_pathways[[pathway_name]] <- duplicated_genes
+  }
+
+  # Add singleton “pathways” for genes in no pathway
+  for (g in all_genes) {
+    if (!g %in% names(gene_pathways)) {
+      gene_pathways[[g]] <- 1
       names(gene_pathways[[g]]) <- g
       proc_pathways[[g]] <- paste0(g, "_", g)
     }
   }
-  gene_expr_proc <- gene_expr[, match(sub("_.*", "",
-                                         unname(unlist(proc_pathways))),
-                                colnames(gene_expr))]
-  colnames(gene_expr_proc) <- unname(unlist(proc_pathways))
-  grouping <- rep(seq_along(proc_pathways), unname(unlist(sapply(proc_pathways, length))))
 
-  return(list(X = as.matrix(gene_expr_proc), y = phenotype, groups = grouping,
-              gene2pathway = gene_pathways, IID = rownames(gene_expr_proc),
-              offsets = offsets, processed_pathways = proc_pathways))
+  # Build processed gene expression matrix with duplicated columns
+  flat_path_genes <- unname(unlist(proc_pathways))
+
+  gene_expr_proc <- gene_expr[, match(sub("_.*", "", flat_path_genes),
+                                      colnames(gene_expr))]
+
+  colnames(gene_expr_proc) <- flat_path_genes
+
+  # pathway group indices
+  groups <- rep(
+    seq_along(proc_pathways),
+    lengths(proc_pathways)
+  )
+
+  # Final output
+  return(list(
+    X = as.matrix(gene_expr_proc),
+    y = y,
+    groups = groups,
+    gene2pathway = gene_pathways,
+    IID = rownames(gene_expr_proc),
+    offsets = offsets,
+    processed_pathways = proc_pathways))
 }
-
-
-# [END]

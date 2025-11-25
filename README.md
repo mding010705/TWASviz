@@ -7,28 +7,69 @@
 
 <!-- badges: end -->
 
-The goal of TWASviz is to allow users to perform TWASs in R, and import
-their own TWAS results, and effectively visualize the output. This tool
-will also provide functions that visualize the gene expression data and
-the overlap of sets of important gene transcripts from multiple cell
-types or tissues.
+The goal of TWASviz is to allow users to perform Transcriptome Wide
+Association Studies (TWASs) in R using sparse group lasso, and to import
+their own TWAS results and effectively visualize the output. This tool
+will also provide functions that visualize the gene expression data, the
+overlap of sets of important gene transcripts from multiple cell types
+or tissues, and the Gene Ontology term enrichments. Currently, the only
+TWAS visualization related R packages make Manhattan plots and focus on
+single TWASs at a time. However, with the development of cell type
+specific expression-quantitative trait loci and the importance of
+understanding the contribution of multiple tissues to disease, TWASviz
+provides several heatmap-type visualizations that help users compare and
+efficiently present the results of multiple cell type or tissue specific
+TWASs at once.
 
-Explain how your package add to or improve a current work ﬂow in
-bioinformatics or computa- tional biology (i.e., how is it unique?, what
-issue does it address?).
+## Background
+
+TWASs are a powerful method for finding gene-trait associations. Simply
+associating individuals’ specific single nucleotide polymorphisms (SNPs)
+with a complex trait will highlight a lot of SNPs located in non-coding
+regions (this is a Genome Wide Association Study). Since non-coding
+regions are not transcribed, changes in non-coding regions change
+neither the structure nor functionality of the genes’ resulting
+proteins. In contrast, TWASs associate gene transcript levels with
+phenotypes. This approach more directly implicates specific genes that
+functionally impact phenotype. As well, to perform a TWAS, you only need
+RNA-seq from a reference panel, and genotype data and phenotype data for
+your sample of interest. No need to perform any RNA sequencing on your
+sample of interest.
+
+<figure>
+<img src="./inst/extdata/TWAS_general.png"
+alt="Figure 1. TWAS overview." />
+<figcaption aria-hidden="true">Figure 1. TWAS overview.</figcaption>
+</figure>
+
+TWASviz is built to be compatible with the TWAS software
+[PrediXcan](https://github.com/hakyimlab/MetaXcan/wiki/Individual-level-PrediXcan:-introduction,-tutorials-and-manual).
+PrediXcan is can do all 3 steps in the above Figure 1a. However, the
+association that PrediXcan does is just a naive simple linear regression
+of predicated gene expression against phenotype data, one gene at a
+line. With TWASviz, PrediXcan is meant to do steps 1. Train and 2.
+Predict, and TWASviz is meant to do step 3. Associate (via sparse group
+lasso) and a new step 4. Visualize. TWASviz supplies functions that are
+meant to take in PrediXcan predicted gene expression data, and even has
+a couple of functions that are meant to deal directly with PrediXcan
+TWAS association results. Since PrediXcan is a very beginner friendly
+TWAS software, TWASviz is meant to attract PrediXcan users, invite them
+to try a different TWAS framework, and to give them some functions to
+produce interesting TWAS summary plots.
+
+## TWASviz Overview
 
 <figure>
 <img src="./inst/extdata/TWASviz_workflow.png"
-alt="TWASviz workflow." />
-<figcaption aria-hidden="true">TWASviz workflow.</figcaption>
+alt="Figure 2. TWASviz workflow." />
+<figcaption aria-hidden="true">Figure 2. TWASviz workflow.</figcaption>
 </figure>
 
 R version: 4.4.1 (2024-06-14 ucrt) Platform: x86_64-w64-mingw32/x64
 Running under: Windows 11 x64 (build 26100)
 
-Installation:
+To install the latest version of the package:
 
-    To install the latest version of the package:
     install.packages("devtools")
     library("devtools")
     devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
@@ -69,7 +110,25 @@ wrote tests)
 
 Others that I don’t have time to cite…
 
-References:
+corr_heatmap
+
+preprocess_expressions_pathways
+
+sgl_TWAS
+
+sgl2adj_df
+
+correlation_overlap_heatmap
+
+gene_enrichment
+
+goenrich_heatmap
+
+volcano_plot
+
+predixcan2adj_df
+
+## References
 
 Gamazon, E. R., Wheeler, H. E., Shah, K. P., Mozaffari, S. V.,
 Aquino-Michaels, K., Carroll, R. J., Eyler, A. E., Denny, J. C.,
@@ -89,7 +148,7 @@ Wang, N., Ye, Z., & Ma, T. (2024). Tips: A novel pathway-guided joint
 model for transcriptome-wide association studies. Briefings in
 Bioinformatics, 25(6). <https://doi.org/10.1093/bib/bbae587>
 
-Acknowledgements:
+## Acknowledgements
 
 This package was developed as part of an assessment for 2025 BCB410H:
 Applied Bioinformatics course at the University of Toronto, Toronto,
