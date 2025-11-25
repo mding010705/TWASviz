@@ -1,60 +1,183 @@
 #' Plot Pairwise Correlations and Overlaps of Multiple Gene Sets
 #'
-#' Plots heatmap for pairwise complete correlations for effect sizes of
-#' multiple gene sets in lower triangle, number of pairwise complete effect
-#' sizes for multiple gene sets in upper triangle. Diagonal displays total
-#' number of effect sizes for a single gene set.
+#' Produces a two-layer heatmap summarizing:
 #'
-#' @param betas A dataframe with rows of genes and columns of tissue/cell types.
-#' Entry (i, j) is the TWAS effect size of gene i in tissue j, or NULL if gene i
-#' is not expressed/significant in tissue j.
-#' @param cor_method A string specifying the correlation method
-#' (pearson, kendall, spearman).
-#' @param tissue_names A vector of strings with length of the number of columns
-#' in betas. These are the tissue names in the order that they appear in betas.
+#' **Upper triangle:**
+#'   • Pairwise complete correlations between gene-level effect sizes
+#'   • Significance stars computed from FDR-adjusted p-values
 #'
-#' @return Returns a heatmap plot of correlations and overlaps
+#' **Lower triangle:**
+#'   • Number of shared non-missing effect sizes (pairwise N)
+#'   • Text labels show N
+#'
+#' **Diagonal:**
+#'   • Number of non-missing values per tissue
+#'
+#' Internally uses `psych::corr.test()` to compute correlations, p-values,
+#' and pairwise complete sample sizes.
+#'
+#' @references
+#' Revelle, W. (2024). *psych: Procedures for Psychological, Psychometric,
+#' and Personality Research.* Northwestern University.
+#' Wickham, H. (2016). *ggplot2: Elegant Graphics for Data Analysis.* Springer.
+#'
+#' @param betas A numeric data frame or matrix where rows are genes and
+#'   columns are tissues/cell types. Missing values (NA) indicate gene absence.
+#' @param cor_method Correlation method passed to `psych::corr.test()`.
+#'   One of `"pearson"`, `"kendall"`, `"spearman"`.
+#' @param tissue_names Optional vector of tissue names. Must match
+#'   `ncol(betas)`. Defaults to column names or sequential numbering.
+#' @param main_title Optional main title for plot.
+#'
+#' @return A ggplot2 heatmap object.
 #'
 #' @examples
-#' correlation_overlap_heatmap(betas = data.frame(x = c(1, 7, 3), y = c(1, -9, 3),
-#'                             z = c(-1, 0, NA)), tissue_names = c("A", "B", "C"))
+#' correlation_overlap_heatmap(
+#'   betas = data.frame(
+#'     A = c(1, 7, 3),
+#'     B = c(1, 6, 3),
+#'     C = c(10, -9, NA)
+#'   ),
+#'   tissue_names = c("A", "B", "C")
+#' )
 #'
 #' @export
-#' @import corrplot
 #' @import psych
+#' @import ggplot2
+#' @import dplyr
+#' @import tidyr
+#' @import ggnewscale
+#' @import magrittr
 
+correlation_overlap_heatmap <- function(
+    betas,
+    cor_method = "pearson",
+    tissue_names = colnames(betas),
+    main_title = "Correlation (upper) and number of shared features (lower)") {
 
-correlation_overlap_heatmap <- function(betas, cor_method = "pearson",
-                                        tissue_names = 1:ncol(betas)){
-  if (ncol(betas) == 0){
-    return(NULL)
+  # Input validation
+
+  if (!is.data.frame(betas) && !is.matrix(betas)) {
+    stop("`betas` must be a data frame or matrix.")
   }
 
-  test_cor <- psych::corr.test(betas, method = cor_method, adjust = "fdr")
-  corr_coef <- test_cor$r
-  colnames(corr_coef) <- tissue_names
-  row.names(corr_coef) <- tissue_names
-  n_mat <- test_cor$n
-  colnames(n_mat) <- tissue_names
-  row.names(n_mat) <- tissue_names
-  mat <- matrix(0, nrow = ncol(betas), ncol = ncol(betas))
-  mat[upper.tri(mat, diag = TRUE)] <- test_cor$p.adj
-  p_adj <- t(mat)
-  p_adj <- rbind(0, p_adj)
-  p_adj <- cbind(p_adj, 0)
-  p_adj[is.na(p_adj)] <- 1
-  upper_plot <- corrplot::corrplot(n_mat, method = "color", addCoef.col = "grey50",
-                                   type='upper', number.cex=0.5,
-                                   col = corrplot::COL1("YlGn"), is.corr = F,
-                                   number.digits = 0, tl.pos = "lt",
-                                   cl.ratio = 0.1, cl.pos = "r", na.label = "NA")
-  return(tryCatch(corrplot::corrplot(corr_coef, p.mat = p_adj,
-                            sig.level=c(0.01, 0.05, 0.1), pch.cex = 0.9,
-                            type='lower', insig = 'label_sig', pch.col = 'green',
-                            tl.pos = "n", is.cor = T, method = "square",
-                            diag = FALSE, cl.ratio = 0.1, na.label = "NA",
-                            add = T), error=function(e){}))
+  if (!is.numeric(as.matrix(betas))) {
+    stop("`betas` must contain numeric values.")
+  }
 
+  if (ncol(betas) == 0) {
+    stop("`betas` must have at least one column.")
+  }
+
+  valid_methods <- c("pearson", "spearman", "kendall")
+  if (!(cor_method %in% valid_methods)) {
+    stop("`cor_method` must be one of: 'pearson', 'spearman', 'kendall'.")
+  }
+
+  if (length(tissue_names) != ncol(betas)) {
+    stop("`tissue_names` must have length equal to ncol(betas).")
+  }
+
+  # betas: samples × tissues matrix
+  test_cor <- psych::corr.test(betas, method = cor_method, adjust = "fdr")
+
+  corr_coef <- test_cor$r
+  # Fill matrix with NA then insert p-values only in lower triangle
+  p_adj <- matrix(1, nrow = ncol(betas), ncol = ncol(betas))
+  p_adj[lower.tri(p_adj, diag = FALSE)] <- test_cor$p.adj
+  diag(p_adj) <- 0
+  p_adj[is.na(p_adj)] <- 1
+  n_mat <- test_cor$n
+
+  colnames(corr_coef) <- tissue_names
+  rownames(corr_coef) <- tissue_names
+  colnames(p_adj) <- tissue_names
+  rownames(p_adj) <- tissue_names
+  colnames(n_mat) <- tissue_names
+  rownames(n_mat) <- tissue_names
+
+  # Significance labels
+  sig_label <- function(p) {
+    if (is.na(p)) return("")
+    if (p < 0.01) return("***")
+    if (p < 0.05) return("**")
+    if (p < 0.10) return("*")
+    return("")
+  }
+
+  sig_mat <- matrix(sapply(p_adj, sig_label),
+                    nrow = nrow(p_adj),
+                    dimnames = dimnames(p_adj))
+
+  # Build long-format plot data
+  `%>%` <- magrittr::`%>%`
+  df_corr <- as.data.frame(corr_coef) %>%
+    dplyr::mutate(Row = rownames(.)) %>%
+    tidyr::pivot_longer(-Row, names_to = "Col", values_to = "corr")
+
+  df_p <- as.data.frame(p_adj) %>%
+    dplyr::mutate(Row = rownames(.)) %>%
+    tidyr::pivot_longer(-Row, names_to = "Col", values_to = "p_adj")
+
+  df_sig <- as.data.frame(sig_mat) %>%
+    dplyr::mutate(Row = rownames(.)) %>%
+    tidyr::pivot_longer(-Row, names_to = "Col", values_to = "sig")
+
+  df_n <- as.data.frame(n_mat) %>%
+    dplyr::mutate(Row = rownames(.)) %>%
+    tidyr::pivot_longer(-Row, names_to = "Col", values_to = "n")
+
+  plot_df <- df_corr %>%
+    dplyr::left_join(df_p,  by = c("Row", "Col")) %>%
+    dplyr::left_join(df_sig, by = c("Row", "Col")) %>%
+    dplyr::left_join(df_n,  by = c("Row", "Col"))
+
+  # Add triangle indicator
+  plot_df$tri <-
+    ifelse(match(plot_df$Row, tissue_names) > match(plot_df$Col, tissue_names),
+           "upper", "lower")
+  plot_df$fill <-ifelse(plot_df$tri == "upper", plot_df$corr, plot_df$n)
+
+  # Combined heatmap
+  return(ggplot2::ggplot(plot_df) +
+    # Upper triangle: correlation heatmap
+      ggplot2::geom_tile(ggplot2::aes(Col, Row, fill = corr),
+                         dplyr::filter(plot_df, tri == "upper"),
+              color = "white", na.rm = TRUE) +
+
+    # Significance stars on upper triangle
+      ggplot2::geom_text(ggplot2::aes(Col, Row, label = sig),
+                         dplyr::filter(plot_df, tri == "upper"),
+              color = "green", size = 4) +
+
+    # Color scales
+      ggplot2::scale_fill_gradient2(
+      low = "#2166AC", mid = "white", high = "#B2182B", midpoint = 0,
+      na.value = "grey80",
+      name = "Correlation"
+    ) +
+    ggnewscale::new_scale_fill() +
+
+    # Lower triangle: sample size n
+      ggplot2::geom_tile(ggplot2::aes(Col, Row, fill = n),
+                         dplyr::filter(plot_df, tri == "lower"),
+              color = "white", na.rm = TRUE) +
+      ggplot2::scale_fill_gradient(
+      low = "yellow", high = "forestgreen",
+      na.value = "grey80",
+      name = "Number of shared features"
+    ) +
+    # Text on lower triangle
+      ggplot2::geom_text(ggplot2::aes(Col, Row, label = n),
+                         dplyr::filter(plot_df, tri == "lower"),
+              color = "grey30", size = 3) +
+
+      ggplot2::labs(x = "", y = "",
+         title = main_title) +
+      ggplot2::theme_minimal(base_size = 12) +
+      ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+      panel.grid = ggplot2::element_blank()))
 }
 
 # [END]
