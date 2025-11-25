@@ -25,8 +25,16 @@ sgl2adj_df <- function(gene_coefs,
   pathway_adj_df <- data.frame(pathway = c(NA))
 
   for(coef in gene_coefs){
-    coef <- coef[coef[,1]!= 0,]
-    gene_pathway <- stringr::str_split_fixed(rownames(coef), "_", n = 2)
+    coef <- coef[(rownames(coef) != "(Intercept)"),]
+    if (all(coef == 0) == TRUE){
+      gene_adj_df <- cbind(gene_adj_df, NA)
+      pathway_adj_df <- cbind(pathway_adj_df, NA)
+
+      message("A set of coefficients is all 0.")
+      next
+    }
+    coef <- coef[coef != 0]
+    gene_pathway <- stringr::str_split_fixed(names(coef), "_", n = 2)
     gene_pathway[gene_pathway[,2]=="", 2] <-
       gene_pathway[gene_pathway[,2]=="", 1]
 
@@ -39,16 +47,22 @@ sgl2adj_df <- function(gene_coefs,
 
     gene_adj_df <- merge(gene_adj_df, gene_df,
                          by = c("gene"), all = TRUE)
-    pathway_adj_df <- merge(pathway_adj_df, gene_df,
+    pathway_adj_df <- merge(pathway_adj_df, pathway_df,
                             by = c("pathway"), all = TRUE)
 
   }
   colnames(gene_adj_df) <- c("gene", tissue_names)
   colnames(pathway_adj_df) <- c("pathway", tissue_names)
-  rownames(gene_adj_df) <- gene_adj_df$gene
-  rownames(pathway_adj_df) <- pathway_adj_df$gene
-  gene_adj_df <- gene_adj_df[, -1]
-  pathway_adj_df <- pathway_adj_df[, -1]
+  gene_adj_df <- gene_adj_df[!is.na(gene_adj_df$gene), ]
+  pathway_adj_df <- pathway_adj_df[!is.na(pathway_adj_df$pathway), , ]
+  if (is.null(dim(gene_adj_df)) == FALSE ){
+    print(gene_adj_df$gene)
+    rownames(gene_adj_df) <- gene_adj_df$gene
+    rownames(pathway_adj_df) <- pathway_adj_df$pathway
+    gene_adj_df <- gene_adj_df[, -1]
+    pathway_adj_df <- pathway_adj_df[, -1]
+  }
+
 
   return(list(gene = gene_adj_df, pathway = pathway_adj_df))
 }

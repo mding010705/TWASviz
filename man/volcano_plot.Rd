@@ -13,7 +13,7 @@ volcano_plot(
 }
 \arguments{
 \item{betas_p_vals}{Dataframe with columns gene_name (to label points with),
-betas (containing gene effect sizes), p_value (significance of effect sizes)}
+betas (containing gene effect sizes), pvalue (significance of effect sizes)}
 
 \item{p_thresh}{Max value of p value to be considered significant.}
 
@@ -32,6 +32,6 @@ Labels significant genes.
 }
 \examples{
 volcano_plot(betas_p_vals = data.frame(beta = c(1, 0, 3, 4, 0.5),
-                                 p_value = c(0.1, 0.9, 0.02, 0.11, 0.3)))
+                                 pvalue = c(0.1, 0.9, 0.02, 0.11, 0.3)))
 
 }

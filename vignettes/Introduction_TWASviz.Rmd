@@ -2,7 +2,9 @@
 title: "Introduction to TWASviz"
 author: "Megan Ding"
 date: "2025-11-04"
-output: html_document
+output:
+  md_document:
+    variant: markdown_github
 vignette: >
   %\VignetteIndexEntry{Introduction_TWASviz}
   %\VignetteEngine{knitr::rmarkdown}
@@ -38,7 +40,7 @@ data(package = "TWASviz")
 
 ## Components
 
-<img src="../inst/extdata/Overview_flowchart.png" alt="Workflow of MissensePathoR" width="600"/>
+![TWASviz workflow.](../inst/extdata/TWASviz_workflow.png)
 
 ## Application 1
 
@@ -91,13 +93,13 @@ Having a set of significant genes is not useful when you can't summarize their f
 
 ```{r}
 genes <- list(a1 = TWASviz::predixcan_twas1[, "gene"],
-              a2 = TWASviz::predixcan_twas2[predixcan_twas1$pvalue < 0.05, "gene"],
-              a3 = TWASviz::predixcan_twas3[predixcan_twas1$pvalue < 0.05, "gene"],
-              a4 = TWASviz::predixcan_twas4[predixcan_twas1$pvalue < 0.001, "gene"],
-              a5 = TWASviz::predixcan_twas5[predixcan_twas1$pvalue < 0.05, "gene"])
+        a2 = TWASviz::predixcan_twas2[predixcan_twas1$pvalue < 0.05, "gene"],
+        a3 = TWASviz::predixcan_twas3[predixcan_twas1$pvalue < 0.05, "gene"],
+        a4 = TWASviz::predixcan_twas4[predixcan_twas1$pvalue < 0.001, "gene"],
+        a5 = TWASviz::predixcan_twas5[predixcan_twas1$pvalue < 0.05, "gene"])
 enrich_res <- TWASviz::gene_enrichment(genes)
 
-goenrich_heatmap(enrich_res = enrich_res)
+TWASviz::goenrich_heatmap(enrich_res = enrich_res)
 ```
 
 
@@ -109,33 +111,32 @@ Let's look at an analysis that performs TWAS with this package, starting from `P
 The sparse group lasso function needs specially a formatted predictor matrix and grouping information. `preprocess_expressions_pathways` duplicates genes in your imputed gene expression matrix that appear multiple times in your specified pathways, renames genes to gene_pathway, subsets and reorders your gene expression and phenotype files to match the participant ID order, and regresses out the covariates from your phenotype if you specify family_func = gaussian(link = "identity") or provides offsets from predicted values from glm(phenotype ~ ., data = covars, family = family_func).
 
 ```{r}
-sgl_input <- TWASviz::preprocess_expressions_pathways(TWASviz::cell1_gene_expr, all_pathways = TWASviz::all_pathways,
-phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "anx_bin", 
-family_func = "binomial")
+
+sgl_input1 <- TWASviz::preprocess_expressions_pathways(TWASviz::cell1_gene_expr, all_pathways = TWASviz::all_pathways,
+phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "y_bin", family_func = "binomial")
 
 sgl_input2 <- TWASviz::preprocess_expressions_pathways(TWASviz::cell2_gene_expr, all_pathways = TWASviz::all_pathways,
-phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "anx_bin", 
-family_func = "binomial")
+phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "y_bin", family_func = "binomial")
 ```
 
 ### Performing Sparse Group Lasso TWAS
 
 ```{r}
-sgl_fit1 <- TWASviz::sgl_TWAS(X = sgl_input$X, y = sgl_input$y,
-                             grouping = sgl_input$groups,
-                             family = "binomial")
+sgl_fit1 <- TWASviz::sgl_TWAS(X = sgl_input1$X, y = sgl_input1$y, grouping = sgl_input1$groups, family = "binomial", offsets = sgl_input1$offsets, 
+                              pred_loss = "misclass")
 
-sgl_fit2 <- TWASviz::sgl_TWAS(X = sgl_input2$X, y = sgl_input$y,
-                             grouping = sgl_input$groups,
-                             family = "binomial")
+sgl_fit2 <- TWASviz::sgl_TWAS(X = sgl_input2$X, y = sgl_input2$y, grouping = sgl_input2$groups, family = "binomial", offsets = sgl_input2$offsets, 
+                              pred_loss = "misclass")
 ```
 
 ### Reformat sgl_TWAS Output
 ```{r}
 adj_dfs <- sgl2adj_df(c(sgl_fit1[[2]], sgl_fit2[[2]]))
+
+head(adj_dfs)
 ```
 
-Then you can use adj_dfs[[1]] and adj_dfs[[2]] in the analysis outlined in Approach 1 to get nice looking plots.
+Then you can use `adj_dfs$gene` and `adj_dfs$pathway` in the analysis outlined in Approach 1 to get nice looking gene level and pathway level overlap plots, respectively, and GO enrichment plots from `adj_dfs$gene`.
 
 
 ## References

@@ -22,6 +22,11 @@ The goal of TWASviz is to allow users to perform TWASs in R, and import their ow
 Explain how your package add to or improve a current work ﬂow in bioinformatics or computa-
 tional biology (i.e., how is it unique?, what issue does it address?). 
 
+
+![TWASviz workflow.](./inst/extdata/TWASviz_workflow.png)
+
+
+
 R version: 4.4.1 (2024-06-14 ucrt)
 Platform: x86_64-w64-mingw32/x64
 Running under: Windows 11 x64 (build 26100)
@@ -29,20 +34,46 @@ Running under: Windows 11 x64 (build 26100)
 
 Installation:
 
+```
 To install the latest version of the package:
 install.packages("devtools")
 library("devtools")
 devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
 library("TWASviz")
+```
 
-To run the shinyApp: Under construction
+To run the shinyApp: 
+
+```
+Under construction
+```
 
 Overview:
 
-
+```
 ls("package:TWASviz")
 data(package = "TWASviz")
 browseVignettes("TWASviz")
+```
+
+Available Functions:
+corr_heatmap
+
+preprocess_expressions_pathways
+
+sgl_TWAS
+
+sgl2adj_df
+
+correlation_overlap_heatmap
+
+gene_enrichment
+
+goenrich_heatmap
+
+volcano_plot
+
+predixcan2adj_df
 
 
 Contributions:

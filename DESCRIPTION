@@ -1,21 +1,23 @@
 Package: TWASviz
-Title: What the Package Does (One Line, Title Case)
+Title: Transcriptome-Wide Association Study (TWAS) via Sparse Group Lasso and Visualizations 
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Megan", "Ding", , "megan.ding@mail.utoronto.ca", role = c("aut", "cre"))
+Description: TWASviz helps you visualize your individual-level PrediXcan imputed gene expression data, performs a sparse group lasso TWAS, does gene-set enrichment, and produces helpful summary visualizations that aggregate multiple TWASs and gene-set enrichments.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends: 
-    R (>= 3.5)
+    R (>= 4.2.0)
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 LazyData: true
-Imports: 
+biocViews: 
     clusterProfiler,
+    org.Hs.eg.db
+Imports: 
     corrplot,
     data.table,
     dplyr,
@@ -24,4 +26,5 @@ Imports:
     psych,
     qvalue,
     sparsegl,
-    stringr
+    stringr,
+    

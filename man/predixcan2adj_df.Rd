@@ -6,7 +6,7 @@
 \usage{
 predixcan2adj_df(
   predixcan_assoc_filenames,
-  tissue_names = seq_along(gene_coefs),
+  tissue_names = seq_along(predixcan_assoc_filenames),
   use_fdr = FALSE,
   pvalue_thresh = 0.05
 )

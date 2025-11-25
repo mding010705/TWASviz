@@ -130,7 +130,7 @@ goenrich_heatmap <- function(enrich_res, top_n = 5, x_label = "Cell Type"){
   plot_data$Module <- factor(plot_data$Module, levels = ordered_modules)
 
   # Plot heatmap with GO terms on y-axis
-  ggplot2::ggplot(plot_data, ggplot2::aes(x = Module, y = Term)) +
+  return(ggplot2::ggplot(plot_data, ggplot2::aes(x = Module, y = Term)) +
     ggplot2::geom_tile(ggplot2::aes(fill = -log10(p.adjust)), color = "white") +
     ggplot2::geom_text(ggplot2::aes(label = Count), size = 3) +
     ggplot2::scale_fill_gradient(low = "white", high = "red", name = "-log10 adj p") +
@@ -138,7 +138,7 @@ goenrich_heatmap <- function(enrich_res, top_n = 5, x_label = "Cell Type"){
     ggplot2::theme_minimal(base_size = 12) +
     ggplot2::theme(axis.text.x = element_text(angle = 45, hjust = 1),
                    axis.text.y = element_text(size = 10),
-                   panel.grid = element_blank())
+                   panel.grid = element_blank()))
 }
 
 # [END]

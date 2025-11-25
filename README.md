@@ -1,2 +1,99 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # TWASviz
-Visualizations for basic TWAS inputs and outputs.
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+The goal of TWASviz is to allow users to perform TWASs in R, and import
+their own TWAS results, and effectively visualize the output. This tool
+will also provide functions that visualize the gene expression data and
+the overlap of sets of important gene transcripts from multiple cell
+types or tissues.
+
+Explain how your package add to or improve a current work ﬂow in
+bioinformatics or computa- tional biology (i.e., how is it unique?, what
+issue does it address?).
+
+<figure>
+<img src="./inst/extdata/TWASviz_workflow.png"
+alt="TWASviz workflow." />
+<figcaption aria-hidden="true">TWASviz workflow.</figcaption>
+</figure>
+
+R version: 4.4.1 (2024-06-14 ucrt) Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26100)
+
+Installation:
+
+    To install the latest version of the package:
+    install.packages("devtools")
+    library("devtools")
+    devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
+    library("TWASviz")
+
+To run the shinyApp:
+
+    Under construction
+
+Overview:
+
+    ls("package:TWASviz")
+    data(package = "TWASviz")
+    browseVignettes("TWASviz")
+
+Available Functions: corr_heatmap
+
+preprocess_expressions_pathways
+
+sgl_TWAS
+
+sgl2adj_df
+
+correlation_overlap_heatmap
+
+gene_enrichment
+
+goenrich_heatmap
+
+volcano_plot
+
+predixcan2adj_df
+
+Contributions:
+
+Megan Ding- Package author (conceptualized package, wrote code, and
+wrote tests)
+
+Others that I don’t have time to cite…
+
+References:
+
+Gamazon, E. R., Wheeler, H. E., Shah, K. P., Mozaffari, S. V.,
+Aquino-Michaels, K., Carroll, R. J., Eyler, A. E., Denny, J. C.,
+Nicolae, D. L., Cox, N. J., & Im, H. K. (2015). A gene-based association
+method for mapping traits using reference transcriptome data. Nature
+Genetics, 47(9), 1091–1098. <https://doi.org/10.1038/ng.3367>
+
+Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013). A
+sparse-group lasso. Journal of Computational and Graphical Statistics,
+22(2), 231–245. <https://doi.org/10.1080/10618600.2012.681250>
+
+Yu G (2024). “Thirteen years of clusterProfiler.” The Innovation, 5(6),
+100722. <doi:10.1016/j.xinn.2024.100722>,
+<https://doi.org/10.1016/j.xinn.2024.100722>.
+
+Wang, N., Ye, Z., & Ma, T. (2024). Tips: A novel pathway-guided joint
+model for transcriptome-wide association studies. Briefings in
+Bioinformatics, 25(6). <https://doi.org/10.1093/bib/bbae587>
+
+Acknowledgements:
+
+This package was developed as part of an assessment for 2025 BCB410H:
+Applied Bioinformatics course at the University of Toronto, Toronto,
+CANADA.
+
+TWASviz welcomes issues, enhancement requests, and other contributions.
+To submit an issue, use the GitHub issues.

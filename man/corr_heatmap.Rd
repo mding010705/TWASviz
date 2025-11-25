@@ -34,7 +34,7 @@ Returns a heatmap image of gene correlations.
 }
 \description{
 Produces an image of a heatmap for all of the pairwise correlations of
-many gene expressions. Intended for use for expression of > 1000 genes.
+many gene expressions. Intended for use for expression of > 500 genes.
 }
 \examples{
 corr_heatmap(gene_expr = matrix(rnorm(500^2), nrow = 500))

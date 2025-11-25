@@ -70,7 +70,7 @@ redim_matrix <- function(
 #' Heatmap of all Pairwise Correlations of Expression of Many Genes
 #'
 #' Produces an image of a heatmap for all of the pairwise correlations of
-#' many gene expressions. Intended for use for expression of > 1000 genes.
+#' many gene expressions. Intended for use for expression of > 500 genes.
 #'
 #' @param gene_expr Gene expression matrix. Rows are individual samples.
 #' Columns are genes.
@@ -96,7 +96,8 @@ corr_heatmap <- function(gene_expr, target_height = 300,
                 summary_func = function(x) x[which.max(abs(x))],
                 n_core = parallel::detectCores() - 1,
                 col_pal =
-                  grDevices::colorRampPalette(c("red", "white", "blue"))(50)){
+                  grDevices::colorRampPalette(c("red", "white", "blue"))(50),
+                title = "Gene expression correlation matrix"){
 
   cl <- parallel::makeCluster(n_core, type="PSOCK")
   corr_mat <- redim_matrix(cor(gene_expr), cl = cl,
@@ -109,7 +110,7 @@ corr_heatmap <- function(gene_expr, target_height = 300,
     axes = FALSE,
     col = col_pal,
     breaks = seq(-1, 1, length.out = length(col_pal) + 1),
-    main = "Gene expression correlation matrix", asp = 1
+    main = title, asp = 1
   ))
 }
 

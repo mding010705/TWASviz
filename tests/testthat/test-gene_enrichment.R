@@ -1,3 +1,7 @@
+if (!requireNamespace("org.Hs.eg.db")){
+  install.packages("org.Hs.eg.db")
+}
+
 test_that("no error on good input", {
   expect_no_error(TWASviz::gene_enrichment(gene_set = list(a=c("ENSG00000106299", "ENSG00000143632",
                                              "ENSG00000241553", "ENSG00000101182",

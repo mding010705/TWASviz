@@ -12,7 +12,7 @@
 #' containing imputed gene expressions.
 #' @param all_pathways List named by pathway, where each index contains a
 #' vector of genes in the pathway.
-#' @param phenotype_filename Path to text file with a column called FID
+#' @param phenotype_filename Path to text file with a column called IID
 #' containing unique participant IDs and a column with the phenotype
 #' of interest.
 #' @param phenotype_colname Name of the column containing the phenotype of
@@ -36,7 +36,7 @@
 #' length of pathways that contain the gene,
 #' FID = the IDs for the participants in order ,
 #' offsets = NULL if the no covariates are specified or
-#' family_func = gaussian(link = "identity"), vector of predicted values
+#' family_func = "gaussian", vector of predicted values
 #' from generalized linear regression using specified covariates otherwise,
 #' processed_pathways = list with pathways as names and the genes in each
 #' pathway formatted as gene_pathway).
@@ -52,21 +52,20 @@ preprocess_expressions_pathways <- function(gene_expr,
                                             phenotype_colname = NULL,
                                             covariates_filename = NULL,
                                             covariates_colnames = NULL,
-                                            family_func =
-                                              gaussian(link = "identity")){
+                                            family_func = "gaussian"){
   gene_expr <- as.data.frame(gene_expr)
-  gene_expr <- gene_expr[order(gene_expr$FID),]
-  rownames(gene_expr) <- gene_expr$FID
+  gene_expr <- gene_expr[order(gene_expr$IID),]
+  rownames(gene_expr) <- gene_expr$IID
   gene_expr <- gene_expr[,-(1:2)]
 
   if (is.null(phenotype_filename)){
     phenotype <- NULL
   } else {
     phenotype <- data.table::fread(phenotype_filename, header = TRUE)
-    phenotype <- phenotype[!(duplicated(phenotype$FID)), ]
+    phenotype <- phenotype[!(duplicated(phenotype$IID)), ]
     phenotype <- as.data.frame(phenotype)
-    phenotype <- phenotype[(match(rownames(gene_expr), phenotype$FID)), ]
-    phenotype <- phenotype[!is.na(phenotype$FID), ]
+    phenotype <- phenotype[(match(rownames(gene_expr), phenotype$IID)), ]
+    phenotype <- phenotype[!is.na(phenotype$IID), ]
 
   }
 
@@ -74,18 +73,19 @@ preprocess_expressions_pathways <- function(gene_expr,
     offsets <- NULL
   } else {
     covars <- data.table::fread(covariates_filename, header = TRUE)
-    covars <- covars[!(duplicated(covars$FID)), ]
+    covars <- covars[!(duplicated(covars$IID)), ]
     covars <- as.data.frame(covars)
-    covars <- covars[(match(phenotype$FID, covars$FID)), ]
-    covars <- covars[!is.na(covars$FID), ][, covariates_colnames]
-    phenotype <- phenotype[(match(rownames(covars$FID), phenotype$FID)), ]
+    covars <- covars[(match(phenotype$IID, covars$IID)), ]
+    covars <- covars[!is.na(covars$IID), ]
+    phenotype <- phenotype[(match((covars$IID), phenotype$IID)), ]
+    covars <- covars[, covariates_colnames]
     fit <- glm(phenotype[,phenotype_colname] ~ ., data = covars, family = family_func)
     offsets <- predict(fit, covars)
-    if(family_func == gaussian(link = "identity")){
+    if(family_func == "gaussian"){
       phenotype <- phenotype - offsets
       offsets <- NULL
     }
-    gene_expr <- gene_expr[match(phenotype$FID, rownames(covars$FID)), ]
+    gene_expr <- gene_expr[match(phenotype$IID, rownames(gene_expr)), ]
   }
   phenotype <- as.vector(phenotype[, phenotype_colname])
   # pathway processing
@@ -130,7 +130,7 @@ preprocess_expressions_pathways <- function(gene_expr,
   grouping <- rep(seq_along(proc_pathways), unname(unlist(sapply(proc_pathways, length))))
 
   return(list(X = as.matrix(gene_expr_proc), y = phenotype, groups = grouping,
-              gene2pathway = gene_pathways, FID = rownames(gene_expr_proc),
+              gene2pathway = gene_pathways, IID = rownames(gene_expr_proc),
               offsets = offsets, processed_pathways = proc_pathways))
 }
 

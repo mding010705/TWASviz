@@ -38,11 +38,11 @@
 #' @import sparsegl
 
 sgl_TWAS <- function(X, y, grouping = NULL,
-                     family_func = gaussian(link = "identity"),
+                     family_func = "gaussian",
                      pred_loss = "mse", offsets = NULL, nfolds = 10){
   sgl_fit <- sparsegl::cv.sparsegl(X, y, group = grouping, family = family_func,
                                    pred.loss = pred_loss, offset = offsets,
-                                   nfolds = nfolds)
+                                   nfolds = nfolds, intercept = TRUE)
 
   return(list(sgl_fit = sgl_fit,
               lambda1se_coef = coef(sgl_fit, s = "lambda.1se")))

@@ -37,8 +37,6 @@ correlation_overlap_heatmap <- function(betas, cor_method = "pearson",
   n_mat <- test_cor$n
   colnames(n_mat) <- tissue_names
   row.names(n_mat) <- tissue_names
-  colnames(n_mat) <- tissue_names
-  rownames(n_mat) <- tissue_names
   mat <- matrix(0, nrow = ncol(betas), ncol = ncol(betas))
   mat[upper.tri(mat, diag = TRUE)] <- test_cor$p.adj
   p_adj <- t(mat)
