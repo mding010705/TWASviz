@@ -2,16 +2,16 @@
 #'
 #' Produces a two-layer heatmap summarizing:
 #'
-#' **Lower triangle:**
-#'   • Pairwise complete correlations between gene-level effect sizes
-#'   • Significance stars computed from FDR-adjusted p-values
+#' Lower triangle:
+#'  Pairwise complete correlations between gene-level effect sizes
+#'  Significance stars computed from FDR-adjusted p-values
 #'
-#' **Upper triangle:**
-#'   • Number of shared non-missing effect sizes (pairwise N)
-#'   • Text labels show N
+#' Upper triangle:
+#'  Number of shared non-missing effect sizes (pairwise N)
+#'  Text labels show N
 #'
-#' **Diagonal:**
-#'   • Number of non-missing values per tissue
+#' Diagonal:
+#'  Number of non-missing values per tissue
 #'
 #' Internally uses `psych::corr.test()` to compute correlations, p-values,
 #' and pairwise complete sample sizes.
@@ -140,6 +140,7 @@ correlation_overlap_heatmap <- function(
 
   # Make sure tiles are ordered the same as specified in tissue_names
   plot_df$Col <- factor(as.character(plot_df$Col), levels = tissue_names)
+  plot_df$Row <- factor(as.character(plot_df$Row), levels = rev(tissue_names))
 
     # Combined heatmap
   return(ggplot2::ggplot(plot_df) +

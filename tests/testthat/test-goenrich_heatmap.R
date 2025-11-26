@@ -1,3 +1,7 @@
+if (!requireNamespace("org.Hs.eg.db")){
+  install.packages("org.Hs.eg.db")
+}
+
 test_that("no error on good input", {
   expect_no_error(TWASviz::goenrich_heatmap(enrich_res =
                 gene_enrichment(gene_set = list(a=c("CHST2", "B3GNT1", "B3GNT2",

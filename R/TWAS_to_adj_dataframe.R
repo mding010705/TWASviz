@@ -41,7 +41,7 @@
 #' }
 #'
 #' @export
-#' @import stringr
+#' @importFrom stringr str_split_fixed
 
 sgl2adj_df <- function(gene_coefs,
                        tissue_names = seq_along(gene_coefs)){

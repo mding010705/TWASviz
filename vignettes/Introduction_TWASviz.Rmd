@@ -23,6 +23,9 @@ This package is designed to use perform sparse group lasso TWASs on individual i
 To download **TWASviz**, use the following commands:
 
 ```{r}
+if (!requireNamespace("devtools")){
+  install.packages("devtools")
+}
 require("devtools")
 devtools::install_github("mding010705/TWASviz")
 library("TWASviz")
@@ -30,7 +33,10 @@ library("TWASviz")
 
 To list all functions available in the package:
 ```{r}
-ls("package:TWASviz")
+# ls("package:TWASviz") Lists all the functions from imported packages as well (too many)
+
+# to list the exported functions in TWASviz
+getNamespaceExports("TWASviz")
 ```
 
 To list all sample datasets available in the package:
@@ -85,12 +91,12 @@ TWASviz::correlation_overlap_heatmap(adj_df, tissue_names = c("a", "b", "c",
 `volcano_plot` produces a volcano plot of the effect size z-score against the -log10(pvalue). It labels and colors significant genes. The horizontal line is the significance threshold, and the vertical lines are at the normal 2.5 and 97.5th quantile thresholds. Notice that with `PrediXcan` association outputs, the systematic relationship between effect size and p-value is very noticeable due to the constant effect size.
 
 ```{r}
-TWASviz::volcano_plot(betas_p_vals = TWASviz::predixcan_twas1[1:1000, c("zscore", "pvalue", "gene")], p_thresh = 0.02)
+TWASviz::volcano_plot(betas_p_vals = TWASviz::predixcan_twas1[1:1000, c("zscore", "pvalue", "gene")], p_thresh = 0.0006)
 ```
 
 ### Gene Enrichment
 
-Having a set of significant genes is not useful when you can't summarize their functional associations. `gene_enrichment` allows you to use clusterProfiler (Yu, 2024) to do functional gene set enrichment on the gene ontology with multiple separate gene set inputs and `goenrich_heatmap` plots these results in a heatmap. Notice that there are no significant enrichments from a2, a3, and a5, so they don't appear in the heatmap.
+Having a set of significant genes is not useful when you can't summarize their functional associations. `gene_enrichment` allows you to use `clusterProfiler` (Yu, 2024) to do functional gene set enrichment on the gene ontology with multiple separate gene set inputs and `goenrich_heatmap` plots these results in a heatmap. Notice that there are no significant enrichments from a2, a3, and a5, so they don't appear in the heatmap. This will take a couple of minutes to run.
 
 ```{r}
 genes <- list(a1 = TWASviz::predixcan_twas1[, "gene"],

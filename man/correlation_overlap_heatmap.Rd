@@ -30,16 +30,16 @@ A ggplot2 heatmap object.
 Produces a two-layer heatmap summarizing:
 }
 \details{
-\strong{Lower triangle:}
-• Pairwise complete correlations between gene-level effect sizes
-• Significance stars computed from FDR-adjusted p-values
+Lower triangle:
+Pairwise complete correlations between gene-level effect sizes
+Significance stars computed from FDR-adjusted p-values
 
-\strong{Upper triangle:}
-• Number of shared non-missing effect sizes (pairwise N)
-• Text labels show N
+Upper triangle:
+Number of shared non-missing effect sizes (pairwise N)
+Text labels show N
 
-\strong{Diagonal:}
-• Number of non-missing values per tissue
+Diagonal:
+Number of non-missing values per tissue
 
 Internally uses \code{psych::corr.test()} to compute correlations, p-values,
 and pairwise complete sample sizes.
