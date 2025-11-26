@@ -1,20 +1,21 @@
 ---
 title: "Introduction to TWASviz"
 author: "Megan Ding"
-date: "2025-11-04"
+date: "2025-11-28"
 output:
-  md_document:
-    variant: markdown_github
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
 vignette: >
   %\VignetteIndexEntry{Introduction_TWASviz}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## Instroduction
+## Introduction
 `TWASviz` is an R package designed to produce important data exploration plots and Transcriptome Wise Association Studies (TWASs) with sparse group lasso (Simon et al., 2013). TWASs use imputed gene expression data and test for association between each gene’s expression levels against phenotype data. This process allows us to identify transcripts that are significantly correlated to a phenotype of interest. TWASviz will allow users to perform TWASs using sparse group lasso in R (Wang et al., 2024), and import their own TWAS results, and effectively visualize the output. 
 
 This package is designed to use perform sparse group lasso TWASs on individual imputed gene expression data from the external software `PrediXcan` (Gamazon et al., 2015), as well as to process the linear regression TWAS output from `PrediXcan`. For more information on `PrediXcan` and its individual level gene expression imputation and TWAS association tests visit https://github.com/hakyimlab/MetaXcan/wiki/Individual-level-PrediXcan:-introduction,-tutorials-and-manual .
@@ -23,7 +24,7 @@ To download **TWASviz**, use the following commands:
 
 ```{r}
 require("devtools")
-devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
+devtools::install_github("mding010705/TWASviz")
 library("TWASviz")
 ```
 

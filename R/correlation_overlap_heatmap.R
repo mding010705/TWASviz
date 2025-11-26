@@ -41,7 +41,7 @@
 #'   tissue_names = c("A", "B", "C"))
 #'
 #' @export
-#' @import psych
+#' @importFrom psych corr.test
 #' @import ggplot2
 #' @import dplyr
 #' @import tidyr

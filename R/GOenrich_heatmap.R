@@ -53,7 +53,7 @@
 #' }
 #'
 #' @export
-#' @import clusterProfiler
+#' @importFrom clusterProfiler enrichGO
 
 
 gene_enrichment <- function(gene_set,
