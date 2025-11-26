@@ -2,11 +2,11 @@
 #'
 #' Produces a two-layer heatmap summarizing:
 #'
-#' **Upper triangle:**
+#' **Lower triangle:**
 #'   • Pairwise complete correlations between gene-level effect sizes
 #'   • Significance stars computed from FDR-adjusted p-values
 #'
-#' **Lower triangle:**
+#' **Upper triangle:**
 #'   • Number of shared non-missing effect sizes (pairwise N)
 #'   • Text labels show N
 #'
@@ -38,8 +38,7 @@
 #'     B = c(1, 6, 3),
 #'     C = c(10, -9, NA)
 #'   ),
-#'   tissue_names = c("A", "B", "C")
-#' )
+#'   tissue_names = c("A", "B", "C"))
 #'
 #' @export
 #' @import psych
@@ -51,9 +50,9 @@
 
 correlation_overlap_heatmap <- function(
     betas,
-    cor_method = "pearson",
     tissue_names = colnames(betas),
-    main_title = "Correlation (upper) and number of shared features (lower)") {
+    main_title = "Correlation (lower) and number of shared features (upper)",
+    cor_method = "pearson") {
 
   # Input validation
 
@@ -135,19 +134,23 @@ correlation_overlap_heatmap <- function(
   # Add triangle indicator
   plot_df$tri <-
     ifelse(match(plot_df$Row, tissue_names) > match(plot_df$Col, tissue_names),
-           "upper", "lower")
-  plot_df$fill <-ifelse(plot_df$tri == "upper", plot_df$corr, plot_df$n)
+           "lower", "upper")
+  plot_df$fill <-ifelse(plot_df$tri == "lower", plot_df$corr, plot_df$n)
+  plot_df$lab <-ifelse(plot_df$tri == "lower", plot_df$sig, plot_df$n)
 
-  # Combined heatmap
+  # Make sure tiles are ordered the same as specified in tissue_names
+  plot_df$Col <- factor(as.character(plot_df$Col), levels = tissue_names)
+
+    # Combined heatmap
   return(ggplot2::ggplot(plot_df) +
-    # Upper triangle: correlation heatmap
-      ggplot2::geom_tile(ggplot2::aes(Col, Row, fill = corr),
-                         dplyr::filter(plot_df, tri == "upper"),
+    # Lower triangle: correlation heatmap
+      ggplot2::geom_tile(ggplot2::aes(Col, Row, fill = fill),
+                         dplyr::filter(plot_df, tri == "lower"),
               color = "white", na.rm = TRUE) +
 
-    # Significance stars on upper triangle
-      ggplot2::geom_text(ggplot2::aes(Col, Row, label = sig),
-                         dplyr::filter(plot_df, tri == "upper"),
+    # Significance stars on lower triangle
+      ggplot2::geom_text(ggplot2::aes(Col, Row, label = lab),
+                         dplyr::filter(plot_df, tri == "lower"),
               color = "green", size = 4) +
 
     # Color scales
@@ -158,9 +161,9 @@ correlation_overlap_heatmap <- function(
     ) +
     ggnewscale::new_scale_fill() +
 
-    # Lower triangle: sample size n
-      ggplot2::geom_tile(ggplot2::aes(Col, Row, fill = n),
-                         dplyr::filter(plot_df, tri == "lower"),
+    # Upper triangle: sample size n
+      ggplot2::geom_tile(ggplot2::aes(Col, Row, fill = fill),
+                         dplyr::filter(plot_df, tri == "upper"),
               color = "white", na.rm = TRUE) +
       ggplot2::scale_fill_gradient(
       low = "yellow", high = "forestgreen",
@@ -168,8 +171,8 @@ correlation_overlap_heatmap <- function(
       name = "Number of shared features"
     ) +
     # Text on lower triangle
-      ggplot2::geom_text(ggplot2::aes(Col, Row, label = n),
-                         dplyr::filter(plot_df, tri == "lower"),
+      ggplot2::geom_text(ggplot2::aes(Col, Row, label = lab),
+                         dplyr::filter(plot_df, tri == "upper"),
               color = "grey30", size = 3) +
 
       ggplot2::labs(x = "", y = "",

@@ -2,26 +2,57 @@
 % Please edit documentation in R/TWAS_to_adj_dataframe.R
 \name{sgl2adj_df}
 \alias{sgl2adj_df}
-\title{Format Coefficient Output from Multiple Sparse Group Lassos into Adjacency Matrix}
+\title{Format Sparse Group Lasso Coefficients into Gene/Pathway Adjacency Matrices}
 \usage{
 sgl2adj_df(gene_coefs, tissue_names = seq_along(gene_coefs))
 }
 \arguments{
-\item{gene_coefs}{List of coefficient output from cv.sparsegl object.}
+\item{gene_coefs}{A list of coefficient vectors (e.g., from \code{sparsegl::cv.sparsegl()} or sgl_TWAS).
+Each element should be a named numeric vector with coefficients for one tissue/condition.}
 
-\item{tissue_names}{Names for the tissues/cell/condition types for the
-imputed gene expression data used to train each cv.sparsegl object that
-produced the above coefficients.}
+\item{tissue_names}{Character vector giving column names for each coefficient set.
+Defaults to sequence along \code{gene_coefs}.}
 }
 \value{
-Returns a list(
-gene = gene adjacency-matrix-like data frame,
-pathway = pathway adjacency-matrix-like data frame
-).
+A list with two data frames:
+\describe{
+\item{gene}{Gene × tissue/cell type adjacency matrix of summed effect sizes.}
+\item{pathway}{Pathway × tissue/cell type adjacency matrix of summed effect sizes.}
+}
 }
 \description{
-Produces an adjacency-matrix-like dataframe where each row is a gene and
-each column is the summed estimated effect size of the gene from a sparse
-group lasso TWAS. Also produces another adjacency-matrix-like dataframe
-but with pathways.
+Converts coefficient output from multiple Sparse Group Lasso (SGL) models
+into two adjacency-matrix-like data frames:
+\enumerate{
+\item genes × tissues and
+\item pathways × tissues.
+}
+}
+\details{
+For each SGL model, nonzero coefficients are parsed into gene and pathway
+components. Coefficients belonging to the same gene or pathway are summed.
+Intercepts are removed.
+
+\strong{References}
+\itemize{
+\item Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013).
+\emph{A Sparse-Group Lasso.} Journal of Computational and Graphical Statistics, 22(2), 231–245.
+\item \code{sparsegl} package documentation: https://cran.r-project.org/package=sparsegl
+}
+}
+\examples{
+\dontrun{
+  # Example coefficient vectors (normally from cv.sparsegl$beta or sgl_TWAS$lambda1se_coef)
+  coef1 <- c("(Intercept)" = 0, "GENE1_PATHA" = 0.5, "GENE2_PATHB" = -0.2)
+  coef2 <- c("(Intercept)" = 0, "GENE1_PATHA" = 0.1, "GENE3_PATHC" = 0.4)
+
+  out <- sgl2adj_df(
+    gene_coefs = list(coef1, coef2),
+    tissue_names = c("TissueA", "TissueB")
+  )
+
+  out$gene
+  out$pathway
+}
+
 }

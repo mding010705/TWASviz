@@ -2,28 +2,41 @@
 % Please edit documentation in R/GOenrich_heatmap.R
 \name{goenrich_heatmap}
 \alias{goenrich_heatmap}
-\title{Plot Gene Ontology Enrichments for Multiple Tissue/Cell Types}
+\title{Plot Gene Ontology Enrichment Heatmap Across Tissues/Cell Types}
 \usage{
 goenrich_heatmap(enrich_res, top_n = 5, x_label = "Cell Type")
 }
 \arguments{
-\item{enrich_res}{List where each entry is enrichGO result for a tissue.}
+\item{enrich_res}{List of enrichGO objects (output from gene_enrichment).}
 
-\item{top_n}{Number of GO terms to use per tissue type.}
+\item{top_n}{Integer specifying number of GO terms to plot per tissue.}
+
+\item{x_label}{Label for x-axis (default: \code{"Cell Type"}).}
 }
 \value{
-Returns a heatmap plot of p-value strength of each tissue's
-enrichment for top GO terms.
+A ggplot2 heatmap object.
 }
 \description{
-Plots the -log10(adjusted p-value) of the Gene Ontology (GO) enrichments
-for multiple tissue types.
+Visualizes enriched GO terms by generating a heatmap of
+\eqn{-\log_{10}(adjusted\ p\text{-}values)} across tissues/cell types.
+}
+\details{
+Each tissue contributes its \emph{top N} most significant GO terms.
+Terms are clustered and displayed along the y-axis.
 }
 \examples{
-goenrich_heatmap(enrich_res = gene_enrichment(gene_set = list(a=c("CHST2",
-"B3GNT1", "B3GNT2", "CHST1",
-"B4GALT1","B3GNT7", "ST3GAL2", "B4GALT3", "ST3GAL1", "B4GALT2", "B4GALT4",
-"CHST4", "ST3GAL3", "FUT8", "CHST6")),
-organism = "org.Hs.eg.db", gene_nom = "SYMBOL"))
+\dontrun{
+  enrich_res <- gene_enrichment(
+    gene_set = list(
+      TissueA = c("CHST2", "B3GNT1", "B3GNT2"),
+      TissueB = c("ST3GAL1", "CHST4", "FUT8")
+    ),
+    organism = "org.Hs.eg.db",
+    gene_nom = "SYMBOL"
+  )
+
+  p <- goenrich_heatmap(enrich_res, top_n = 5)
+  print(p)
+}
 
 }

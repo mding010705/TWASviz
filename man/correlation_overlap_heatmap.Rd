@@ -6,32 +6,56 @@
 \usage{
 correlation_overlap_heatmap(
   betas,
-  cor_method = "pearson",
-  tissue_names = 1:ncol(betas)
+  tissue_names = colnames(betas),
+  main_title = "Correlation (lower) and number of shared features (upper)",
+  cor_method = "pearson"
 )
 }
 \arguments{
-\item{betas}{A dataframe with rows of genes and columns of tissue/cell types.
-Entry (i, j) is the TWAS effect size of gene i in tissue j, or NULL if gene i
-is not expressed/significant in tissue j.}
+\item{betas}{A numeric data frame or matrix where rows are genes and
+columns are tissues/cell types. Missing values (NA) indicate gene absence.}
 
-\item{cor_method}{A string specifying the correlation method
-(pearson, kendall, spearman).}
+\item{tissue_names}{Optional vector of tissue names. Must match
+\code{ncol(betas)}. Defaults to column names or sequential numbering.}
 
-\item{tissue_names}{A vector of strings with length of the number of columns
-in betas. These are the tissue names in the order that they appear in betas.}
+\item{main_title}{Optional main title for plot.}
+
+\item{cor_method}{Correlation method passed to \code{psych::corr.test()}.
+One of \code{"pearson"}, \code{"kendall"}, \code{"spearman"}.}
 }
 \value{
-Returns a heatmap plot of correlations and overlaps
+A ggplot2 heatmap object.
 }
 \description{
-Plots heatmap for pairwise complete correlations for effect sizes of
-multiple gene sets in lower triangle, number of pairwise complete effect
-sizes for multiple gene sets in upper triangle. Diagonal displays total
-number of effect sizes for a single gene set.
+Produces a two-layer heatmap summarizing:
+}
+\details{
+\strong{Lower triangle:}
+• Pairwise complete correlations between gene-level effect sizes
+• Significance stars computed from FDR-adjusted p-values
+
+\strong{Upper triangle:}
+• Number of shared non-missing effect sizes (pairwise N)
+• Text labels show N
+
+\strong{Diagonal:}
+• Number of non-missing values per tissue
+
+Internally uses \code{psych::corr.test()} to compute correlations, p-values,
+and pairwise complete sample sizes.
 }
 \examples{
-correlation_overlap_heatmap(betas = data.frame(x = c(1, 7, 3), y = c(1, -9, 3),
-                            z = c(-1, 0, NA)), tissue_names = c("A", "B", "C"))
+correlation_overlap_heatmap(
+  betas = data.frame(
+    A = c(1, 7, 3),
+    B = c(1, 6, 3),
+    C = c(10, -9, NA)
+  ),
+  tissue_names = c("A", "B", "C"))
 
+}
+\references{
+Revelle, W. (2024). \emph{psych: Procedures for Psychological, Psychometric,
+and Personality Research.} Northwestern University.
+Wickham, H. (2016). \emph{ggplot2: Elegant Graphics for Data Analysis.} Springer.
 }

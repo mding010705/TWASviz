@@ -2,7 +2,7 @@
 % Please edit documentation in R/sgl_preprocessing.R
 \name{preprocess_expressions_pathways}
 \alias{preprocess_expressions_pathways}
-\title{Formatting Gene Expression and Pathway Data to Use with Sparse Group Lasso}
+\title{Formatting Gene Expression and Pathway Data for Sparse Group Lasso}
 \usage{
 preprocess_expressions_pathways(
   gene_expr,
@@ -11,56 +11,86 @@ preprocess_expressions_pathways(
   phenotype_colname = NULL,
   covariates_filename = NULL,
   covariates_colnames = NULL,
-  family_func = gaussian(link = "identity")
+  family_func = "gaussian"
 )
 }
 \arguments{
-\item{gene_expr}{Dataframe with first 2 columns called FID and IID
-containing unique participant IDs and columns named with gene names,
-containing imputed gene expressions.}
+\item{gene_expr}{Data frame containing imputed expression data.
+Must contain first two columns named \strong{FID} and \strong{IID} and remaining
+columns representing gene expression.}
 
-\item{all_pathways}{List named by pathway, where each index contains a
-vector of genes in the pathway.}
+\item{all_pathways}{A named list where each element is a character vector
+of genes belonging to a pathway. Names represent pathway names.}
 
-\item{phenotype_filename}{Path to text file with a column called FID
-containing unique participant IDs and a column with the phenotype
-of interest.}
+\item{phenotype_filename}{Path to phenotype text file containing at least
+the column \code{IID} and the phenotype column specified by \code{phenotype_colname}.}
 
-\item{phenotype_colname}{Name of the column containing the phenotype of
-interest in the phenotype file specified above.}
+\item{phenotype_colname}{Name of the phenotype column in phenotype file.}
 
-\item{covariates_filename}{Path to text file with a column called FID
-containing unique participant IDs and columns with covariates.}
+\item{covariates_filename}{(Optional) path to covariates file that must
+contain \code{IID} and columns listed in \code{covariates_colnames}.}
 
-\item{covariates_colnames}{Vector of names of the columns containing the
-covariates in the covariate file specified above.}
+\item{covariates_colnames}{Vector of covariate column names to extract.}
 
-\item{family_func}{Family object specifying the type of model you
-want to use in the sparse group lasso function. See ?stats::family for more
-details.}
+\item{family_func}{Model family specification (i.e., \code{"gaussian"}, \code{"binomial"}).
+Passed to \code{glm()}. See \code{?stats::family} for details.}
 }
 \value{
-Returns a list(
-X = gene expression matrix,
-y = residuals on phenotype ~ covariates if covariates_filename != NULL
-and family_func = gaussian(link = "identity"), or just vector of phenotype
-data otherwise,
-groups = vector of consecutive integers describing the pathway grouping of
-the genes,
-gene2pathway = list with genes as names and the
-length of pathways that contain the gene,
-FID = the IDs for the participants in order ,
-offsets = NULL if the no covariates are specified or
-family_func = gaussian(link = "identity"), vector of predicted values
-from generalized linear regression using specified covariates otherwise,
-processed_pathways = list with pathways as names and the genes in each
-pathway formatted as gene_pathway).
+A list containing:
+\describe{
+\item{X}{Processed gene expression matrix with duplicated pathway genes.}
+\item{y}{Vector of phenotype values (residualized if Gaussian).}
+\item{groups}{Integer vector defining pathway grouping for group lasso.}
+\item{gene2pathway}{List mapping genes to the pathways they belong to.}
+\item{IID}{Participant IDs used (sorted).}
+\item{offsets}{NULL (Gaussian) or vector of glm predicted offsets
+(non-Gaussian).}
+\item{processed_pathways}{Named list of pathway-specific duplicated genes.}
+}
 }
 \description{
-Duplicates genes in your imputed gene expression matrix that appear multiple
-times in your specified pathways, renames genes to gene_pathway, subsets and
-reorders your gene expression and phenotype files to match the participant
-ID order, and regresses out the covariates from your phenotype if you
-specify family_func = gaussian(link = "identity") or provides offsets from
-predicted values from glm(phenotype ~ ., data = covars, family = family_func).
+This function prepares imputed gene expression data, phenotype data, and
+pathway annotations for downstream sparse group lasso analysis.
+}
+\details{
+It performs the following:
+\enumerate{
+\item Sorts gene expression data by IID and removes FID/IID columns.
+\item Subsets and aligns phenotype and covariate files to the same individuals
+and in the same order as \code{gene_expr}.
+\item If covariates are provided:
+• Fits \code{glm(phenotype ~ covariates, family = family_func)}
+• Returns offsets = predicted values (for non-Gaussian families)
+• Returns residualized phenotype (for Gaussian families only)
+\item Expands pathways so genes appearing in multiple pathways are duplicated,
+renamed as \code{gene_pathway}.
+\item Constructs pathway group indices for sparse group lasso.
+}
+}
+\examples{
+\dontrun{
+preprocess_expressions_pathways(
+  gene_expr = data.frame(
+    FID = 1:3, IID = 1:3,
+    G1 = rnorm(3), G2 = rnorm(3), G3 = rnorm(3)
+  ),
+  all_pathways = list(
+    PW1 = c("G1", "G2"),
+    PW2 = c("G2", "G3")
+  ),
+  phenotype_filename = "pheno.txt",
+  phenotype_colname = "BMI",
+  covariates_filename = "covars.txt",
+  covariates_colnames = c("age", "sex"),
+  family_func = gaussian()
+)
+}
+
+}
+\references{
+Friedman, J., Hastie, T., Tibshirani, R. (2010). Regularization Paths for
+Generalized Linear Models via Coordinate Descent. \emph{Journal of Statistical
+Software.}
+Meier, L., van de Geer, S., Bühlmann, P. (2008). The Group Lasso for Logistic
+Regression. \emph{J. Royal Statistical Society B.}
 }

@@ -38,8 +38,9 @@ sample of interest.
 
 <figure>
 <img src="./inst/extdata/TWAS_general.png"
-alt="Figure 1. TWAS overview." />
-<figcaption aria-hidden="true">Figure 1. TWAS overview.</figcaption>
+alt="Figure 1. TWAS overview (Wainberg et al., 2019)." />
+<figcaption aria-hidden="true">Figure 1. TWAS overview (Wainberg et al.,
+2019).</figcaption>
 </figure>
 
 TWASviz is built to be compatible with the TWAS software

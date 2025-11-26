@@ -22,11 +22,11 @@
 #'
 #' @param X Numeric matrix of imputed gene expression values,
 #'   where rows are samples and columns are genes.
-#' @param y Numeric vector of phenotype values (continuous or binary).
+#' @param y Vector of phenotype values (continuous, or binary).
 #' @param grouping Integer vector assigning each gene to a pathway group.
 #'   Must be consecutive integers (1, 2, 3, …).
 #'   If `NULL`, the sparse group lasso reduces to standard lasso.
-#' @param family_func Model family specification (e.g., `"gaussian"`, `"binomial"`).
+#' @param family_func Model family specification (i.e., `"gaussian"`, `"binomial"`).
 #'   Passed to `cv.sparsegl()`. See `?stats::family` for details.
 #' @param pred_loss Loss function for cross-validation. Valid options:
 #'   `"default"`, `"mse"`, `"deviance"`, `"mae"`, `"misclass"`.
@@ -85,7 +85,7 @@ sgl_TWAS <- function(X, y, grouping = NULL,
     stop("X must contain numeric values.")
 
   # Validate y
-  if (!is.numeric(y))
+  if (!is.numeric(y) && family_func == "gaussian")
     stop("y must be a numeric vector.")
 
   if (length(y) != nrow(X))
@@ -106,7 +106,7 @@ sgl_TWAS <- function(X, y, grouping = NULL,
   }
 
   # Validate family_func
-  valid_families <- c("gaussian", "binomial", "poisson")
+  valid_families <- c("gaussian", "binomial")
   if (!family_func %in% valid_families)
     stop("family_func must be one of: ",
          paste(valid_families, collapse = ", "), ".")

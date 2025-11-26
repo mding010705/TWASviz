@@ -10,7 +10,8 @@ corr_heatmap(
   target_width = 300,
   summary_func = function(x) x[which.max(abs(x))],
   n_core = parallel::detectCores() - 1,
-  col_pal = (grDevices::colorRampPalette(c("red", "white", "blue")))(50)
+  col_pal = (grDevices::colorRampPalette(c("red", "white", "blue")))(50),
+  title = "Gene expression correlation matrix"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ correlation matrix.}
 
 \item{col_pal}{Vector of hex colors, in order of corresponding colours
 from -1 to 1.}
+
+\item{title}{Title for the heatmap.}
 }
 \value{
 Returns a heatmap image of gene correlations.
@@ -37,6 +40,8 @@ Produces an image of a heatmap for all of the pairwise correlations of
 many gene expressions. Intended for use for expression of > 500 genes.
 }
 \examples{
-corr_heatmap(gene_expr = matrix(rnorm(500^2), nrow = 500))
+\dontrun{
+  corr_heatmap(gene_expr = matrix(rnorm(500^2), nrow = 500))
+}
 
 }

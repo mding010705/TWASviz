@@ -22,11 +22,6 @@ redim_matrix(
 \item{target_width}{Max number of columns that the output matrix should have.}
 
 \item{summary_func}{Function with which to down sample the matrix.}
-
-\item{n_core}{Number of cores for parallel processing}
-
-\item{col_pal}{Vector of hex colors, in order of corresponding colours
-from -1 to 1.}
 }
 \value{
 Returns a heatmap image of gene correlations.

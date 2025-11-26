@@ -2,7 +2,7 @@
 % Please edit documentation in R/TWAS_to_adj_dataframe.R
 \name{predixcan2adj_df}
 \alias{predixcan2adj_df}
-\title{Format Coefficient Output from PrediXcan Association Output.}
+\title{Format PrediXcan Association Output into Gene Adjacency Matrix}
 \usage{
 predixcan2adj_df(
   predixcan_assoc_filenames,
@@ -12,19 +12,48 @@ predixcan2adj_df(
 )
 }
 \arguments{
-\item{predixcan_assoc_filenames}{List of paths to file output from
-PrediXcan association software.}
+\item{predixcan_assoc_filenames}{Vector of file paths to PrediXcan output files.
+Each must contain columns: \code{gene}, \code{se}, and \code{pvalue}.}
 
-\item{tissue_names}{Names for the tissues/cell/condition types for the
-imputed gene expression data used to produce each of the above PrediXcan
-associations.}
+\item{tissue_names}{Names for tissues/conditions. Defaults to index sequence.}
+
+\item{use_fdr}{If TRUE, convert p-values to q-values.}
+
+\item{pvalue_thresh}{Threshold for p-value or q-value significance.}
 }
 \value{
-Returns an adjacency-matrix-like dataframe of genes and their
-effect sizes for multiple tissues/cells/conditions.
+A gene × tissue adjacency matrix of PrediXcan effect sizes.
 }
 \description{
-Produces an adjacency-matrix-like dataframe where each row is a gene and
-each column is the estimated effect size of the gene from the PrediXcan
-association software.
+Reads multiple PrediXcan association result files and constructs an
+adjacency-matrix-like data frame where rows are genes and columns are
+tissues/conditions, storing the effect size (standard error or beta).
+}
+\details{
+Filters genes using either a p-value threshold or FDR-based q-value
+threshold (Storey & Tibshirani 2003).
+
+\strong{References}
+\itemize{
+\item Gamazon, E. R., et al. (2015).
+\emph{PrediXcan: Trait prediction from transcriptome data integrates genetic regulation.}
+Nature Genetics, 47, 1091–1098.
+\item Storey, J. D., & Tibshirani, R. (2003).
+\emph{Statistical significance for genomewide studies.} PNAS, 100(16), 9440–9445.
+}
+}
+\examples{
+\dontrun{
+  files <- c("muscle_assoc.txt", "blood_assoc.txt")
+
+  adj <- predixcan2adj_df(
+    predixcan_assoc_filenames = files,
+    tissue_names = c("Cell1", "Cell2"),
+    use_fdr = TRUE,
+    pvalue_thresh = 0.10
+  )
+
+  head(adj)
+}
+
 }

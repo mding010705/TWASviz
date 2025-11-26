@@ -8,52 +8,89 @@ sgl_TWAS(
   X,
   y,
   grouping = NULL,
-  family_func = gaussian(link = "identity"),
+  family_func = "gaussian",
   pred_loss = "mse",
   offsets = NULL,
   nfolds = 10
 )
 }
 \arguments{
-\item{X}{Imputed gene expression matrix.}
+\item{X}{Numeric matrix of imputed gene expression values,
+where rows are samples and columns are genes.}
 
-\item{y}{Vector of phenotype of interest.}
+\item{y}{Vector of phenotype values (continuous, or binary).}
 
-\item{grouping}{Vector of consecutive integers describing the pathway
-grouping of the genes.}
+\item{grouping}{Integer vector assigning each gene to a pathway group.
+Must be consecutive integers (1, 2, 3, …).
+If \code{NULL}, the sparse group lasso reduces to standard lasso.}
 
-\item{family_func}{Family object specifying the type of model you
-want to use in the sparse group lasso function. See ?stats::family for more
-details.}
+\item{family_func}{Model family specification (i.e., \code{"gaussian"}, \code{"binomial"}).
+Passed to \code{cv.sparsegl()}. See \code{?stats::family} for details.}
 
-\item{pred_loss}{Loss to use for cross-validation error. Valid options are:
-"default" the same as deviance (mse for regression and deviance otherwise)
-"mse" mean square error
-"deviance" the default (mse for Gaussian regression, and negative
-log-likelihood otherwise)
-"mae" mean absolute error, can apply to any family
-"misclass" for classification only, misclassification error.}
+\item{pred_loss}{Loss function for cross-validation. Valid options:
+\code{"default"}, \code{"mse"}, \code{"deviance"}, \code{"mae"}, \code{"misclass"}.}
 
-\item{offsets}{Optional offset (constant predictor without a corresponding
-coefficient)}
+\item{offsets}{Optional numeric vector of offsets. Useful for models with
+baseline risk or exposure variables.}
 
-\item{nfolds}{Number of folds, ranging from 3 to
-sample size (leave-one-out CV).}
+\item{nfolds}{Number of cross-validation folds. Must be ≥3.}
 }
 \value{
-Returns a list(
-sgl_fit = cv.sparsegl object from sparsegl::cv.sparsegl(),
-lambda1se_coef = dgCMatrix object containing gene names and coefficients
-estimated from the sparse group lasso with lambda = largest value of lambda
-such that error is within 1 standard error of the minimum cross-validated
-errors).
+A list containing:
+\describe{
+\item{sgl_fit}{The full \code{cv.sparsegl} model object.}
+\item{lambda1se_coef}{A sparse coefficient matrix (\code{dgCMatrix})
+containing gene names and coefficients at the \code{lambda.1se} value.}
+}
 }
 \description{
-Performs sparse group lasso with the formatted imputed gene expression data,
-phenotype data, groupings, and offsets from sgl_preprocessing().
+Performs a Transcriptome-Wide Association Study (TWAS) using the
+Sparse Group Lasso (SGL), given imputed gene expression data, phenotype
+values, pathway-based group assignments, and optional offsets.
 }
-\references{
-Liang, X., Cohen, A., Sólon Heinsfeld, A., Pestilli, F., and McDonald, D.J.
-2024. sparsegl: An R Package for Estimating Sparse Group Lasso. Journal of
-Statistical Software, Vol. 110(6): 1–23. doi:10.18637/jss.v110.i06.
+\details{
+Internally, this function fits a cross-validated Sparse Group Lasso model
+using \code{sparsegl::cv.sparsegl()}, then extracts the coefficients
+at the \emph{lambda.1se} value (the most regularized model within one standard
+error of the minimum CV error), typically used for stability and
+interpretability in TWAS.
+
+\strong{References}
+\itemize{
+\item Liang, X., Cohen, A., Sólon Heinsfeld, A., Pestilli, F., & McDonald, D.J. (2024).
+\emph{sparsegl: An R Package for Estimating Sparse Group Lasso.}
+Journal of Statistical Software, 110(6), 1–23.
+doi:10.18637/jss.v110.i06
+\item Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013).
+\emph{A Sparse-Group Lasso.} Journal of Computational and Graphical Statistics, 22(2), 231–245.
+}
+}
+\examples{
+\dontrun{
+  # Simulated data for demonstration
+  set.seed(123)
+  X <- matrix(rnorm(200 * 50), nrow = 200, ncol = 50)
+  y <- rnorm(200)
+
+  # Group 50 genes into 10 pathways
+  grouping <- rep(1:10, each = 5)
+
+  # Run TWAS using Sparse Group Lasso
+  twas_res <- sgl_TWAS(
+    X = X,
+    y = y,
+    grouping = grouping,
+    family_func = "gaussian",
+    pred_loss = "mse",
+    nfolds = 5
+  )
+
+  # Inspect fitted object
+  twas_res$sgl_fit
+
+  # Extract gene coefficients at lambda.1se
+  coef_1se <- twas_res$lambda1se_coef
+  head(coef_1se)
+}
+
 }

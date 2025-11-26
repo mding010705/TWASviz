@@ -33,7 +33,7 @@
 #' @param covariates_filename (Optional) path to covariates file that must
 #'   contain `IID` and columns listed in `covariates_colnames`.
 #' @param covariates_colnames Vector of covariate column names to extract.
-#' @param family_func Model family specification (e.g., `"gaussian"`, `"binomial"`).
+#' @param family_func Model family specification (i.e., `"gaussian"`, `"binomial"`).
 #'   Passed to `glm()`. See `?stats::family` for details.
 #'
 #' @return A list containing:
@@ -69,6 +69,7 @@
 #'
 #' @export
 #' @import data.table
+
 preprocess_expressions_pathways <- function(
     gene_expr,
     all_pathways,
@@ -90,7 +91,7 @@ preprocess_expressions_pathways <- function(
   if (!is.null(phenotype_filename) && is.null(phenotype_colname))
     stop("phenotype_colname must be provided when phenotype_filename is given.")
 
-  valid_families <- c("gaussian", "binomial", "poisson")
+  valid_families <- c("gaussian", "binomial")
   if (!family_func %in% valid_families)
     stop("family_func must be one of: ",
          paste(valid_families, collapse = ", "), ".")
@@ -155,6 +156,9 @@ preprocess_expressions_pathways <- function(
   # Extract phenotype vector
   if (!is.null(phenotype)) {
     y <- as.vector(phenotype[, phenotype_colname])
+    if(family_func == "binomial"){
+      y <- as.factor(y)
+    }
   } else {
     y <- NULL
   }

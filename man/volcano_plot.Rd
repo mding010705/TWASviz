@@ -12,16 +12,13 @@ volcano_plot(
 )
 }
 \arguments{
-\item{betas_p_vals}{Dataframe with columns gene_name (to label points with),
-betas (containing gene effect sizes), pvalue (significance of effect sizes)}
+\item{betas_p_vals}{Data frame with effect sizes and p-values.}
 
-\item{p_thresh}{Max value of p value to be considered significant.}
+\item{p_thresh}{Numeric. P-value threshold for significance (default = 0.05).}
 
-\item{vline}{Scalar or vector of values at which to draw vertical lines
-on volcano plot.}
+\item{vline}{Numeric vector. Vertical reference lines (default uses ±1.96).}
 
-\item{add_sig_gene_labels}{Boolean. If TRUE, significant points will be
-labeled with their gene names. If FALSE, no points will be labeled.}
+\item{add_sig_gene_labels}{Logical. Whether to label significant genes.}
 }
 \value{
 Returns a ggplot volcano plot.
@@ -29,9 +26,12 @@ Returns a ggplot volcano plot.
 \description{
 Produces volcano plot of gene effect sizes vs. -log10(p-values).
 Labels significant genes.
+Meant to take in TWAS results from PrediXcan which contain a gene, zscore
+(standardized effect size), and a pvalue column, summarizing the individual
+associations each gene has with your phenotype of interest.
 }
 \examples{
-volcano_plot(betas_p_vals = data.frame(beta = c(1, 0, 3, 4, 0.5),
+volcano_plot(betas_p_vals = data.frame(zscore = c(1, 0, 3, 4, 0.5),
                                  pvalue = c(0.1, 0.9, 0.02, 0.11, 0.3)))
 
 }

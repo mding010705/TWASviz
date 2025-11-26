@@ -24,9 +24,6 @@ reorder_corr_hclust <- function(corr_mat){
 #' @param target_height Max number of rows that the output matrix should have.
 #' @param target_width Max number of columns that the output matrix should have.
 #' @param summary_func Function with which to down sample the matrix.
-#' @param n_core Number of cores for parallel processing
-#' @param col_pal Vector of hex colors, in order of corresponding colours
-#' from -1 to 1.
 #'
 #' @return Returns a heatmap image of gene correlations.
 #'
@@ -41,6 +38,7 @@ redim_matrix <- function(
     target_height = 300,
     target_width = 300,
     summary_func = function(x) mean(x, na.rm = TRUE)) {
+
   if(target_height > nrow(mat) | target_width > ncol(mat)) {
     return(reorder_corr_hclust(mat))
   }
@@ -81,11 +79,14 @@ redim_matrix <- function(
 #' @param n_core Number of cores for parallel processing
 #' @param col_pal Vector of hex colors, in order of corresponding colours
 #' from -1 to 1.
+#' @param title Title for the heatmap.
 #'
 #' @return Returns a heatmap image of gene correlations.
 #'
 #' @examples
-#' corr_heatmap(gene_expr = matrix(rnorm(500^2), nrow = 500))
+#' \dontrun{
+#'   corr_heatmap(gene_expr = matrix(rnorm(500^2), nrow = 500))
+#' }
 #'
 #' @export
 #' @import grDevices

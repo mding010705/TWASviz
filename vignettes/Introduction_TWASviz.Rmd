@@ -27,7 +27,7 @@ devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
 library("TWASviz")
 ```
 
-To list all sample functions available in the package:
+To list all functions available in the package:
 ```{r}
 ls("package:TWASviz")
 ```
@@ -105,36 +105,72 @@ TWASviz::goenrich_heatmap(enrich_res = enrich_res)
 
 ## Application 2
 
-Let's look at an analysis that performs TWAS with this package, starting from `PrediXcan` imputed gene expression.
+Let's look at an analysis that performs TWAS with this package, starting from `PrediXcan` predicted gene expression.
 
-### Formatting PrediXcan to Perform Sparse Group Lasso TWAS
-The sparse group lasso function needs specially a formatted predictor matrix and grouping information. `preprocess_expressions_pathways` duplicates genes in your imputed gene expression matrix that appear multiple times in your specified pathways, renames genes to gene_pathway, subsets and reorders your gene expression and phenotype files to match the participant ID order, and regresses out the covariates from your phenotype if you specify family_func = gaussian(link = "identity") or provides offsets from predicted values from glm(phenotype ~ ., data = covars, family = family_func).
+### Visualizing your Predicted Gene Expression Data with a Heatmap
+`PrediXcan` predicted gene expression output will likely give you expression levels for hundreds or thousands of genes. A nice way to look at the correlation structure of your predicted gene expressions is with a correlation heatmap which shows the pairwise correlation of each gene's expression levels. However, laptop screens are often only 1920 x 1080 pixels. How can I make a correlation matrix with more cells than there are pixels on my screen? Often, your plot viewer will do some image down-sampling to make your detailed heatmap to fit into fewer pixels. With `corr_heatmap`, you can specify the function with which your heatmap is down-sampled through the summary_func argument.
+Compare these two heatmaps (this will take a few minutes to run):
 
 ```{r}
+# use simulated data since the provided PrediXcan predicted gene expression data only has 100 columns per cellX_gene_expr object in order to make the below TWAS examples run faster.
 
+big_gene_expr <- matrix(rgamma(100^2, 2), nrow = 100) %*% matrix(rnorm(200^2), ncol = 400)
+corr_heatmap(gene_expr = big_gene_expr, summary_func = mean, 
+             title = "Summarized with mean")
+
+corr_heatmap(gene_expr = big_gene_expr, 
+             summary_func =  function(x) x[which.max(abs(x))], 
+             title = "Summarized with maximum magnitude")
+```
+The heatmap summarized with the mean is possibly more faithful to the actual magnitude of the correlation patterns in the data, but the heatmap summarized with the maximum absolute value highlights weak correlation structures that may still be important.
+
+### Formatting PrediXcan to Perform Sparse Group Lasso TWAS
+The sparse group lasso function needs a specially formatted predictor matrix and grouping information. `preprocess_expressions_pathways` duplicates genes in your imputed gene expression matrix that appear multiple times in your specified pathways, renames genes to gene_pathway, subsets and reorders your gene expression and phenotype files to match the participant ID order, and regresses out the covariates from your phenotype if you specify family_func = "gaussian" or provides offsets from predicted values from glm(phenotype ~ ., data = covars, family = family_func).
+
+```{r}
+set.seed(410)
+# for one predicted gene expression dataset
 sgl_input1 <- TWASviz::preprocess_expressions_pathways(TWASviz::cell1_gene_expr, all_pathways = TWASviz::all_pathways,
 phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "y_bin", family_func = "binomial")
 
-sgl_input2 <- TWASviz::preprocess_expressions_pathways(TWASviz::cell2_gene_expr, all_pathways = TWASviz::all_pathways,
+# for multiple tissue/cell type specific gene expressions
+all_gene_expr <- list(TWASviz::cell1_gene_expr, TWASviz::cell2_gene_expr, TWASviz::cell3_gene_expr, TWASviz::cell4_gene_expr, TWASviz::cell5_gene_expr, TWASviz::cell6_gene_expr)
+all_sgl_input <- lapply(all_gene_expr, TWASviz::preprocess_expressions_pathways, all_pathways = TWASviz::all_pathways,
 phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "y_bin", family_func = "binomial")
+
 ```
 
 ### Performing Sparse Group Lasso TWAS
+In contrast with the TWAS method available in PrediXcan (which estimates each gene expression effect size one by one with just a simple regression using the phenotype as the response and the gene expression as the predictor), using sparse group lasso is a pathway aware method of estimating the effect sizes of genes and pathways on your phenotype of interest. Briefly, sparse group lasso selects features (gene expressions) and regularizes their estimated effect sizes within groupings (pathways), and with respect to the entire feature space. 
 
+This example shows how to use `sgl_TWAS` for a binary phenotype of interest, which is consistent with the above example that shows how to use `preprocess_expressions_pathways` (this will take a few minutes to run).
 ```{r}
-sgl_fit1 <- TWASviz::sgl_TWAS(X = sgl_input1$X, y = sgl_input1$y, grouping = sgl_input1$groups, family = "binomial", offsets = sgl_input1$offsets, 
+set.seed(410)
+# for one predicted gene expression dataset
+sgl_fit1 <- TWASviz::sgl_TWAS(X = sgl_input1$X, y = sgl_input1$y, grouping = sgl_input1$groups, family_func = "binomial", offsets = sgl_input1$offsets, 
                               pred_loss = "misclass")
 
-sgl_fit2 <- TWASviz::sgl_TWAS(X = sgl_input2$X, y = sgl_input2$y, grouping = sgl_input2$groups, family = "binomial", offsets = sgl_input2$offsets, 
-                              pred_loss = "misclass")
+# for multiple tissue/cell type specific gene expressions
+sgl_fits <- lapply(all_sgl_input, function(sgl_input){
+  TWASviz::sgl_TWAS(X = sgl_input$X, y = sgl_input$y, grouping = sgl_input$groups, family_func = "binomial", offsets = sgl_input$offsets, 
+                              pred_loss = "misclass")})
 ```
 
 ### Reformat sgl_TWAS Output
+`sgl_TWAS` will give you the fit sparse group lasso object and the coefficient estimates at the *lambda.1se* value (the most regularized model within one standard error of the minimum CV error). This is the suggested set of coefficients to use, but you can specify other coefficient sets that are more or less regularized. 
+
+The coefficient format from `sgl_TWAS` is not very useful. To make these results compatible with other functions in TWASviz, use `sgl2adj_df` to reformat your many TWAS associations into an adjacency matrix.
+
 ```{r}
-adj_dfs <- sgl2adj_df(c(sgl_fit1[[2]], sgl_fit2[[2]]))
+all_coefs <- lapply(sgl_fits, function(x){
+  x$lambda1se_coef
+})
+adj_dfs <- TWASviz::sgl2adj_df(all_coefs)
 
 head(adj_dfs)
 ```
+
+Some of the cell type specific predicted gene expressions don't have any genes selected from the sparse group lasso association with the phenotype, after adjusting for covariates. This is meaningful, as this provides evidence for the importance/unimportance of each cell type in the transcriptomic basis of your phenotype of interest.
 
 Then you can use `adj_dfs$gene` and `adj_dfs$pathway` in the analysis outlined in Approach 1 to get nice looking gene level and pathway level overlap plots, respectively, and GO enrichment plots from `adj_dfs$gene`.
 

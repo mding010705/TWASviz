@@ -2,8 +2,8 @@
 #'
 #' Converts coefficient output from multiple Sparse Group Lasso (SGL) models
 #' into two adjacency-matrix-like data frames:
-#' **(1)** genes × tissues and
-#' **(2)** pathways × tissues.
+#' 1. genes × tissues and
+#' 2. pathways × tissues.
 #'
 #' For each SGL model, nonzero coefficients are parsed into gene and pathway
 #' components. Coefficients belonging to the same gene or pathway are summed.
@@ -14,7 +14,7 @@
 #'   *A Sparse-Group Lasso.* Journal of Computational and Graphical Statistics, 22(2), 231–245.
 #' - `sparsegl` package documentation: https://cran.r-project.org/package=sparsegl
 #'
-#' @param gene_coefs A list of coefficient vectors (e.g., from `cv.sparsegl()` or sgl_TWAS).
+#' @param gene_coefs A list of coefficient vectors (e.g., from `sparsegl::cv.sparsegl()` or sgl_TWAS).
 #'   Each element should be a named numeric vector with coefficients for one tissue/condition.
 #' @param tissue_names Character vector giving column names for each coefficient set.
 #'   Defaults to sequence along `gene_coefs`.

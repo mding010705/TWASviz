@@ -18,48 +18,70 @@ gene_enrichment(
 )
 }
 \arguments{
-\item{gene_set}{List where each entry is a set of significant genes for
-a tissue.}
+\item{gene_set}{List of character vectors. Each element contains significant
+gene symbols/IDs for a tissue or cell type.}
 
-\item{organism}{Genome wide annotation for your organsim of choice.
-You must have your chosen annotation package installed.}
+\item{organism}{Character string giving the OrgDb annotation database
+(e.g., \code{"org.Hs.eg.db"}). You must have the annotation package installed.}
 
-\item{tissue_types}{Vector of names that correspond to entries of gene_set.}
+\item{tissue_types}{Optional vector giving names for each entry in gene_set.
+Defaults to the names of gene_set.}
 
-\item{background}{List where each entry is a vector of gene names that
-describe the transcriptomic universe of the corresponding
-tissue type in gene_set.}
+\item{background}{Optional list of background (universe) genes per tissue.
+If provided, each entry must match the corresponding entry in gene_set.}
 
-\item{p_adj_method}{p-value adjustment method. One of "holm", "hochberg",
-"hommel", "bonferroni", "BH", "BY", "fdr", "none".}
+\item{p_adj_method}{Adjustment method for p-values. One of:
+\code{"holm"}, \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"}, \code{"BY"},
+\code{"fdr"}, \code{"none"}.}
 
-\item{min_gene_set_size}{Integer describing the smallest GO term size to be
-considered by enrichGO.}
+\item{min_gene_set_size}{Minimum GO term size considered.}
 
-\item{max_gene_set_size}{Integer describing the largest GO term size to be
-considered by enrichGO.}
+\item{max_gene_set_size}{Maximum GO term size considered.}
 
-\item{p_cutoff}{Max p-value that will be considered as significant.}
+\item{p_cutoff}{Maximum p-value threshold for enrichment.}
 
-\item{ont_type}{Which GO subontology to query.
-One of "BP", "MF", and "CC" subontologies, or "ALL" for all three.}
+\item{ont_type}{GO subontology: \code{"BP"} (Biological Process),
+\code{"MF"} (Molecular Function), \code{"CC"} (Cellular Component), or \code{"ALL"}.}
 
-\item{gene_nom}{Nomenclature/keytype of genes in gene_set inputs.}
+\item{gene_nom}{Gene ID type used (e.g. \code{"SYMBOL"}, \code{"ENSEMBL"}, \code{"ENTREZID"}).}
 }
 \value{
-Returns a list of enrichGO() results.
+A named list of enrichGO objects (one per tissue/cell type).
 }
 \description{
-Uses clusterProfiler function enrichGO() to find Gene Ontology (GO)
-enrichments for multiple tissue types.
+Runs Gene Ontology enrichment analysis across multiple tissues/cell types
+using \strong{clusterProfiler::enrichGO()}. Each entry in the input list is treated
+as a gene set from one tissue/condition, and enrichment results are returned
+for each.
+}
+\details{
+This function optionally accepts a background/universe gene list for each
+tissue type. If not supplied, enrichGO() uses the entire gene universe
+defined by the OrgDb annotation.
+
+\strong{References}
+\itemize{
+\item Yu, G. (2024). \emph{Thirteen years of clusterProfiler.}
+The Innovation, 5(6):100722.
+\item Yu, G., Wang, L.-G., Han, Y., & He, Q.-Y. (2012).
+\emph{clusterProfiler: an R package for comparing biological themes among
+gene clusters.} OMICS: A Journal of Integrative Biology, 16(5), 284–287.
+}
 }
 \examples{
-gene_enrichment(gene_set = list(a=c("CHST2", "B3GNT1", "B3GNT2", "CHST1",
-"B4GALT1","B3GNT7", "ST3GAL2", "B4GALT3", "ST3GAL1", "B4GALT2", "B4GALT4",
-"CHST4", "ST3GAL3", "FUT8", "CHST6")),
-organism = "org.Hs.eg.db", gene_nom = "SYMBOL")
+\dontrun{
+  gene_set <- list(
+    Liver = c("CHST2", "B3GNT1", "B3GNT2"),
+    Brain = c("ST3GAL1", "CHST4", "FUT8")
+  )
 
+  enrich_res <- gene_enrichment(
+    gene_set = gene_set,
+    organism = "org.Hs.eg.db",
+    gene_nom = "SYMBOL"
+  )
+
+  enrich_res$Liver
 }
-\references{
-G Yu. Thirteen years of clusterProfiler. The Innovation. 2024, 5(6):100722
+
 }
