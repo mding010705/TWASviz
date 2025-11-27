@@ -1,0 +1,92 @@
+pathway	betas
+BioCarta Cell to Cell Adhesion Signaling	-4.31420697072452
+BioCarta Endocytotic role of NDK, Phosphins and Dynamin	5.02201994695628
+BioCarta fl-arrestins in GPCR Desensitization	86.7507791378596
+BioCarta Phospholipids as signalling intermediaries	473.397896669722
+BioCarta PKC-catalyzed phosphorylation of inhibitory phosphoprotein of myosin phosphatase	-152.632941079852
+BioCarta Proteasome Complex	653.215116973242
+BioCarta Rac 1 cell motility signaling pathway	-78.2455614532533
+BioCarta Regulation of ck1/cdk5 by type 1 glutamate receptors	0.315064486375183
+BioCarta Role of fl-arrestins in the activation and targeting of MAP kinases	306.896649544571
+BioCarta Role of nicotinic acetylcholine receptors in the regulation of apoptosis	-2.62174543184882
+BioCarta Sonic Hedgehog (SHH) Receptor Ptc1 Regulates cell cycle	1.46718137363565
+BioCarta Tumor Suppressor Arf Inhibits Ribosomal Biogenesis	-11.759545063201
+KEGG alpha-Linolenic acid metabolism	-0.0675156770676488
+KEGG Arachidonic acid metabolism	-1.346217893641
+KEGG Arrhythmogenic right ventricular cardiomyopathy (ARVC)	-12.0697412997433
+KEGG ECM-receptor interaction	-23.0529659426135
+KEGG Ether lipid metabolism	-8.52987404567135
+KEGG Glycerophospholipid metabolism	-83.9943335964753
+KEGG Linoleic acid metabolism	-0.280859599466671
+KEGG p53 signaling pathway	18.1274501176295
+KEGG Parkinson's disease	1.26602796201397
+KEGG PPAR signaling pathway	157.176175112405
+KEGG Prion diseases	36.7034172938154
+KEGG Pyrimidine metabolism	-38.5399652454436
+KEGG RNA polymerase	-7.76393641779993
+Reactome Abortive elongation of HIV-1 transcript in the absence of Tat	-0.0179037173408517
+Reactome Adherens junctions interactions	12.0547917611001
+Reactome Apoptotic cleavage of cell adhesion  proteins	1.66225259158274
+Reactome Apoptotic cleavage of cellular proteins	-3.12486138419868
+Reactome Apoptotic execution  phase	-1.61886195883805
+Reactome Autodegradation of Cdh1 by Cdh1:APC/C	137.854373450899
+Reactome Basigin interactions	-2.42900658315629
+Reactome Beta-catenin phosphorylation cascade	-442.113098120521
+Reactome Cell-cell junction organization	1.35355499601299
+Reactome Cell-extracellular matrix interactions	-0.684841375935934
+Reactome Cell junction organization	-0.074170436050956
+Reactome CTLA4 inhibitory signaling	-7.13812635277705
+Reactome Cyclin A/B1 associated events during G2/M transition	5.26022760096671
+Reactome DSCAM interactions	-84.3541764787469
+Reactome E2F-enabled inhibition of pre-replication complex formation	29.8729978261916
+Reactome Effects of PIP2 hydrolysis	-40.4472972259816
+Reactome ERKs are inactivated	-210.806585337081
+Reactome Formation of RNA Pol II elongation complex	0.0133446661578484
+Reactome Formation of the HIV-1 Early Elongation Complex	1.09978295083443
+Reactome Formation of transcription-coupled NER (TC-NER) repair complex	0.856387979380578
+Reactome G0 and Early G1	3.02070156927614
+Reactome Gap junction degradation	87.2827876883559
+Reactome Gap junction trafficking	7.41146821621574
+Reactome Gluconeogenesis	14.4908561558352
+Reactome Glucose transport	0.0139675249071761
+Reactome Glycolysis	-66.8589667469156
+Reactome GRB2:SOS provides linkage to MAPK signaling for Intergrins	-4.74417601420863
+Reactome IKK complex recruitment mediated by RIP1	-12.5313853323923
+Reactome Incretin Synthesis, Secretion, and Inactivation	0.215307828869138
+Reactome Inhibition of replication initiation of damaged DNA by RB1/E2F1	-20.7427902687705
+Reactome Integrin alphaIIb beta3 signaling	0.252554586370727
+Reactome Integrin cell surface interactions	3.60842181868885
+Reactome Interactions of Vpr with host cellular proteins	0.241830331453012
+Reactome Interferon alpha/beta signaling	-20.5719161774304
+Reactome Loss of Nlp from mitotic centrosomes	-37.0542348033394
+Reactome Metabolism of non-coding RNA	4.15269655013591
+Reactome MHC class II antigen presentation	20.0460865737216
+Reactome MicroRNA (miRNA) Biogenesis	-8.2561348291655
+Reactome Mitotic G2-G2/M phases	-3.58113946595257
+Reactome mRNA Capping	0.94430198256721
+Reactome mTORC1-mediated signalling	-6.40884680780862
+Reactome NEP/NS2 Interacts with the Cellular Export Machinery	0.638043066796696
+Reactome NF-kB activation through FADD/RIP-1 pathway mediated by caspase-8 and -10	-86.9035445825371
+Reactome Nuclear signaling by ERBB4	2.21790289791022
+Reactome Other semaphorin interactions	-2.95220314154984
+Reactome p130Cas linkage to MAPK signaling for integrins	-55.2853090207267
+Reactome PKB-mediated events	-25.5018516590781
+Reactome Platelet Adhesion to exposed collagen	-8.27089631553632
+Reactome Platelet Aggregation (Plug Formation)	3.93498899363643
+Reactome Rap1 signalling	1.50916636059092
+Reactome Recruitment of mitotic centrosome proteins and complexes	-32.9888783594392
+Reactome Recruitment of NuMA to mitotic centrosomes	3.63829722499934
+Reactome Regulation of KIT signaling	51.0487987428342
+Reactome Regulatory RNA pathways	-2.30112961955484
+Reactome Retrograde neurotrophin signalling	7.22943260017918
+Reactome RNA Polymerase I Transcription	36.5717158152608
+Reactome RNA Polymerase I Transcription Initiation	28.7758967466175
+Reactome RNA Polymerase I Transcription Termination	133.760303340147
+Reactome RNA Polymerase II Pre-transcription Events	0.108925558664243
+Reactome RNA Polymerase II Transcription	2.8043970806393
+Reactome RNA Polymerase II Transcription Pre-Initiation And Promoter Opening	0.00972860759277829
+Reactome Signal regulatory protein (SIRP) family interactions	-5.79945575789606
+Reactome SLC-mediated transmembrane transport	0.416480392287909
+Reactome Trafficking of GluR2-containing AMPA receptors	19.6605212380366
+Reactome Transcription	0.0146935866282772
+Reactome Transport of Ribonucleoproteins into the Host Nucleus	0.184382538952185

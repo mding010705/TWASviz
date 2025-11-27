@@ -96,7 +96,7 @@ TWASviz::volcano_plot(betas_p_vals = TWASviz::predixcan_twas1[1:1000, c("zscore"
 
 Having a set of significant genes is not useful when you can't summarize their functional associations. `gene_enrichment` allows you to use `clusterProfiler` (Yu, 2024) to do functional gene set enrichment on the gene ontology with multiple separate gene set inputs and `goenrich_heatmap` plots these results in a heatmap. Notice that there are no significant enrichments from a2, a3, and a5, so they don't appear in the heatmap. This will take a couple of minutes to run.
 
-```{r, eval=FALSE}
+```{r}
 genes <- list(a1 = TWASviz::predixcan_twas1[, "gene"],
         a2 = TWASviz::predixcan_twas2[predixcan_twas1$pvalue < 0.05, "gene"],
         a3 = TWASviz::predixcan_twas3[predixcan_twas1$pvalue < 0.05, "gene"],
@@ -116,7 +116,7 @@ Let's look at an analysis that performs TWAS with this package, starting from `P
 `PrediXcan` predicted gene expression output will likely give you expression levels for hundreds or thousands of genes. A nice way to look at the correlation structure of your predicted gene expressions is with a correlation heatmap which shows the pairwise correlation of each gene's expression levels. However, laptop screens are often only 1920 x 1080 pixels. How can I make a correlation matrix with more cells than there are pixels on my screen? Often, your plot viewer will do some image down-sampling to make your detailed heatmap to fit into fewer pixels. With `corr_heatmap`, you can specify the function with which your heatmap is down-sampled through the summary_func argument.
 Compare these two heatmaps (this will take a few minutes to run):
 
-```{r, eval=FALSE}
+```{r}
 # use simulated data since the provided PrediXcan predicted gene expression data only has 100 columns per cellX_gene_expr object in order to make the below TWAS examples run faster.
 
 big_gene_expr <- matrix(rgamma(100^2, 2), nrow = 100) %*% matrix(rnorm(200^2), ncol = 400)
@@ -135,8 +135,8 @@ The sparse group lasso function needs a specially formatted predictor matrix and
 ```{r}
 set.seed(410)
 # for one predicted gene expression dataset
-sgl_input1 <- TWASviz::preprocess_expressions_pathways(TWASviz::cell1_gene_expr, all_pathways = TWASviz::all_pathways,
-phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "y_bin", family_func = "binomial")
+# sgl_input1 <- TWASviz::preprocess_expressions_pathways(TWASviz::cell1_gene_expr, all_pathways = TWASviz::all_pathways,
+# phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname = "y_bin", family_func = "binomial")
 
 # for multiple tissue/cell type specific gene expressions
 all_gene_expr <- list(TWASviz::cell1_gene_expr, TWASviz::cell2_gene_expr, TWASviz::cell3_gene_expr, TWASviz::cell4_gene_expr, TWASviz::cell5_gene_expr, TWASviz::cell6_gene_expr)
@@ -149,11 +149,11 @@ phenotype_filename = "../inst/extdata/phenotype_covars.txt", phenotype_colname =
 In contrast with the TWAS method available in PrediXcan (which estimates each gene expression effect size one by one with just a simple regression using the phenotype as the response and the gene expression as the predictor), using sparse group lasso is a pathway aware method of estimating the effect sizes of genes and pathways on your phenotype of interest. Briefly, sparse group lasso selects features (gene expressions) and regularizes their estimated effect sizes within groupings (pathways), and with respect to the entire feature space. 
 
 This example shows how to use `sgl_TWAS` for a binary phenotype of interest, which is consistent with the above example that shows how to use `preprocess_expressions_pathways` (this will take a few minutes to run).
-```{r, eval=FALSE}
+```{r}
 set.seed(410)
 # for one predicted gene expression dataset
-sgl_fit1 <- TWASviz::sgl_TWAS(X = sgl_input1$X, y = sgl_input1$y, grouping = sgl_input1$groups, family_func = "binomial", offsets = sgl_input1$offsets, 
-                              pred_loss = "misclass")
+# sgl_fit1 <- TWASviz::sgl_TWAS(X = sgl_input1$X, y = sgl_input1$y, grouping = sgl_input1$groups, family_func = "binomial", offsets = sgl_input1$offsets, 
+#                               pred_loss = "misclass")
 
 # for multiple tissue/cell type specific gene expressions
 sgl_fits <- lapply(all_sgl_input, function(sgl_input){
@@ -164,15 +164,25 @@ sgl_fits <- lapply(all_sgl_input, function(sgl_input){
 ### Reformat sgl_TWAS Output
 `sgl_TWAS` will give you the fit sparse group lasso object and the coefficient estimates at the *lambda.1se* value (the most regularized model within one standard error of the minimum CV error). This is the suggested set of coefficients to use, but you can specify other coefficient sets that are more or less regularized. 
 
-The coefficient format from `sgl_TWAS` is not very useful. To make these results compatible with other functions in TWASviz, use `sgl2adj_df` to reformat your many TWAS associations into an adjacency matrix.
+The coefficient format from `sgl_TWAS` is not very useful. To make these results compatible with other functions in TWASviz, use `sgl2adj_df` to reformat your many TWAS associations into an adjacency matrix. Or, you can use `sgl2txt_file` to make your sparse group lasso output a text file that is compatible with the R shiny app.
 
-```{r, eval=FALSE}
+```{r}
+# use your actual cell type or tissue names
+tissue_names <- LETTERS[seq_along(sgl_fits)]
+
+# combine all the lambda1se_coef from sgl_fits
 all_coefs <- lapply(sgl_fits, function(x){
   x$lambda1se_coef
 })
+names(all_coefs) <- tissue_names
 adj_dfs <- TWASviz::sgl2adj_df(all_coefs)
 
 head(adj_dfs)
+
+sgl_df <- mapply(TWASviz::sgl2txt_file, 
+                 all_coefs, paste0("./inst/extdata/", 
+                                   tissue_names, "_sgl_TWAS_"))
+
 ```
 
 Some of the cell type specific predicted gene expressions don't have any genes selected from the sparse group lasso association with the phenotype, after adjusting for covariates. This is meaningful, as this provides evidence for the importance/unimportance of each cell type in the transcriptomic basis of your phenotype of interest.

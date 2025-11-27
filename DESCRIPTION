@@ -21,7 +21,24 @@ Config/testthat/edition: 3
 LazyData: true
 biocViews: 
     clusterProfiler,
-    org.Hs.eg.db
+    org.Hs.eg.db,
+    org.Ag.eg.db, 
+    org.Bt.eg.db, 
+    org.Cf.eg.db, 
+    org.Gg.eg.db, 
+    org.Pt.eg.db, 
+    org.EcK12.eg.db, 
+    org.EcSakai.eg.db, 
+    org.Dm.eg.db, 
+    org.Mm.eg.db, 
+    org.Ss.eg.db, 
+    org.Rn.eg.db, 
+    org.Mmu.eg.db, 
+    org.Sco.eg.db, 
+    org.Ce.eg.db, 
+    org.Xl.eg.db, 
+    org.Sc.sgd.db, 
+    org.Dr.eg.db
 Imports:
     devtools,
     data.table,
@@ -37,5 +54,23 @@ Imports:
     shiny,
     tidyr,
     clusterProfiler,
-    org.Hs.eg.db
+    org.Hs.eg.db,
+    org.Ag.eg.db, 
+    org.Bt.eg.db, 
+    org.Cf.eg.db, 
+    org.Gg.eg.db, 
+    org.Pt.eg.db, 
+    org.EcK12.eg.db, 
+    org.EcSakai.eg.db, 
+    org.Dm.eg.db, 
+    org.Mm.eg.db, 
+    org.Ss.eg.db, 
+    org.Rn.eg.db, 
+    org.Mmu.eg.db, 
+    org.Sco.eg.db, 
+    org.Ce.eg.db, 
+    org.Xl.eg.db, 
+    org.Sc.sgd.db, 
+    org.Dr.eg.db,
+    cowplot
 URL: https://github.com/mding010705/TWASviz    

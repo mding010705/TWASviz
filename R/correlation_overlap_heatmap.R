@@ -29,7 +29,8 @@
 #'   `ncol(betas)`. Defaults to column names or sequential numbering.
 #' @param main_title Optional main title for plot.
 #'
-#' @return A ggplot2 heatmap object.
+#' @return A ggplot2 heatmap object, or the number of non-NA entries in `betas`
+#' if it only contains one column.
 #'
 #' @examples
 #' correlation_overlap_heatmap(
@@ -55,6 +56,11 @@ correlation_overlap_heatmap <- function(
     cor_method = "pearson") {
 
   # Input validation
+  if (is.vector(betas) || ncol(betas) == 1){
+    message("Only one column was detected in `betas`. Returning the number of
+            non-NA entries.")
+    return(sum(!is.na(betas)))
+  }
 
   if (!is.data.frame(betas) && !is.matrix(betas)) {
     stop("`betas` must be a data frame or matrix.")

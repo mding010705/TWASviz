@@ -6,6 +6,9 @@
 \usage{
 predixcan2adj_df(
   predixcan_assoc_filenames,
+  gene_colname = "gene",
+  effect_size_colname = "zscore",
+  p_val_colname = "pvalue",
   tissue_names = seq_along(predixcan_assoc_filenames),
   use_fdr = FALSE,
   pvalue_thresh = 0.05
@@ -14,6 +17,15 @@ predixcan2adj_df(
 \arguments{
 \item{predixcan_assoc_filenames}{Vector of file paths to PrediXcan output files.
 Each must contain columns: \code{gene}, \code{se}, and \code{pvalue}.}
+
+\item{gene_colname}{Name of column in predixcan_assoc_filenames that contains
+the gene name.}
+
+\item{effect_size_colname}{Name of column in predixcan_assoc_filenames that
+contains the effect size.}
+
+\item{p_val_colname}{Name of column in predixcan_assoc_filenames that
+contains the p-value.}
 
 \item{tissue_names}{Names for tissues/conditions. Defaults to index sequence.}
 
@@ -44,7 +56,8 @@ Nature Genetics, 47, 1091–1098.
 }
 \examples{
 \dontrun{
-  files <- c("muscle_assoc.txt", "blood_assoc.txt")
+  files <- c("inst/extdata/predixcan_twas1.txt",
+  "inst/extdata/predixcan_twas2.txt")
 
   adj <- predixcan2adj_df(
     predixcan_assoc_filenames = files,

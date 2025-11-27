@@ -122,6 +122,108 @@ sgl2adj_df <- function(gene_coefs,
 }
 
 
+#' Export Sparse Group Lasso (SGL) Gene and Pathway Coefficients to Text Files
+#'
+#' Takes a vector of gene-level coefficients from an SGL TWAS model, removes
+#' intercept terms, splits combined `gene_pathway` names, aggregates gene-level
+#' and pathway-level effects, and writes two text files:
+#'   - `gene<suffix>.txt`
+#'   - `pathway<suffix>.txt`
+#'
+#' @param gene_coef Named numeric vector of SGL coefficients.
+#'   Names must follow the format `GENE_PATHWAY`, e.g., `"BRCA1_DNArepair"`.
+#'   If a pathway is missing (e.g., `"BRCA1_"`), the gene name is used as the pathway name.
+#'
+#' @param filename_prefix Character prefix to prepend to the output files.
+#'
+#' @return A list containing:
+#' \describe{
+#'   \item{gene}{Data frame of aggregated gene-level effects}
+#'   \item{pathway}{Data frame of aggregated pathway-level effects}
+#' }
+#'
+#'
+#' @examples
+#' # Example SGL coefficient vector
+#' coef_vec <- c(
+#'   gene1_p1 = 0.5,
+#'   gene2_p1 = -0.3,
+#'   gene3_p2 = 0.2,
+#'   "(Intercept)" = 1.2
+#' )
+#'
+#' sgl2txt_file(coef_vec, filename_prefix = "demo_")
+#'
+#' @export
+#' @import stringr
+
+sgl2txt_file <- function(gene_coef,
+                         filename_prefix = "sgl_TWAS_") {
+
+  # Input Validation
+  if (missing(gene_coef) || length(gene_coef) == 0)
+    stop("gene_coef is empty. Provide a named numeric vector of coefficients.")
+
+  if (is.null(rownames(gene_coef)))
+    stop("gene_coef must be a row named numeric matrix.")
+
+  gene_coef <- as.matrix(gene_coef)
+
+  # Remove intercept term
+  if ("(Intercept)" %in% rownames(gene_coef)) {
+    gene_coef <- gene_coef[rownames(gene_coef) != "(Intercept)",]
+  }
+
+  # Keep only non-zero coefficients
+  gene_coef <- gene_coef[(gene_coef != 0)]
+
+
+  # All coefficients are zero
+  if (length(gene_coef) == 0) {
+    message("All coefficients are 0. No output files created.")
+    return(NULL)
+  }
+
+  # Split coefficient names into gene and pathway
+  # Expects: GENE_PATHWAY
+  gene_pathway <- stringr::str_split_fixed(names(gene_coef), "_", n = 2)
+
+  # If pathway is missing, use the gene name as pathway
+  missing_pathway <- gene_pathway[, 2] == "" | gene_pathway[, 2] == " "
+  gene_pathway[missing_pathway, 2] <- gene_pathway[missing_pathway, 1]
+
+  # Aggregate at the gene level
+  gene_df <- data.frame(
+    gene = gene_pathway[, 1],
+    betas = gene_coef,
+    stringsAsFactors = FALSE
+  )
+  gene_df <- aggregate(betas ~ gene, data = gene_df, sum)
+
+  # Aggregate at the pathway level
+  pathway_df <- data.frame(
+    pathway = gene_pathway[, 2],
+    betas = gene_coef,
+    stringsAsFactors = FALSE
+  )
+  pathway_df <- aggregate(betas ~ pathway, data = pathway_df, sum)
+
+  # Write output files
+  write.table(gene_df,
+                     paste0(filename_prefix, "gene.txt"),
+                     row.names = FALSE,
+                     quote = FALSE,
+                     sep = "\t")
+
+  write.table(pathway_df,
+                     paste0(filename_prefix, "pathway.txt"),
+                     row.names = FALSE,
+                     quote = FALSE,
+                     sep = "\t")
+
+  #Return structured output
+  return(list(gene = gene_df, pathway = pathway_df))
+}
 
 
 
@@ -143,6 +245,12 @@ sgl2adj_df <- function(gene_coefs,
 #'
 #' @param predixcan_assoc_filenames Vector of file paths to PrediXcan output files.
 #'   Each must contain columns: \code{gene}, \code{se}, and \code{pvalue}.
+#' @param gene_colname Name of column in predixcan_assoc_filenames that contains
+#' the gene name.
+#' @param effect_size_colname Name of column in predixcan_assoc_filenames that
+#' contains the effect size.
+#' @param pvalue_colname Name of column in predixcan_assoc_filenames that
+#' contains the p-value.
 #' @param tissue_names Names for tissues/conditions. Defaults to index sequence.
 #' @param use_fdr If TRUE, convert p-values to q-values.
 #' @param pvalue_thresh Threshold for p-value or q-value significance.
@@ -151,7 +259,8 @@ sgl2adj_df <- function(gene_coefs,
 #'
 #' @examples
 #' \dontrun{
-#'   files <- c("muscle_assoc.txt", "blood_assoc.txt")
+#'   files <- c("inst/extdata/predixcan_twas1.txt",
+#'   "inst/extdata/predixcan_twas2.txt")
 #'
 #'   adj <- predixcan2adj_df(
 #'     predixcan_assoc_filenames = files,
@@ -169,6 +278,9 @@ sgl2adj_df <- function(gene_coefs,
 
 
 predixcan2adj_df <- function(predixcan_assoc_filenames,
+                             gene_colname = "gene",
+                             effect_size_colname = "zscore",
+                             pvalue_colname = "pvalue",
                              tissue_names = seq_along(predixcan_assoc_filenames),
                              use_fdr = FALSE,
                              pvalue_thresh = 0.05){
@@ -192,28 +304,33 @@ predixcan2adj_df <- function(predixcan_assoc_filenames,
 
   # Initialize with placeholder NA to enable iterative merging
   gene_adj_df <- data.frame(gene = c(NA))
+  colnames(gene_adj_df) <- gene_colname
 
   # Read each PrediXcan file
   for (f in predixcan_assoc_filenames){
 
-    # Efficient loading using data.table
+    # Loading using data.table
     assoc <- as.data.frame(data.table::fread(f, header = TRUE))
 
-    # Use q-value FDR correction if use_fdr is TRUE
-    if (use_fdr == TRUE){
-      assoc$qvalue <- qvalue::qvalue(assoc$pvalue)
-      filtered <- assoc[assoc$qvalue < pvalue_thresh, c("gene", "se")]
+    # Check for p-value column, use q-value FDR correction if use_fdr is TRUE
+    if (is.null(pvalue_colname)){
+      filtered <- assoc[, c(gene_colname, effect_size_colname)]
+    } else if (use_fdr == TRUE){
+      assoc$qvalue <- qvalue::qvalue(assoc[, pvalue_colname])
+      filtered <- assoc[assoc$qvalue < pvalue_thresh, c(gene_colname,
+                                                        effect_size_colname)]
     } else {
-      filtered <- assoc[assoc$pvalue < pvalue_thresh, c("gene", "se")]
+      filtered <- assoc[assoc[, pvalue_colname] < pvalue_thresh, c(gene_colname,
+                                                        effect_size_colname)]
     }
 
     # Iteratively merge into adjacency matrix
     gene_adj_df <- merge(gene_adj_df, filtered,
-                         by = "gene", sort = FALSE, all = TRUE)
+                         by = gene_colname, sort = FALSE, all = TRUE)
   }
 
   # Remove placeholder NA row
-  gene_adj_df <- gene_adj_df[!is.na(gene_adj_df$gene), ]
+  gene_adj_df <- gene_adj_df[!is.na(gene_adj_df[, gene_colname]), ]
 
   # Assign user-specified tissue names
   colnames(gene_adj_df) <- c("gene", tissue_names)

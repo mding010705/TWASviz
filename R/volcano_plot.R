@@ -7,6 +7,12 @@
 #' associations each gene has with your phenotype of interest.
 #'
 #' @param betas_p_vals Data frame with effect sizes and p-values.
+#' @param gene_colname Name of column in predixcan_assoc_filenames that contains
+#' the gene name.
+#' @param effect_size_colname Name of column in predixcan_assoc_filenames that
+#' contains the effect size.
+#' @param pvalue_colname Name of column in predixcan_assoc_filenames that
+#' contains the p-value.
 #' @param p_thresh Numeric. P-value threshold for significance (default = 0.05).
 #' @param vline Numeric vector. Vertical reference lines (default uses ±1.96).
 #' @param add_sig_gene_labels Logical. Whether to label significant genes.
@@ -21,7 +27,10 @@
 #' @import ggplot2
 #' @import ggrepel
 
-volcano_plot <- function(betas_p_vals, p_thresh = 0.05,
+volcano_plot <- function(betas_p_vals, pvalue_colname = "pvalue",
+                         gene_colname = "gene",
+                         effect_size_colname = "zscore",
+                         p_thresh = 0.05,
                          vline = c(qnorm(0.025), qnorm(0.975)),
                          add_sig_gene_labels = TRUE){
   # Input validation
@@ -30,17 +39,17 @@ volcano_plot <- function(betas_p_vals, p_thresh = 0.05,
   }
 
   # Check for p-value column
-  if (!"pvalue" %in% colnames(betas_p_vals)) {
-    stop("betas_p_vals must contain a column named 'pvalue'.")
+  if (!(pvalue_colname %in% colnames(betas_p_vals))) {
+    stop("betas_p_vals must contain your specified pvalue column name.")
   }
 
   # Check for zscore column
-  if (!"zscore" %in% colnames(betas_p_vals)) {
-    stop("betas_p_vals must contain a column named 'zscore'.")
+  if (!(effect_size_colname %in% colnames(betas_p_vals))) {
+    stop("betas_p_vals must contain your specified effect size column name.")
   }
 
   betas_p_vals$pvalue_significant <- betas_p_vals$pvalue < p_thresh
-  if(!("gene" %in% colnames(betas_p_vals))){
+  if(!(gene_colname %in% colnames(betas_p_vals))){
     betas_p_vals$gene <- rownames(betas_p_vals)
   }
 

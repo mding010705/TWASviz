@@ -1,0 +1,40 @@
+pathway	betas
+BioCarta Activation of Src by Protein-tyrosine phosphatase alpha	0.161389747729778
+BioCarta ALK in cardiac myocytes	19.7215047009838
+BioCarta Cell Cycle: G2/M Checkpoint	0.067099189646853
+BioCarta Cell to Cell Adhesion Signaling	-0.00131426333311903
+BioCarta Deregulation of CDK5 in Alzheimers Disease	15.3500332373172
+BioCarta Phospholipids as signalling intermediaries	-20.037801997691
+BioCarta Presenilin action in Notch and Wnt signaling	7.2495501196531
+BioCarta Rac 1 cell motility signaling pathway	-21.9273994461167
+BioCarta Regulation of eIF2	17.9006010542157
+BioCarta Role of fl-arrestins in the activation and targeting of MAP kinases	-6.3933907049373
+BioCarta Role of nicotinic acetylcholine receptors in the regulation of apoptosis	-1.85433928087274
+BioCarta Tumor Suppressor Arf Inhibits Ribosomal Biogenesis	-7.21444947012305
+KEGG alpha-Linolenic acid metabolism	-0.0180076895547761
+KEGG Arachidonic acid metabolism	-0.939944721272733
+KEGG Basal cell carcinoma	1.37265193276134
+KEGG Ether lipid metabolism	-8.01387936331304
+KEGG Glycerophospholipid metabolism	-81.8227608030113
+KEGG Linoleic acid metabolism	-0.124859129370181
+KEGG Pyrimidine metabolism	-22.2842242955166
+KEGG RNA polymerase	-1.93181671846005
+Reactome Adherens junctions interactions	0.277286116481025
+Reactome Cell-cell junction organization	0.0239300101471109
+Reactome E2F-enabled inhibition of pre-replication complex formation	4.81104514087926
+Reactome Elongation arrest and recovery	-0.0571752723662205
+Reactome G2/M DNA damage checkpoint	1.70973157758355
+Reactome GRB2:SOS provides linkage to MAPK signaling for Intergrins	-2.1372182285322
+Reactome IKK complex recruitment mediated by RIP1	-4.83954824909424
+Reactome Incretin Synthesis, Secretion, and Inactivation	0.209582468330372
+Reactome MicroRNA (miRNA) Biogenesis	-1.24575840584187
+Reactome mRNA Splicing	-0.216409089105052
+Reactome mRNA Splicing - Minor Pathway	-0.103491918206712
+Reactome NF-kB activation through FADD/RIP-1 pathway mediated by caspase-8 and -10	-57.7393431419531
+Reactome Olfactory Signaling Pathway	-2.94569891789001
+Reactome p130Cas linkage to MAPK signaling for integrins	-26.8845193037849
+Reactome Phosphorylation of the APC/C	18.2448342124245
+Reactome Recruitment of NuMA to mitotic centrosomes	8.00313456535685
+Reactome Regulatory RNA pathways	-0.615954179700185
+Reactome Signal regulatory protein (SIRP) family interactions	-3.01006200521352
+Reactome Synthesis, Secretion, and Inactivation of Glucagon-like Peptide-1 (GLP-1)	0.0180746599986918
