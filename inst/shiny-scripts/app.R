@@ -25,7 +25,7 @@ ui <- fluidPage(
       br(),
 
       fileInput(
-        inputId = "Predicted gene expression files",
+        inputId = "predGEfiles",
         label = "Choose your Predicted gene expression files",
         multiple = TRUE,
         accept = c(".txt")
@@ -36,13 +36,16 @@ ui <- fluidPage(
              will be used as predicted gene expression input, and phenotype_covars.txt
              will be used for phenotype and covariate input."),
 
-      actionButton("predGEBtn", "Example predicted gene expression file format"),  # Changed to actionButton for simplicity
+      actionButton("predGEBtn", "Example predicted gene expression file format"),
       br(), br(),
-      fileInput("phenotypeFile", "Upload a file with your phenotype data.", accept = c(".txt")),
-      actionButton("alphaMissenseSampleBtn", "Example AlphaMissense file format"),  # Changed to actionButton for simplicity
+      fileInput("phenoFile", "Upload a file with your phenotype data", accept = c(".txt")),
+      actionButton("phenoBtn", "Example phenotype file format"),
       br(),
-      # Side note for downloading AlphaMissense Predictions
-      uiOutput("downloadPredictedGeneExpressionAndPhenoCovar"),
+      fileInput("covarFile", "Upload a file with your covariate data (Optional)", accept = c(".txt")),
+      actionButton("covarBtn", "Example covariate file format"),
+      br(),
+      # Side note for downloading sample files
+      uiOutput("downloadPredGEAndPhenoCovar"),
 
       actionButton("runTWAS", "Run TWAS")
     ),
@@ -51,7 +54,7 @@ ui <- fluidPage(
                   tabPanel("Class Summary",
                            DT::dataTableOutput("classSummaryTable")),
                   tabPanel("Pathway Visualization",
-                           tags$p("Please wait for the result to complete, it could take a few minutes."),
+                           tags$p("Please wait for the TWAS to complete, it could take a few minutes."),
                            br(),
                            selectInput("pathwayType", "Select Pathway Type:", choices = c("all significant genes"= "sig", "up-regulated genes" = "up", "down-regulated genes" = "down")),
                            plotOutput("pathwayPlot")))
