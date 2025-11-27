@@ -23,6 +23,7 @@ biocViews:
     clusterProfiler,
     org.Hs.eg.db
 Imports:
+    devtools,
     data.table,
     dplyr,
     ggplot2,
