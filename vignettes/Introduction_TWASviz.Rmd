@@ -8,7 +8,7 @@ output:
     number_sections: false
 vignette: >
   %\VignetteIndexEntry{Introduction_TWASviz}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
