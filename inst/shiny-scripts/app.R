@@ -36,13 +36,14 @@ ui <- fluidPage(
              will be used as predicted gene expression input, and phenotype_covars.txt
              will be used for phenotype and covariate input."),
 
-      actionButton("vcfSampleBtn", "Example VCF file format"),  # Changed to actionButton for simplicity
+      actionButton("predGEBtn", "Example predicted gene expression file format"),  # Changed to actionButton for simplicity
       br(), br(),
       fileInput("phenotypeFile", "Upload a file with your phenotype data.", accept = c(".txt")),
-      # Side note for downloading AlphaMissense Predictions
-      uiOutput("downloadPredictedGeneExpressionAndPhenoCovar"),
       actionButton("alphaMissenseSampleBtn", "Example AlphaMissense file format"),  # Changed to actionButton for simplicity
       br(),
+      # Side note for downloading AlphaMissense Predictions
+      uiOutput("downloadPredictedGeneExpressionAndPhenoCovar"),
+
       actionButton("runTWAS", "Run TWAS")
     ),
     mainPanel(
