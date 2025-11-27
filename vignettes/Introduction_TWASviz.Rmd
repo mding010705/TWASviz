@@ -27,7 +27,7 @@ if (!requireNamespace("devtools")){
   install.packages("devtools")
 }
 require("devtools")
-devtools::install_github("mding010705/TWASviz")
+devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
 library("TWASviz")
 ```
 
