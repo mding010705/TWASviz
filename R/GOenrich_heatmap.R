@@ -9,13 +9,6 @@
 #' tissue type. If not supplied, enrichGO() uses the entire gene universe
 #' defined by the OrgDb annotation.
 #'
-#' **References**
-#' - Yu, G. (2024). *Thirteen years of clusterProfiler.*
-#'   The Innovation, 5(6):100722.
-#' - Yu, G., Wang, L.-G., Han, Y., & He, Q.-Y. (2012).
-#'   *clusterProfiler: an R package for comparing biological themes among
-#'   gene clusters.* OMICS: A Journal of Integrative Biology, 16(5), 284–287.
-#'
 #' @param gene_set List of character vectors. Each element contains significant
 #'   gene symbols/IDs for a tissue or cell type.
 #' @param organism Character string giving the OrgDb annotation database
@@ -54,6 +47,26 @@
 #'
 #' @export
 #' @importFrom clusterProfiler enrichGO
+#'
+#' @references Xu, S., Hu, E., Cai, Y., Xie, Z., Luo, X., Zhan, L., Tang, W.,
+#' Wang, Q., Liu, B., Wang, R., Xie, W., Wu, T., Xie, L., Yu, G. Using
+#' clusterProfiler to characterize multiomics data. Nature Protocols. 2024,
+#' 19(11):3292-3320.
+#'
+#' Carlson M (2024). org.Hs.eg.db: Genome wide annotation for Human. R package
+#' version 3.20.0.
+#'
+#' Aleksander, S. A., Balhoff, J., Carbon, S., Cherry, J. M., Drabkin, H. J., Ebert, D.,
+#'  Feuermann, M., Gaudet, P., Harris, N. L., Hill, D. P., Lee, R., Mi, H., Moxon, S.,
+#'  Mungall, C. J., Muruganugan, A., Mushayahama, T., Sternberg, P. W., Thomas, P. D.,
+#'  Van Auken, K., … Westerfield, M. (2023). The gene ontology knowledgebase in 2023.
+#'  GENETICS, 224(1). https://doi.org/10.1093/genetics/iyad031.
+#'
+#'  Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler, H., Cherry, J. M.,
+#'  Davis, A. P., Dolinski, K., Dwight, S. S., Eppig, J. T., Harris, M. A., Hill, D. P.,
+#'  Issel-Tarver, L., Kasarskis, A., Lewis, S., Matese, J. C., Richardson, J. E.,
+#'  Ringwald, M., Rubin, G. M., & Sherlock, G. (2000). Gene ontology: Tool for the
+#'  unification of biology. Nature Genetics, 25(1), 25–29. https://doi.org/10.1038/75556.
 
 
 gene_enrichment <- function(gene_set,
@@ -141,7 +154,7 @@ gene_enrichment <- function(gene_set,
 #' Plot Gene Ontology Enrichment Heatmap Across Tissues/Cell Types
 #'
 #' Visualizes enriched GO terms by generating a heatmap of
-#' \eqn{-\log_{10}(adjusted\ p\text{-}values)} across tissues/cell types.
+#' -log10(adjusted p-values) across tissues/cell types.
 #'
 #' Each tissue contributes its *top N* most significant GO terms.
 #' Terms are clustered and displayed along the y-axis.
@@ -150,7 +163,7 @@ gene_enrichment <- function(gene_set,
 #' @param top_n Integer specifying number of GO terms to plot per tissue.
 #' @param x_label Label for x-axis (default: `"Cell Type"`).
 #'
-#' @return A ggplot2 heatmap object.
+#' @return A ggplot2 heatmap.
 #'
 #' @examples
 #' \dontrun{
@@ -171,6 +184,14 @@ gene_enrichment <- function(gene_set,
 #' @import dplyr
 #' @import stringr
 #' @import ggplot2
+#'
+#' @references Wickham, H., François, R., Henry, L., Müller, K., Vaughan, D. (2023).
+#' dplyr: A Grammar of Data Manipulation. R package version 1.1.4.
+#' https://CRAN.R-project.org/package=dplyr.
+#' Wickham, H. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New
+#' York, 2016.
+#' Wickham, H. (2025). stringr: Simple, Consistent Wrappers for Common String
+#' Operations. R package version 1.6.0. https://CRAN.R-project.org/package=stringr.
 
 
 goenrich_heatmap <- function(enrich_res, top_n = 5, x_label = "Cell Type") {

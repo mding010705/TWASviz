@@ -15,13 +15,6 @@
 #'      renamed as `gene_pathway`.
 #'   5. Constructs pathway group indices for sparse group lasso.
 #'
-#' @references
-#' Friedman, J., Hastie, T., Tibshirani, R. (2010). Regularization Paths for
-#' Generalized Linear Models via Coordinate Descent. *Journal of Statistical
-#' Software.*
-#' Meier, L., van de Geer, S., Bühlmann, P. (2008). The Group Lasso for Logistic
-#' Regression. *J. Royal Statistical Society B.*
-#'
 #' @param gene_expr Data frame containing imputed expression data.
 #'   Must contain first two columns named **FID** and **IID** and remaining
 #'   columns representing gene expression.
@@ -69,6 +62,15 @@
 #'
 #' @export
 #' @import data.table
+#'
+#' @references Liang, X., Cohen, A., Solón Heinsfeld, A., Pestilli, F., McDonald,
+#' D.J. (2024). “sparsegl: An R Package for Estimating Sparse Group Lasso.”
+#' Journal of Statistical Software, 110(6), 1-23. doi:10.18637/jss.v110.i06.
+#' https://doi.org/10.18637/jss.v110.i06.
+#'
+#' Barrett, T., Dowle, M., Srinivasan, A., Gorecki, J., Chirico, M., Hocking, T.,
+#' Schwendinger, B., Krylov, I. (2025). data.table: Extension of `data.frame`.
+#' R package version 1.17.8, https://CRAN.R-project.org/package=data.table.
 
 preprocess_expressions_pathways <- function(
     gene_expr,

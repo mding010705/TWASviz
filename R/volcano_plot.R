@@ -2,7 +2,7 @@
 #'
 #' Produces volcano plot of gene effect sizes vs. -log10(p-values).
 #' Labels significant genes.
-#' Meant to take in TWAS results from PrediXcan which contain a gene, zscore
+#' Meant to take in TWAS results from PrediXcan (Gamazon et al., 2015) which contain a gene, zscore
 #' (standardized effect size), and a pvalue column, summarizing the individual
 #' associations each gene has with your phenotype of interest.
 #'
@@ -28,6 +28,18 @@
 #' @export
 #' @import ggplot2
 #' @import ggrepel
+#'
+#' @references Gamazon, E. R., Wheeler, H. E., Shah, K. P., Mozaffari, S. V.,
+#' Aquino-Michaels, K., Carroll, R. J., Eyler, A. E., Denny, J. C., Nicolae, D. L.,
+#' Cox, N. J., & Im, H. K. (2015). A gene-based association method for mapping
+#' traits using reference transcriptome data. Nature Genetics, 47(9),
+#' 1091–1098. <https://doi.org/10.1038/ng.3367>.
+#'
+#' Wickham, H. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York,
+#' 2016.
+#'
+#' Slowikowski, K. (2024). ggrepel: Automatically Position Non-Overlapping Text Labels
+#' with 'ggplot2'. R package version 0.9.6. https://CRAN.R-project.org/package=ggrepel.
 
 volcano_plot <- function(betas_p_vals, pvalue_colname = "pvalue",
                          gene_colname = "gene",

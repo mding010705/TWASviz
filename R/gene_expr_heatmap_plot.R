@@ -25,13 +25,16 @@ reorder_corr_hclust <- function(corr_mat){
 #' @param target_width Max number of columns that the output matrix should have.
 #' @param summary_func Function with which to down sample the matrix.
 #'
-#' @return Returns a heatmap image of gene correlations.
-#'
-#' @references
-#' Guillaume Devailly. (2021, October 14). Plotting heatmaps from big matrices
-#' in R. https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/
+#' @return Returns a heatmap image of gene expression correlations.
 #'
 #' @import parallel
+#'
+#' @references
+#' Devailly, G. (2021, October 14). Plotting heatmaps from big matrices
+#' in R. <https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/>.
+#'
+#' R Core Team (2024). R: A Language and Environment for Statistical Computing.
+#' R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/.
 
 redim_matrix <- function(
     mat, cl = NULL,
@@ -91,6 +94,10 @@ redim_matrix <- function(
 #' @export
 #' @import grDevices
 #' @import parallel
+#'
+#' @references R Core Team (2024). R: A Language and Environment for Statistical
+#' Computing. R Foundation for Statistical Computing, Vienna, Austria.
+#' https://www.R-project.org/.
 
 corr_heatmap <- function(gene_expr, target_height = 300,
                          target_width = 300,

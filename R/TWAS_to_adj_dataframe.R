@@ -9,11 +9,6 @@
 #' components. Coefficients belonging to the same gene or pathway are summed.
 #' Intercepts are removed.
 #'
-#' **References**
-#' - Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013).
-#'   *A Sparse-Group Lasso.* Journal of Computational and Graphical Statistics, 22(2), 231–245.
-#' - `sparsegl` package documentation: https://cran.r-project.org/package=sparsegl
-#'
 #' @param gene_coefs A list of coefficient vectors (e.g., from `sparsegl::cv.sparsegl()` or sgl_TWAS).
 #'   Each element should be a named numeric vector with coefficients for one tissue/condition.
 #' @param tissue_names Character vector giving column names for each coefficient set.
@@ -41,7 +36,14 @@
 #' }
 #'
 #' @export
-#' @importFrom stringr str_split_fixed
+#' @import stringr
+#'
+#' @references Wickham H (2025). _stringr: Simple, Consistent Wrappers for Common String
+#' Operations_. R package version 1.6.0, <https://CRAN.R-project.org/package=stringr>.
+#'
+#' Liang X, Cohen A, Solón Heinsfeld A, Pestilli F, McDonald DJ (2024). “sparsegl: An
+#' R Package for Estimating Sparse Group Lasso.” _Journal of Statistical Software_,
+#' *110*(6), 1-23. doi:10.18637/jss.v110.i06 <https://doi.org/10.18637/jss.v110.i06>.
 
 sgl2adj_df <- function(gene_coefs,
                        tissue_names = seq_along(gene_coefs)){
@@ -158,6 +160,13 @@ sgl2adj_df <- function(gene_coefs,
 #'
 #' @export
 #' @import stringr
+#'
+#' @references Wickham H (2025). _stringr: Simple, Consistent Wrappers for Common String
+#' Operations_. R package version 1.6.0, <https://CRAN.R-project.org/package=stringr>.
+#'
+#' Liang X, Cohen A, Solón Heinsfeld A, Pestilli F, McDonald DJ (2024). “sparsegl: An
+#' R Package for Estimating Sparse Group Lasso.” _Journal of Statistical Software_,
+#' *110*(6), 1-23. doi:10.18637/jss.v110.i06 <https://doi.org/10.18637/jss.v110.i06>.
 
 sgl2txt_file <- function(gene_coef,
                          filename_prefix = "sgl_TWAS_") {
@@ -230,19 +239,12 @@ sgl2txt_file <- function(gene_coef,
 
 #' Format PrediXcan Association Output into Gene Adjacency Matrix
 #'
-#' Reads multiple PrediXcan association result files and constructs an
+#' Reads multiple PrediXcan (Gamazon et al., 2015) association result files and constructs an
 #' adjacency-matrix-like data frame where rows are genes and columns are
 #' tissues/conditions, storing the effect size (standard error or beta).
 #'
 #' Filters genes using either a p-value threshold or FDR-based q-value
-#' threshold (Storey & Tibshirani 2003).
-#'
-#' **References**
-#' - Gamazon, E. R., et al. (2015).
-#'   *PrediXcan: Trait prediction from transcriptome data integrates genetic regulation.*
-#'   Nature Genetics, 47, 1091–1098.
-#' - Storey, J. D., & Tibshirani, R. (2003).
-#'   *Statistical significance for genomewide studies.* PNAS, 100(16), 9440–9445.
+#' threshold (Storey & Tibshirani, 2003).
 #'
 #' @param predixcan_assoc_filenames Vector of file paths to PrediXcan output files.
 #'   Each must contain columns: \code{gene}, \code{se}, and \code{pvalue}.
@@ -275,6 +277,20 @@ sgl2txt_file <- function(gene_coef,
 #'
 #' @export
 #' @import data.table
+#'
+#' @references Gamazon, E. R., Wheeler, H. E., Shah, K. P., Mozaffari, S. V.,
+#' Aquino-Michaels, K., Carroll, R. J., Eyler, A. E., Denny, J. C., Nicolae,
+#' D. L., Cox, N. J., & Im, H. K. (2015). A gene-based association method for
+#' mapping traits using reference transcriptome data. Nature Genetics, 47(9),
+#' 1091–1098. https://doi.org/10.1038/ng.3367.
+#'
+#' Storey, J. D., & Tibshirani, R. (2003). Statistical significance for genomewide
+#' studies. Proceedings of the National Academy of Sciences, 100(16), 9440–9445.
+#' https://doi.org/10.1073/pnas.1530509100.
+#'
+#' Barrett, T., Dowle, M., Srinivasan, A., Gorecki, J., Chirico, M., Hocking, T.,
+#' Schwendinger, B., Krylov, I. (2025). data.table: Extension of `data.frame`.
+#' R package version 1.17.8, https://CRAN.R-project.org/package=data.table.
 
 
 predixcan2adj_df <- function(predixcan_assoc_filenames,

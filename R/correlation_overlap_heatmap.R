@@ -16,11 +16,6 @@
 #' Internally uses `psych::corr.test()` to compute correlations, p-values,
 #' and pairwise complete sample sizes.
 #'
-#' @references
-#' Revelle, W. (2024). *psych: Procedures for Psychological, Psychometric,
-#' and Personality Research.* Northwestern University.
-#' Wickham, H. (2016). *ggplot2: Elegant Graphics for Data Analysis.* Springer.
-#'
 #' @param betas A numeric data frame or matrix where rows are genes and
 #'   columns are tissues/cell types. Missing values (NA) indicate gene absence.
 #' @param cor_method Correlation method passed to `psych::corr.test()`.
@@ -50,6 +45,28 @@
 #' @import tidyr
 #' @import ggnewscale
 #' @import magrittr
+#'
+#' @references Bache, S., Wickham, H. (2022). magrittr: A Forward-Pipe Operator for R. R package
+#' version 2.0.3. https://CRAN.R-project.org/package=magrittr.
+#'
+#' Campitelli, E. (2025). ggnewscale: Multiple Fill and Colour Scales in 'ggplot2'. R
+#' package version 0.5.2, https://CRAN.R-project.org/package=ggnewscale.
+#'
+#' Revelle, W. (2025). psych: Procedures for Psychological, Psychometric, and
+#' Personality Research. Northwestern University, Evanston, Illinois. R package
+#' version 2.5.6. https://CRAN.R-project.org/package=psych.
+#'
+#' Wickham, H., François, R., Henry, L., Müller, K., Vaughan, D. (2023). dplyr:
+#' A Grammar of Data Manipulation. R package version 1.1.4.
+#' https://CRAN.R-project.org/package=dplyr.
+#'
+#' Wickham, H. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+#'
+#' Wickham, H., Vaughan, D., Girlich, M. (2024). tidyr: Tidy Messy Data. R package version 1.3.1. https://CRAN.R-project.org/package=tidyr.
+#'
+
+
+
 
 correlation_overlap_heatmap <- function(
     betas,

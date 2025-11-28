@@ -10,16 +10,6 @@
 #' error of the minimum CV error), typically used for stability and
 #' interpretability in TWAS.
 #'
-#' **References**
-#' - Liang, X., Cohen, A., Sólon Heinsfeld, A., Pestilli, F., & McDonald, D.J. (2024).
-#'   *sparsegl: An R Package for Estimating Sparse Group Lasso.*
-#'   Journal of Statistical Software, 110(6), 1–23.
-#'   doi:10.18637/jss.v110.i06
-#'
-#' - Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013).
-#'   *A Sparse-Group Lasso.* Journal of Computational and Graphical Statistics, 22(2), 231–245.
-#'
-#'
 #' @param X Numeric matrix of imputed gene expression values,
 #'   where rows are samples and columns are genes.
 #' @param y Vector of phenotype values (continuous, or binary).
@@ -71,6 +61,14 @@
 #'
 #' @export
 #' @import sparsegl
+#'
+#' @references Liang, X., Cohen, A., Solón Heinsfeld, A., Pestilli, F., McDonald,
+#' D.J. (2024). “sparsegl: An R Package for Estimating Sparse Group Lasso.”
+#' Journal of Statistical Software, 110(6), 1-23. doi:10.18637/jss.v110.i06.
+#' https://doi.org/10.18637/jss.v110.i06.
+#'
+#' Bates, D., Maechler, M., Jagan, M. (2025). Matrix: Sparse and Dense Matrix Classes and
+#' Methods. R package version 1.7-4. https://CRAN.R-project.org/package=Matrix.
 
 
 sgl_TWAS <- function(X, y, grouping = NULL,

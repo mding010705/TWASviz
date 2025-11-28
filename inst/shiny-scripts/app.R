@@ -1,3 +1,10 @@
+# Tabsets. Shiny. (2014, July 30). <https://shiny.posit.co/r/gallery/application-layout/tabsets>.
+#
+# Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, Xie Y, Allen J, McPherson J,
+# Dipert A, Borges B (2025). _shiny: Web Application Framework for R_. R package
+# version 1.11.1, <https://CRAN.R-project.org/package=shiny>.
+
+
 library(shiny)
 
 ui <- fluidPage(
@@ -133,44 +140,44 @@ ui <- fluidPage(
         format of background gene set input</li>
       </ul>
 
-      <h4>How to Use This App</h4>
+      <h4>How to Use this App</h4>
 
       <ol>
         <li>
-          <strong>Run through Application 2 in the Introduction_TWASviz
+          Run through Application 2 in the Introduction_TWASviz
           vignette to understand how to perform a sparse group lasso based
           TWAS in R with TWASviz, or use the association output from PrediXcan.
           Be careful with your TWAS! It is easy to feel like these high dimensional
           analyses can be automated but it is important that you understand each
-          component and parameter specification going each TWAS you perform.</strong>
+          component and parameter specification going each TWAS you perform.
         </li>
 
         <li>
-          <strong>Upload one or more TWAS result files.</strong>
+          Upload one or more TWAS result files.
         </li>
         <li>
-          <strong>Type the gene, effect size, and p-value column name. Leave
+          Type the gene, effect size, and p-value column name. Leave
           the p-value column name text field empty if your file does not contain
           p-values. The gene column name does not have to contain genes, it could
-          contain pathways.</strong>
+          contain pathways.
         </li>
         <li>
-          <strong>Type the p-value cutoff for significance for the volcano plot,
+          Type the p-value cutoff for significance for the volcano plot,
           and for use in the gene overlap heatmap and Gene Ontology enrichment
           analysis. This will be ignored if you do not specify the p-value
-          column name above.</strong>
+          column name above.
         </li>
         <li>
-          <strong>Type the
+          Type the
           enrichment p-value cutoff, and choose the organism type,
           ontology type ("BP", "MF", "CC", "ALL") and the gene nomenclature
-          ("ENSEMBL", "SYMBOL", "ENTREZID"). </strong>
+          ("ENSEMBL", "SYMBOL", "ENTREZID").
           This is for the Gene Ontology heatmap.
         </li>
         <li>
-          <strong> (Optional) Upload an RDS file containing
+           (Optional) Upload an RDS file containing
           a list of vectors containing the background gene set for each of the
-          uploaded TWAS files. </strong>
+          uploaded TWAS files.
 
         </li>
         </li>
