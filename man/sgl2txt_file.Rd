@@ -4,15 +4,14 @@
 \alias{sgl2txt_file}
 \title{Export Sparse Group Lasso (SGL) Gene and Pathway Coefficients to Text Files}
 \usage{
-sgl2txt_file(gene_coef, filename_suffix = "_sgl_TWAS.txt")
+sgl2txt_file(gene_coef, filename_prefix = "sgl_TWAS_")
 }
 \arguments{
 \item{gene_coef}{Named numeric vector of SGL coefficients.
 Names must follow the format \code{GENE_PATHWAY}, e.g., \code{"BRCA1_DNArepair"}.
 If a pathway is missing (e.g., \code{"BRCA1_"}), the gene name is used as the pathway name.}
 
-\item{filename_suffix}{Character suffix appended to the output files.
-Defaults to \code{"_sgl_TWAS.txt"}.}
+\item{filename_prefix}{Character prefix to prepend to the output files.}
 }
 \value{
 A list containing:
@@ -39,6 +38,6 @@ coef_vec <- c(
   "(Intercept)" = 1.2
 )
 
-sgl2txt_file(coef_vec, filename_suffix = "_demo.txt")
+sgl2txt_file(coef_vec, filename_prefix = "demo_")
 
 }

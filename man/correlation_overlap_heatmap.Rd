@@ -24,7 +24,8 @@ columns are tissues/cell types. Missing values (NA) indicate gene absence.}
 One of \code{"pearson"}, \code{"kendall"}, \code{"spearman"}.}
 }
 \value{
-A ggplot2 heatmap object.
+A ggplot2 heatmap object, or the number of non-NA entries in \code{betas}
+if it only contains one column.
 }
 \description{
 Produces a two-layer heatmap summarizing:

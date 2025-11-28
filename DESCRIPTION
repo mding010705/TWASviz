@@ -34,7 +34,6 @@ biocViews:
     org.Ss.eg.db, 
     org.Rn.eg.db, 
     org.Mmu.eg.db, 
-    org.Sco.eg.db, 
     org.Ce.eg.db, 
     org.Xl.eg.db, 
     org.Sc.sgd.db, 
@@ -52,6 +51,7 @@ Imports:
     ggnewscale,
     magrittr,
     shiny,
+    shinyalert,
     tidyr,
     clusterProfiler,
     org.Hs.eg.db,
@@ -67,10 +67,8 @@ Imports:
     org.Ss.eg.db, 
     org.Rn.eg.db, 
     org.Mmu.eg.db, 
-    org.Sco.eg.db, 
     org.Ce.eg.db, 
     org.Xl.eg.db, 
     org.Sc.sgd.db, 
-    org.Dr.eg.db,
-    cowplot
+    org.Dr.eg.db
 URL: https://github.com/mding010705/TWASviz    

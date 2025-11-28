@@ -313,7 +313,7 @@ predixcan2adj_df <- function(predixcan_assoc_filenames,
     assoc <- as.data.frame(data.table::fread(f, header = TRUE))
 
     # Check for p-value column, use q-value FDR correction if use_fdr is TRUE
-    if (is.null(pvalue_colname)){
+    if (is.null(pvalue_colname) || pvalue_colname == ""){
       filtered <- assoc[, c(gene_colname, effect_size_colname)]
     } else if (use_fdr == TRUE){
       assoc$qvalue <- qvalue::qvalue(assoc[, pvalue_colname])

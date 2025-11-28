@@ -8,7 +8,7 @@ predixcan2adj_df(
   predixcan_assoc_filenames,
   gene_colname = "gene",
   effect_size_colname = "zscore",
-  p_val_colname = "pvalue",
+  pvalue_colname = "pvalue",
   tissue_names = seq_along(predixcan_assoc_filenames),
   use_fdr = FALSE,
   pvalue_thresh = 0.05
@@ -24,7 +24,7 @@ the gene name.}
 \item{effect_size_colname}{Name of column in predixcan_assoc_filenames that
 contains the effect size.}
 
-\item{p_val_colname}{Name of column in predixcan_assoc_filenames that
+\item{pvalue_colname}{Name of column in predixcan_assoc_filenames that
 contains the p-value.}
 
 \item{tissue_names}{Names for tissues/conditions. Defaults to index sequence.}

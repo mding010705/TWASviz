@@ -186,8 +186,8 @@ goenrich_heatmap <- function(enrich_res, top_n = 5, x_label = "Cell Type") {
     stop("top_n must be a positive integer.")
 
   # Remove null or empty results
-  filtered_results <- enrich_res[sapply(enrich_res,
-                                        function(x) !is.null(x) && nrow(x) > 0)]
+  filtered_results <- enrich_res[unlist(sapply(enrich_res,
+                                        function(x) (!is.null(x)) && (nrow(x) > 0)))]
   if (length(filtered_results) == 0)
     stop("No enrichGO results with nonzero rows found.")
 

@@ -34,6 +34,9 @@ volcano_plot <- function(betas_p_vals, pvalue_colname = "pvalue",
                          vline = c(qnorm(0.025), qnorm(0.975)),
                          add_sig_gene_labels = TRUE){
   # Input validation
+  if (is.null(betas_p_vals)){
+    return(ggplot())
+  }
   if (!is.data.frame(betas_p_vals)) {
     stop("betas_p_vals must be a data.frame.")
   }
@@ -49,6 +52,9 @@ volcano_plot <- function(betas_p_vals, pvalue_colname = "pvalue",
   }
 
   betas_p_vals$pvalue_significant <- betas_p_vals$pvalue < p_thresh
+  if(sum(betas_p_vals$pvalue_significant) == 0){
+    return("No significant gene associations.")
+  }
   if(!(gene_colname %in% colnames(betas_p_vals))){
     betas_p_vals$gene <- rownames(betas_p_vals)
   }
@@ -71,7 +77,7 @@ volcano_plot <- function(betas_p_vals, pvalue_colname = "pvalue",
     ggplot2::geom_hline(yintercept = -log10(p_thresh), color = "red") +
     ggplot2::labs(
       title = "Volcano Plot",
-      x = "Effect size (z-score)",
+      x = "Effect size",
       y = expression(-log[10](pvalue)))
 
   # Add gene labels if add_sig_gene_labels TRUE
@@ -79,7 +85,7 @@ volcano_plot <- function(betas_p_vals, pvalue_colname = "pvalue",
     plt <- plt +
       ggrepel::geom_text_repel(
         data = betas_p_vals[betas_p_vals$pvalue_significant, ],
-        max.overlaps = Inf)
+        max.overlaps = 50)
   }
 
   return(plt)

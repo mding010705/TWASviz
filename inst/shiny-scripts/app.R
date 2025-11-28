@@ -1,21 +1,16 @@
 library(shiny)
 
 ui <- fluidPage(
-  titlePanel("Transcriptome Wide Association Analysis (TWAS) Visualizations"),
+  titlePanel("Transcriptome Wide Association Study (TWAS) Visualizations"),
   sidebarLayout(
     sidebarPanel(
+
       tags$p("This is a Shiny App that is part of TWASviz in R."),
-      br(),
-
-      tags$b("Description: ."),
-
-      # br() element to introduce extra vertical spacing
-      br(),
       br(),
 
       # input
       tags$p("Instructions: Upload one or several PrediXcan association files
-      or file output from TWASviz sparse group lasso.
+      or file outputs from TWASviz sparse group lasso.
       Then press 'Make Plots'.
       Navigate through the different tabs on the right to visualize your results."),
       br(),
@@ -26,16 +21,16 @@ ui <- fluidPage(
         multiple = TRUE,
         accept = c(".txt")
       ),
-      tags$p("Note: if you do not upload any TWAS result files and then
+      tags$p('Note: if you do not upload any TWAS result files and then
       press Make Plots,
              we will use the files found in ./inst/extdata/ .
              The files predixcan_twas1.txt, predixcan_twas2.txt, ...,
-             predixcan_twas6.txt will be used as TWAS result files, and
-             all_pathways.rds will be used as pathway input."),
+             predixcan_twas6.txt will be used as TWAS result files. These
+             are the same TWAS result files in default_shiny_input_TWASviz.zip,
+             the file that you are taken to by the "Download Sample Data"
+             button below.'),
 
       br(), br(),
-      fileInput("pathway_file", "Upload a file with your pathway list (Optional)", accept = c(".rds", ".RDS", ".Rds")),
-      br(),
       fileInput("bkgrnd_file",
                 "Upload files in order with your background gene set data for each gene expression input (Optional)",
                 multiple = TRUE,
@@ -58,9 +53,9 @@ ui <- fluidPage(
       br(),
       numericInput(
         inputId = "pval_inc",
-        label = "Type the p value at which your given gene associations are
+        label = "Type the p-value at which your given gene associations are
         significant",
-        value = 0.05,
+        value = 0.2,
         min = 0,
         max = 1),
       br(),
@@ -78,40 +73,38 @@ ui <- fluidPage(
         choices = c("BP", "MF", "CC", "ALL"),
         selected = "BP",
         multiple = FALSE),
+      tags$p("BP = Biological Process, MF = Molecular Function,
+             CC = Cellular Component, ALL = BP, MF, and CC"),
       br(),
       selectInput(
         inputId = "organism",
         label = "Select the organism",
         choices = c("Anopheles", "Bovine", "Canine", "Chicken", "Chimp",
-                    "E coli strain K12, E coli strain Sakai",
+                    "E coli strain K12", "E coli strain Sakai",
                     "Fly", "Human", "Mouse", "Pig", "Rat", "Rhesus",
-                    "Streptomyces coelicolor", 'Worm', 'Xenopus',
+                    'Worm', 'Xenopus',
                     "Yeast", "Zebrafish"),
         selected = "Human",
         multiple = FALSE),
       br(),
       numericInput(
         inputId = "pval_go",
-        label = "Type the p value at which gene ontology enrichments are
+        label = "Type the p-value at which gene ontology enrichments are
         significant",
-        value = 0.05,
+        value = 0.5,
         min = 0,
         max = 1),
       # Side note for downloading sample files
       uiOutput("dl_TWASs_pathways"),
 
       actionButton("run_plots", "Make Plots")
-    )),
+    ),
     mainPanel(
       tabsetPanel(type = "tabs",
                   tabPanel(
                     "Instructions",
                     HTML('
-    <div style="max-width: 800px; line-height: 1.6;">
-
-      <h3>This is the TWASviz app</h3>
-
-      <h4>About the TWASviz app</h4>
+      <h3>About the TWASviz app</h3>
 
       <p>
         The TWASviz app allows users to take Transcriptome Wide Association Study
@@ -133,11 +126,9 @@ ui <- fluidPage(
         <li><code>A_sgl_TWASgene.txt, E_sgl_TWASgene.txt,
              F_sgl_TWASgene.txt</code> - different sparse group lasso derived
              TWAS result files</li>
-             code>predixcan_twas1.txt, predixcan_twas2.txt, ...,
+        <li><code>predixcan_twas1.txt, predixcan_twas2.txt, ...,
              predixcan_twas6.txt</code> - different PrediXcan derived
              TWAS result files</li>
-        <li><code>all_pathways.rds</code> - file with 1077 different pathways
-        from KEGG, Reactome, and Biocarta</li>
         <li><code>example_background_gene_set.txt</code> - example file for
         format of background gene set input</li>
       </ul>
@@ -151,38 +142,39 @@ ui <- fluidPage(
           TWAS in R with TWASviz, or use the association output from PrediXcan.
           Be careful with your TWAS! It is easy to feel like these high dimensional
           analyses can be automated but it is important that you understand each
-          component and parameter specification going each TWAS you perform.
+          component and parameter specification going each TWAS you perform.</strong>
         </li>
 
         <li>
-          <strong>Upload one or more TWAS result files.
+          <strong>Upload one or more TWAS result files.</strong>
         </li>
         <li>
           <strong>Type the gene, effect size, and p-value column name. Leave
           the p-value column name text field empty if your file does not contain
           p-values. The gene column name does not have to contain genes, it could
-          contain pathways.
+          contain pathways.</strong>
         </li>
         <li>
           <strong>Type the p-value cutoff for significance for the volcano plot,
           and for use in the gene overlap heatmap and Gene Ontology enrichment
           analysis. This will be ignored if you do not specify the p-value
-          column name above.
+          column name above.</strong>
         </li>
         <li>
           <strong>Type the
           enrichment p-value cutoff, and choose the organism type,
           ontology type ("BP", "MF", "CC", "ALL") and the gene nomenclature
-          ("ENSEMBL", "SYMBOL", "ENTREZID"). This is for the Gene Ontology heatmap.
+          ("ENSEMBL", "SYMBOL", "ENTREZID"). </strong>
+          This is for the Gene Ontology heatmap.
         </li>
         <li>
-          <strong> (Optional) Upload RDS files containing a pathway list and/or
+          <strong> (Optional) Upload an RDS file containing
           a list of vectors containing the background gene set for each of the
-          uploaded TWAS files.
+          uploaded TWAS files. </strong>
 
         </li>
         </li>
-          Find your plots in the tab panels:
+          <strong> Find your plots in the tab panels:</strong>
           <ul>
             <li><strong>Volcano Plots</strong> - Plot of effect
             size vs -log10(p-value). It will be empty if you leave the p-value
@@ -192,16 +184,19 @@ ui <- fluidPage(
             complete correlation and the number of overlapping genes between
             your TWAS files</li>
             <li><strong>Gene Ontology Enrichment Heatmap</strong> - Showing the
-            Gene Ontology enrichments for each of your TWAS files</li>
+            Gene Ontology enrichments for each of your TWAS files. There will be
+            an "error: No enrichGO results with nonzero rows found" message
+            if none of your uploaded TWAS files result in significant ontology
+            term enrichments at the specified p-value thresholds.</li>
 
           </ul>
         </li>
-
-    </div>
-  ')),
+        </ol>')),
                   tabPanel("Volcano Plots",
                            tags$p("Please wait for the files to read, it could take a few minutes."),
                            br(),
+                           selectInput("fileView", "Select which file to view:",
+                                       choices = c()),
                            plotOutput("vol_plot")),
                   tabPanel("Gene Overlap Heatmap",
                            tags$p("Please wait for the files to read, it could take a few minutes."),
@@ -212,8 +207,6 @@ ui <- fluidPage(
                            br(),
                            plotOutput("go_plot")),
                   tabPanel("References",HTML('
-    <div style="max-width: 800px; line-height: 1.6;">
-
       <h3>References</h3>
 
       <ul>
@@ -292,19 +285,27 @@ ui <- fluidPage(
   '))
     )
   )
-)
+))
 server <- function(input, output, session) {
-  # For classSummary
-  make_plots <- eventReactive(input$run_plots, {
+  # When run_plots pressed
+  save_inputs <- eventReactive(input$run_plots, {
+    list(gene_colname = input$gene_colname,
+         eff_size_colname = input$eff_size_colname,
+         pval_colname = input$pval_colname, pval_inc = input$pval_inc,
+         organism = input$organism,
+         pval_go = input$pval_go, go_sub = input$go_sub,
+         gene_nom = input$gene_nom)})
+
+  proc_input <- eventReactive(input$run_plots, {
     # Read the files
     if (is.null(input$assoc_files)) {
       upload_assoc <- list()
       assoc_fns <- paste0("../extdata/predixcan_twas", 1:6, ".txt")
       for(i in seq_along(assoc_fns)){
         upload_assoc[[i]] <- as.data.frame(data.table::fread(
-          file = default_files[i], header = TRUE))
+          file = assoc_fns[i], header = TRUE))
       }
-      tissue_names <- sub("(.*)\\..*$", "\\1", basename(default_files))
+      tissue_names <- sub("(.*)\\..*$", "\\1", basename(assoc_fns))
     } else {
       upload_assoc <- list()
       assoc_fns <- seq_along(input$assoc_files[, 1])
@@ -314,15 +315,20 @@ server <- function(input, output, session) {
           file = input$assoc_files[[i, 'datapath']], header = TRUE))
         assoc_fns[i] <- input$assoc_files[[i, 'datapath']]
         tissue_names[i] <- sub("(.*)\\..*$", "\\1",
-                               basename(input$assoc_files[[i, 'datapath']]))
+                               basename(input$assoc_files[[i, 'name']]))
       }
 
-    }
+      if (!(input$gene_colname %in% colnames(upload_assoc[[i]]))){
+        stop("Gene column name not in your TWAS input files.")
+      }
+      if (!(input$eff_size_colname %in% colnames(upload_assoc[[i]]))){
+        stop("Effect size column name not in your TWAS input files.")
+      }
+      if (!(input$pval_colname == "") &&
+          !(input$pval_colname %in% colnames(upload_assoc[[i]]))){
+        stop("p-value column name not in your TWAS input files.")
+      }
 
-    if (!is.null(input$pathway_file)) {
-      all_pathways <- readRDS(input$pathway_file$datapath)
-    } else {
-      all_pathways <- readRDS("../extdata/all_pathways.rds")
     }
 
     if (!is.null(input$bkgrnd_files) &&
@@ -336,53 +342,52 @@ server <- function(input, output, session) {
       upload_bkgrnd <- NULL
     }
 
-    if (!(input$gene_colname %in% colnames(upload_assoc[[1]]))){
-      stop("Gene column name not in your TWAS input files.")
-    }
-    if (!(input$eff_size_colname %in% colnames(upload_assoc[[1]]))){
-      stop("Effect size column name not in your TWAS input files.")
-    }
-    if (!is.null(input$pval_colname) &&
-        !(input$pval_colname %in% colnames(upload_assoc[[1]]))){
-      stop("p-value column name not in your TWAS input files.")
-    }
 
+    if (!(input$pval_colname == "")){
+      vol_plot_choices <- seq_along(assoc_fns)
+      names(vol_plot_choices) <- basename(assoc_fns)
+      updateSelectInput(session, "fileView",
+                        label = "Select which file to view:",
+                        choices = vol_plot_choices,
+                        selected = tail(vol_plot_choices, 1))
+  } else {
+    updateSelectInput(session, "fileView",
+                      label = "No p-values, no volcano plot",
+                      choices = c())
+   }
     return(list(assoc_fns = assoc_fns,
                 upload_assoc = upload_assoc,
                 tissue_names = tissue_names,
                 upload_bkgrnd = upload_bkgrnd))
   })
 
-  proc_input <- read_input()
-
   # Volcano plot tab
   output$vol_plot <- renderPlot({
     req(proc_input)
-    if (!is.null(input$pval_colname)){
-      vol_plot_list <- lapply(proc_input$upload_assoc, function(x){
-        TWASviz::volcano_plot(betas_p_vals = x,
-                              gene_colname = input$gene_colname,
-                              effect_size_colname = input$eff_size_colname,
-                              pvalue_colname = input$pval_colname,
-                              p_thresh = input$pval_inc)
-      })
+    if (!(save_inputs()$pval_colname == "")){
+        TWASviz::volcano_plot(betas_p_vals =
+                         proc_input()$upload_assoc[[as.numeric(input$fileView)]],
+                              gene_colname = save_inputs()$gene_colname,
+                              effect_size_colname = save_inputs()$eff_size_colname,
+                              pvalue_colname = save_inputs()$pval_colname,
+                              p_thresh = save_inputs()$pval_inc)
     } else {
       vol_plot_list <- NULL
+      return("p-values not available")
     }
-    cowplot::plot_grid(vol_plot_list, labels = proc_input$tissue_names)
   })
 
   # Overlap plot tab
   output$overlap_plot <- renderPlot({
     req(proc_input)
-    adj_df <- TWASviz::predixcan2adj_df(predixcan_assoc_filenames = proc_input$assoc_fns,
-                                        gene_colname = input$gene_colname,
-                                        effect_size_colname = input$eff_size_colname,
-                                        pvalue_colname = input$pval_colname,
-                                        pvalue_thresh = input$pval_inc,
-                                        tissue_names = proc_input$tissue_names)
+    adj_df <- TWASviz::predixcan2adj_df(predixcan_assoc_filenames = proc_input()$assoc_fns,
+                                        gene_colname = save_inputs()$gene_colname,
+                                        effect_size_colname = save_inputs()$eff_size_colname,
+                                        pvalue_colname = save_inputs()$pval_colname,
+                                        pvalue_thresh = save_inputs()$pval_inc,
+                                        tissue_names = proc_input()$tissue_names)
     TWASviz::correlation_overlap_heatmap(adj_df,
-              tissue_names = proc_input$tissue_names)
+              tissue_names = proc_input()$tissue_names)
   })
 
   # GO plot tab
@@ -398,39 +403,34 @@ server <- function(input, output, session) {
                 `Streptomyces coelicolor` = "org.Sco.eg.db", Worm = "org.Ce.eg.db",
                 Xenopus = "org.Xl.eg.db", Yeast = "org.Sc.sgd.db",
                 Zebrafish = "org.Dr.eg.db")
-    if (!is.null(input$pval_colname)){
-      genes <- lapply(proc_input$upload_assoc, function(x){
-        x[x[,input$pval_colname] <= input$pval_inc, ][,input$gene_colname]
+    if (!(save_inputs()$pval_colname == "")){
+      genes <- lapply(proc_input()$upload_assoc, function(x){
+        x[x[,save_inputs()$pval_colname] <= save_inputs()$pval_inc, ][,save_inputs()$gene_colname]
       })
     } else {
-      genes <- lapply(proc_input$upload_assoc, function(x){
-        x[,input$gene_colname]
+      genes <- lapply(proc_input()$upload_assoc, function(x){
+        x[,save_inputs()$gene_colname]
       })
     }
 
-    names(genes) <- proc_input$tissue_names
     enrich_res <- TWASviz::gene_enrichment(genes,
-                                           organism = org2db[input$organism],
-                                           background = proc_input$upload_bkgrnd,
-                                           p_cutoff = input$pval_go,
-                                           ont_type = input$go_sub,
-                                           gene_nom = input$gene_nom)
+                                           tissue_types = proc_input()$tissue_names,
+                                           organism = org2db[save_inputs()$organism],
+                                           background = proc_input()$upload_bkgrnd,
+                                           p_cutoff = save_inputs()$pval_go,
+                                           ont_type = save_inputs()$go_sub,
+                                           gene_nom = save_inputs()$gene_nom)
 
     TWASviz::goenrich_heatmap(enrich_res = enrich_res, x_label = "")
   })
 
-  # example data download
+  # Example data download
   output$dl_TWASs_pathways <- renderUI({
-    a("Download Sample Data", href = "https://github.com/Lola-W/MissensePathoR/raw/main/inst/extdata/vcfSample.csv", target = "_blank")
-  })
-
-  # Data description
-  observeEvent(input$dl_TWASs_pathways, {
-    shinyalert(title = "VCF Sample Dataset",
-               text = "This dataset contains combined VCF data for Hela cell replicates across four time points (0, 1, 4, and 8 hours) after introducing H2O2, processed with the `readVCF` function from the MissensePathoR package. Citation: Rendleman J, Cheng Z, Maity S, et al. New insights into the cellular temporal response to proteostatic stress. Elife. 2018;7:e39054. doi: 10.7554/eLife.39054.",
-               type = "info")
+    a("Download Sample Data", href = "https://github.com/mding010705/TWASviz/blob/main/inst/extdata/default_shiny_input_TWASviz.zip", target = "_blank")
   })
 
 }
 
 shinyApp(ui = ui, server = server)
+
+# [END]

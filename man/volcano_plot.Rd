@@ -6,6 +6,9 @@
 \usage{
 volcano_plot(
   betas_p_vals,
+  pvalue_colname = "pvalue",
+  gene_colname = "gene",
+  effect_size_colname = "zscore",
   p_thresh = 0.05,
   vline = c(qnorm(0.025), qnorm(0.975)),
   add_sig_gene_labels = TRUE
@@ -13,6 +16,15 @@ volcano_plot(
 }
 \arguments{
 \item{betas_p_vals}{Data frame with effect sizes and p-values.}
+
+\item{pvalue_colname}{Name of column in predixcan_assoc_filenames that
+contains the p-value.}
+
+\item{gene_colname}{Name of column in predixcan_assoc_filenames that contains
+the gene name.}
+
+\item{effect_size_colname}{Name of column in predixcan_assoc_filenames that
+contains the effect size.}
 
 \item{p_thresh}{Numeric. P-value threshold for significance (default = 0.05).}
 
