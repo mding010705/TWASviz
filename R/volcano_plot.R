@@ -51,7 +51,7 @@ volcano_plot <- function(betas_p_vals, pvalue_colname = "pvalue",
     stop("betas_p_vals must contain your specified effect size column name.")
   }
 
-  betas_p_vals$pvalue_significant <- betas_p_vals$pvalue < p_thresh
+  betas_p_vals$pvalue_significant <- (betas_p_vals[, pvalue_colname] < p_thresh)
   if(sum(betas_p_vals$pvalue_significant) == 0){
     return("No significant gene associations.")
   }

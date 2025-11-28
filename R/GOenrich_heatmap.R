@@ -78,7 +78,7 @@ gene_enrichment <- function(gene_set,
     stop("background must be NULL or a list of same length as gene_set.")
 
   if (!gene_nom %in% c("SYMBOL", "ENSEMBL", "ENTREZID"))
-    warning("gene_nom is not one of SYMBOL, ENSEMBL, ENTREZID. Ensure it matches OrgDb.")
+    stop("gene_nom is not one of SYMBOL, ENSEMBL, ENTREZID. Ensure it matches OrgDb.")
 
   if (!ont_type %in% c("BP", "MF", "CC", "ALL"))
     stop("ont_type must be one of 'BP', 'MF', 'CC', or 'ALL'.")

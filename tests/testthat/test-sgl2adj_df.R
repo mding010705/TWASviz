@@ -17,7 +17,7 @@ test_that("sgl2adj_df computes correct aggregation", {
   expect_true(all(c("G1", "G2", "G3") %in% rownames(res$gene)))
 
   # Correct values
-  expect_equal(res$gene["G1", ], c(T1 = 1, T2 = 3))
+  expect_equal(as.numeric(res$gene["G1", ]), c(1, 3))
   expect_equal(res$gene["G2", "T2"], NA_real_)
 
   # Pathways

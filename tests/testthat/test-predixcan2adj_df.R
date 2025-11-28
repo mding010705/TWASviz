@@ -30,7 +30,7 @@ test_that("predixcan2adj_df applies fdr correction.", {
   dt <- data.frame(
     gene = paste0("G", 1:10),
     zscore = rnorm(10),
-    pvalue = rep(0.2, 10) # should not pass fdr 0.05
+    pvalue = rep(c(0.2,0.1), 5) # should not pass fdr 0.05
   )
   fwrite(dt, tmp)
 

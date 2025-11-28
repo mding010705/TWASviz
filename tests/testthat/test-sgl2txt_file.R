@@ -4,14 +4,15 @@ test_that("sgl2txt_file fails on invalid input.", {
 })
 
 test_that("sgl2txt_file handles all zero coefficients.", {
-  coef <- c("(Intercept)" = 1, "G1_P1" = 0)
+  coef <- as.matrix(c("(Intercept)" = 1, "G1_P1" = 0), nrow = 2)
 
   expect_message(result <- sgl2txt_file(coef, filename_prefix = "tmp_"))
   expect_null(result)
 })
 
 test_that("sgl2txt_file aggregates correctly.", {
-  coef <- c("(Intercept)" = 1, "G1_P1" = 1, "G1_P1" = 2, "G2_P2" = -1)
+  coef <- as.matrix(c("(Intercept)" = 1, "G1_P1" = 1, "G1_P1" = 2,
+                      "G2_P2" = -1), nrow = 4)
 
   res <- sgl2txt_file(coef, filename_prefix = "tmp_")
 
@@ -23,7 +24,7 @@ test_that("sgl2txt_file aggregates correctly.", {
 })
 
 test_that("sgl2txt_file writes output files.", {
-  coef <- c("G1_P1" = 1)
+  coef <- as.matrix(c("G1_P1" = 1))
   prefix <- tempfile(pattern = "sgltest_")
 
   res <- sgl2txt_file(coef, filename_prefix = prefix)

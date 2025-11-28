@@ -1,19 +1,50 @@
-# Mock enrichGO to avoid requiring real OrgDb database
-fake_enrichGO <- function(...){
-  # Return an object with class "enrichResult"
-  structure(
-    list(
-      result = data.frame(
-        ID = "GO:0000001",
-        Description = "Mock GO Term",
-        p.adjust = 0.01,
-        Count = 5,
-        stringsAsFactors = FALSE
-      )
-    ),
-    class = "enrichResult"
-  )
+if (!requireNamespace("org.Hs.eg.db")){
+  install.packages("org.Hs.eg.db")
 }
+
+test_that("no error on good input.", {
+  expect_no_error(TWASviz::gene_enrichment(gene_set = list(a=c("ENSG00000106299", "ENSG00000143632",
+                                                               "ENSG00000241553", "ENSG00000101182",
+                                                               "ENSG00000162704", "ENSG00000138071",
+                                                               "ENSG00000061676", "ENSG00000163466",
+                                                               "ENSG00000136238", "ENSG00000198400",
+                                                               "ENSG00000158092")),
+                                           organism = "org.Hs.eg.db"))
+})
+
+
+test_that("no enrichment.", {
+  expect_equal(length(TWASviz::gene_enrichment(gene_set =
+                                                 list(a=c("A")),
+                                               organism = "org.Hs.eg.db")), 0)
+})
+
+test_that("correct enrichment.", {
+  expect_equal(TWASviz::gene_enrichment(gene_set =
+                                          list(a=c("ENSG00000131067", "ENSG00000139631",
+                                                   "ENSG00000099998", "ENSG00000100031",
+                                                   "ENSG00000128683", "ENSG00000276559",
+                                                   "ENSG00000136881", "ENSG00000136750",
+                                                   "ENSG00000167741", "ENSG00000129596",
+                                                   "ENSG00000181915", "ENSG00000106299",
+                                                   "ENSG00000143632", "ENSG00000167468",
+                                                   "ENSG00000241553", "ENSG00000101182",
+                                                   "ENSG00000162704", "ENSG00000138071",
+                                                   "ENSG00000061676", "ENSG00000163466",
+                                                   "ENSG00000136238", "ENSG00000198400",
+                                                   "ENSG00000158092", "ENSG00000224586",
+                                                   "ENSG00000117862", "ENSG00000233276",
+                                                   "ENSG00000176153", "ENSG00000211445",
+                                                   "ENSG00000182054", "ENSG00000138413",
+                                                   "ENSG00000178814", "ENSG00000023909",
+                                                   "ENSG00000167741", "ENSG00000166825",
+                                                   "ENSG00000131067", "ENSG00000065621",
+                                                   "ENSG00000099998", "ENSG00000160211",
+                                                   "ENSG00000115758")),
+                                        organism = "org.Hs.eg.db")[["a"]]@result[["ID"]][1],
+               "GO:0006749")
+})
+
 
 test_that("gene_enrichment validates input types.", {
   expect_error(gene_enrichment("not a list"))
@@ -36,50 +67,47 @@ test_that("gene_enrichment stops if OrgDb cannot be loaded.", {
   )
 })
 
-test_that("gene_enrichment runs enrichGO for each tissue (mocked).", {
-  # Patch requireNamespace and enrichGO
-  with_mock(
-    `requireNamespace` = function(pkg, quietly = TRUE) TRUE,
-    `clusterProfiler::enrichGO` = fake_enrichGO,
 
-    {
-      res <- gene_enrichment(
-        gene_set = list(
-          T1 = c("GENE1", "GENE2"),
-          T2 = c("GENE3", "GENE4")
-        ),
-        organism = "org.Hs.eg.db",
-        gene_nom = "SYMBOL"
-      )
-
-      expect_equal(length(res), 2)
-      expect_true(all(sapply(res, inherits, what = "enrichResult")))
-      expect_equal(names(res), c("T1", "T2"))
-    }
+test_that("gene_set must be a list", {
+  expect_error(
+    gene_enrichment("not a list"),
+    "gene_set must be a list"
   )
 })
 
-test_that("gene_enrichment supports background list (mocked).", {
-  with_mock(
-    `requireNamespace` = function(pkg, quietly = TRUE) TRUE,
-    `clusterProfiler::enrichGO` = fake_enrichGO,
+test_that("tissue_types must exist or be supplied", {
+  gs <- list(c("A", "B"))
+  expect_error(
+    gene_enrichment(gs, tissue_types = NULL),
+    "tissue_types must be provided"
+  )
+})
 
-    {
-      gene_set <- list(
-        T1 = c("G1", "G2")
-      )
-      background <- list(
-        T1 = c("G1", "G2", "G3", "G4")
-      )
+test_that("background must match gene_set length", {
+  gs <- list(A = c("x", "y"))
+  bg <- list()
+  expect_error(
+    gene_enrichment(gs, background = bg),
+    "background must be NULL or a list"
+  )
+})
 
-      res <- gene_enrichment(
-        gene_set = gene_set,
-        organism = "org.Hs.eg.db",
-        background = background
-      )
+test_that("Invalid ont_type throws error", {
+  gs <- list(A = c("x", "y"))
+  expect_error(
+    gene_enrichment(gs, ont_type = "WRONG"),
+    "ont_type must be one of"
+  )
+})
 
-      expect_true(inherits(res$T1, "enrichResult"))
-    }
+test_that("Invalid gene_nom produces warning", {
+  gs <- list(A = c("x", "y"))
+  expect_error(
+    gene_enrichment(gs,
+                    tissue_types = "A",
+                    gene_nom = "BADTYPE",
+                    organism = "org.Dr.eg.db"),
+    "gene_nom is not one of"
   )
 })
 

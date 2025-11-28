@@ -65,9 +65,9 @@ sgl2adj_df <- function(gene_coefs,
 
   # Loop through each set of coefficients (each tissue/cell type)
   for(coef in gene_coefs){
-
+    coef <- as.matrix(coef, nrow = length(coef))
     # Remove intercept term
-    coef <- coef[(rownames(coef) != "(Intercept)"), ]
+    coef <- coef[(rownames(coef) != "(Intercept)"), , drop = FALSE]
 
     # Handle case where all coefficients are zero
     if (all(coef == 0)){
@@ -78,10 +78,10 @@ sgl2adj_df <- function(gene_coefs,
     }
 
     # Keep only non-zero coefficients
-    coef <- coef[coef != 0]
+    coef <- coef[coef != 0, , drop = FALSE]
 
     # Split coefficient names into gene and pathway components
-    gene_pathway <- stringr::str_split_fixed(names(coef), "_", n = 2)
+    gene_pathway <- stringr::str_split_fixed(rownames(coef), "_", n = 2)
 
     # If pathway is missing, treat gene name as the pathway name
     gene_pathway[gene_pathway[, 2] == "", 2] <-
@@ -105,8 +105,8 @@ sgl2adj_df <- function(gene_coefs,
   colnames(pathway_adj_df) <- c("pathway", tissue_names)
 
   # Remove initial NA placeholder row
-  gene_adj_df <- gene_adj_df[!is.na(gene_adj_df$gene), ]
-  pathway_adj_df <- pathway_adj_df[!is.na(pathway_adj_df$pathway), ]
+  gene_adj_df <- gene_adj_df[!is.na(gene_adj_df$gene), , drop = FALSE]
+  pathway_adj_df <- pathway_adj_df[!is.na(pathway_adj_df$pathway), , drop = FALSE]
 
   # Convert rownames to gene/pathway names
   if (!is.null(dim(gene_adj_df))){
@@ -114,8 +114,8 @@ sgl2adj_df <- function(gene_coefs,
     rownames(pathway_adj_df) <- pathway_adj_df$pathway
 
     # Drop gene/pathway columns. They are now rownames
-    gene_adj_df <- gene_adj_df[, -1]
-    pathway_adj_df <- pathway_adj_df[, -1]
+    gene_adj_df <- gene_adj_df[, -1, drop = FALSE]
+    pathway_adj_df <- pathway_adj_df[, -1, drop = FALSE]
   }
 
   return(list(gene = gene_adj_df, pathway = pathway_adj_df))
@@ -167,15 +167,14 @@ sgl2txt_file <- function(gene_coef,
   if (is.null(rownames(gene_coef)))
     stop("gene_coef must be a row named numeric matrix.")
 
-  gene_coef <- as.matrix(gene_coef)
-
+  gene_coef <- as.matrix(gene_coef, nrow = length(gene_coef))
   # Remove intercept term
   if ("(Intercept)" %in% rownames(gene_coef)) {
-    gene_coef <- gene_coef[rownames(gene_coef) != "(Intercept)",]
+    gene_coef <- gene_coef[rownames(gene_coef) != "(Intercept)", , drop = FALSE]
   }
 
   # Keep only non-zero coefficients
-  gene_coef <- gene_coef[(gene_coef != 0)]
+  gene_coef <- gene_coef[(gene_coef != 0), , drop = FALSE]
 
 
   # All coefficients are zero
@@ -186,11 +185,11 @@ sgl2txt_file <- function(gene_coef,
 
   # Split coefficient names into gene and pathway
   # Expects: GENE_PATHWAY
-  gene_pathway <- stringr::str_split_fixed(names(gene_coef), "_", n = 2)
+  gene_pathway <- stringr::str_split_fixed(rownames(gene_coef), "_", n = 2)
 
   # If pathway is missing, use the gene name as pathway
-  missing_pathway <- gene_pathway[, 2] == "" | gene_pathway[, 2] == " "
-  gene_pathway[missing_pathway, 2] <- gene_pathway[missing_pathway, 1]
+  gene_pathway[gene_pathway[, 2] == "", 2] <-
+    gene_pathway[gene_pathway[, 2] == "", 1]
 
   # Aggregate at the gene level
   gene_df <- data.frame(
@@ -274,7 +273,6 @@ sgl2txt_file <- function(gene_coef,
 #'
 #' @export
 #' @import data.table
-#' @import qvalue
 
 
 predixcan2adj_df <- function(predixcan_assoc_filenames,
@@ -316,7 +314,7 @@ predixcan2adj_df <- function(predixcan_assoc_filenames,
     if (is.null(pvalue_colname) || pvalue_colname == ""){
       filtered <- assoc[, c(gene_colname, effect_size_colname)]
     } else if (use_fdr == TRUE){
-      assoc$qvalue <- qvalue::qvalue(assoc[, pvalue_colname])
+      assoc$qvalue <- p.adjust(assoc[, pvalue_colname], method = "fdr")
       filtered <- assoc[assoc$qvalue < pvalue_thresh, c(gene_colname,
                                                         effect_size_colname)]
     } else {
@@ -330,14 +328,14 @@ predixcan2adj_df <- function(predixcan_assoc_filenames,
   }
 
   # Remove placeholder NA row
-  gene_adj_df <- gene_adj_df[!is.na(gene_adj_df[, gene_colname]), ]
+  gene_adj_df <- gene_adj_df[!is.na(gene_adj_df[, gene_colname]), , drop = FALSE]
 
   # Assign user-specified tissue names
   colnames(gene_adj_df) <- c("gene", tissue_names)
 
   # Move gene column into rownames
   rownames(gene_adj_df) <- gene_adj_df$gene
-  gene_adj_df <- gene_adj_df[, -1]
+  gene_adj_df <- gene_adj_df[, -1, drop = FALSE]
 
   return(gene_adj_df)
 }

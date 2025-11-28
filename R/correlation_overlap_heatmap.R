@@ -56,6 +56,10 @@ correlation_overlap_heatmap <- function(
     cor_method = "pearson") {
 
   # Input validation
+  if (!is.numeric(as.matrix(betas))) {
+    stop("`betas` must contain numeric values.")
+  }
+
   if (is.vector(betas) || ncol(betas) == 1){
     message("Only one column was detected in `betas`. Returning the number of
             non-NA entries.")
@@ -64,10 +68,6 @@ correlation_overlap_heatmap <- function(
 
   if (!is.data.frame(betas) && !is.matrix(betas)) {
     stop("`betas` must be a data frame or matrix.")
-  }
-
-  if (!is.numeric(as.matrix(betas))) {
-    stop("`betas` must contain numeric values.")
   }
 
   if (ncol(betas) == 0) {
@@ -93,6 +93,12 @@ correlation_overlap_heatmap <- function(
   diag(p_adj) <- 0
   p_adj[is.na(p_adj)] <- 1
   n_mat <- test_cor$n
+
+  # when no NA, test_cor$n is atomic, not matrix
+  if (is.atomic(n_mat)){
+    n_mat <- matrix(rep(n_mat, nrow(corr_coef) * ncol(corr_coef)),
+                    nrow = nrow(corr_coef), ncol = ncol(corr_coef))
+  }
 
   colnames(corr_coef) <- tissue_names
   rownames(corr_coef) <- tissue_names

@@ -1,0 +1,3 @@
+pathway	betas
+P1	3
+P2	-1

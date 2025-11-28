@@ -39,13 +39,15 @@ biocViews:
     org.Sc.sgd.db, 
     org.Dr.eg.db
 Imports:
+    stats,
+    utils,
+    graphics,
     devtools,
     data.table,
     dplyr,
     ggplot2,
     ggrepel,
     psych,
-    qvalue,
     sparsegl,
     stringr,
     ggnewscale,

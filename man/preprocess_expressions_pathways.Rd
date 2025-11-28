@@ -82,7 +82,7 @@ preprocess_expressions_pathways(
   phenotype_colname = "BMI",
   covariates_filename = "covars.txt",
   covariates_colnames = c("age", "sex"),
-  family_func = gaussian()
+  family_func = "gaussian"
 )
 }
 

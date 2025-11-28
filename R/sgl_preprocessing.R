@@ -63,7 +63,7 @@
 #'   phenotype_colname = "BMI",
 #'   covariates_filename = "covars.txt",
 #'   covariates_colnames = c("age", "sex"),
-#'   family_func = gaussian()
+#'   family_func = "gaussian"
 #' )
 #' }
 #'
@@ -143,8 +143,8 @@ preprocess_expressions_pathways <- function(
 
     offsets <- predict(fit, covars)
 
-    # For Gaussian: residualize the phenotype instead of storing offsets
-    if (family_func$family == "gaussian") {
+    # For Gaussian, residualize the phenotype instead of storing offsets
+    if (family_func == "gaussian") {
       phenotype[, phenotype_colname] <- phenotype[, phenotype_colname] - offsets
       offsets <- NULL
     }
@@ -229,3 +229,5 @@ preprocess_expressions_pathways <- function(
     offsets = offsets,
     processed_pathways = proc_pathways))
 }
+
+# [END]
