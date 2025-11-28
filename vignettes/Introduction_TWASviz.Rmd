@@ -183,9 +183,10 @@ adj_dfs <- TWASviz::sgl2adj_df(all_coefs)
 head(adj_dfs)
 
 # for usability outside of R and in the shiny app
-sgl_df <- mapply(TWASviz::sgl2txt_file, 
-                 all_coefs, paste0("./inst/extdata/", 
-                                   tissue_names, "_sgl_TWAS_"))
+# commented out because it writes files
+# sgl_df <- mapply(TWASviz::sgl2txt_file, 
+#                  all_coefs, paste0("../inst/extdata/", 
+#                                    tissue_names, "_sgl_TWAS_"))
 ```
 
 Some of the cell type specific predicted gene expressions don't have any genes selected from the sparse group lasso association with the phenotype, after adjusting for covariates. This is meaningful, as this provides evidence for the importance/unimportance of each cell type in the transcriptomic basis of your phenotype of interest.

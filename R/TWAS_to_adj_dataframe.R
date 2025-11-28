@@ -88,12 +88,12 @@ sgl2adj_df <- function(gene_coefs,
       gene_pathway[gene_pathway[, 2] == "", 1]
 
     # Aggregate Gene Effects
-    gene_df <- data.frame(gene = gene_pathway[, 1], betas = coef)
-    gene_df <- aggregate(. ~ gene, data = gene_df, FUN = sum)
+    gene_df <- data.frame(gene = gene_pathway[, 1], betas = unname(coef))
+    gene_df <- aggregate(betas ~ gene, data = gene_df, FUN = sum)
 
     # Aggregate Pathway Effects
-    pathway_df <- data.frame(pathway = gene_pathway[, 2], betas = coef)
-    pathway_df <- aggregate(. ~ pathway, data = pathway_df, FUN = sum)
+    pathway_df <- data.frame(pathway = gene_pathway[, 2], betas = unname(coef))
+    pathway_df <- aggregate(betas ~ pathway, data = pathway_df, FUN = sum)
 
     # Merge these columns into growing adjacency matrices
     gene_adj_df <- merge(gene_adj_df, gene_df, by = "gene", all = TRUE)
@@ -194,7 +194,7 @@ sgl2txt_file <- function(gene_coef,
   # Aggregate at the gene level
   gene_df <- data.frame(
     gene = gene_pathway[, 1],
-    betas = gene_coef,
+    betas = unname(gene_coef),
     stringsAsFactors = FALSE
   )
   gene_df <- aggregate(betas ~ gene, data = gene_df, sum)
@@ -202,7 +202,7 @@ sgl2txt_file <- function(gene_coef,
   # Aggregate at the pathway level
   pathway_df <- data.frame(
     pathway = gene_pathway[, 2],
-    betas = gene_coef,
+    betas = unname(gene_coef),
     stringsAsFactors = FALSE
   )
   pathway_df <- aggregate(betas ~ pathway, data = pathway_df, sum)
