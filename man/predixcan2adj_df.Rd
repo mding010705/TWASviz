@@ -37,22 +37,13 @@ contains the p-value.}
 A gene × tissue adjacency matrix of PrediXcan effect sizes.
 }
 \description{
-Reads multiple PrediXcan association result files and constructs an
+Reads multiple PrediXcan (Gamazon et al., 2015) association result files and constructs an
 adjacency-matrix-like data frame where rows are genes and columns are
 tissues/conditions, storing the effect size (standard error or beta).
 }
 \details{
 Filters genes using either a p-value threshold or FDR-based q-value
-threshold (Storey & Tibshirani 2003).
-
-\strong{References}
-\itemize{
-\item Gamazon, E. R., et al. (2015).
-\emph{PrediXcan: Trait prediction from transcriptome data integrates genetic regulation.}
-Nature Genetics, 47, 1091–1098.
-\item Storey, J. D., & Tibshirani, R. (2003).
-\emph{Statistical significance for genomewide studies.} PNAS, 100(16), 9440–9445.
-}
+threshold (Storey & Tibshirani, 2003).
 }
 \examples{
 \dontrun{
@@ -69,4 +60,19 @@ Nature Genetics, 47, 1091–1098.
   head(adj)
 }
 
+}
+\references{
+Gamazon, E. R., Wheeler, H. E., Shah, K. P., Mozaffari, S. V.,
+Aquino-Michaels, K., Carroll, R. J., Eyler, A. E., Denny, J. C., Nicolae,
+D. L., Cox, N. J., & Im, H. K. (2015). A gene-based association method for
+mapping traits using reference transcriptome data. Nature Genetics, 47(9),
+1091–1098. https://doi.org/10.1038/ng.3367.
+
+Storey, J. D., & Tibshirani, R. (2003). Statistical significance for genomewide
+studies. Proceedings of the National Academy of Sciences, 100(16), 9440–9445.
+https://doi.org/10.1073/pnas.1530509100.
+
+Barrett, T., Dowle, M., Srinivasan, A., Gorecki, J., Chirico, M., Hocking, T.,
+Schwendinger, B., Krylov, I. (2025). data.table: Extension of \code{data.frame}.
+R package version 1.17.8, https://CRAN.R-project.org/package=data.table.
 }

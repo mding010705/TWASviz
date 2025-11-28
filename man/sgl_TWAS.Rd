@@ -54,16 +54,6 @@ using \code{sparsegl::cv.sparsegl()}, then extracts the coefficients
 at the \emph{lambda.1se} value (the most regularized model within one standard
 error of the minimum CV error), typically used for stability and
 interpretability in TWAS.
-
-\strong{References}
-\itemize{
-\item Liang, X., Cohen, A., Sólon Heinsfeld, A., Pestilli, F., & McDonald, D.J. (2024).
-\emph{sparsegl: An R Package for Estimating Sparse Group Lasso.}
-Journal of Statistical Software, 110(6), 1–23.
-doi:10.18637/jss.v110.i06
-\item Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013).
-\emph{A Sparse-Group Lasso.} Journal of Computational and Graphical Statistics, 22(2), 231–245.
-}
 }
 \examples{
 \dontrun{
@@ -93,4 +83,13 @@ doi:10.18637/jss.v110.i06
   head(coef_1se)
 }
 
+}
+\references{
+Liang, X., Cohen, A., Solón Heinsfeld, A., Pestilli, F., McDonald,
+D.J. (2024). “sparsegl: An R Package for Estimating Sparse Group Lasso.”
+Journal of Statistical Software, 110(6), 1-23. doi:10.18637/jss.v110.i06.
+https://doi.org/10.18637/jss.v110.i06.
+
+Bates, D., Maechler, M., Jagan, M. (2025). Matrix: Sparse and Dense Matrix Classes and
+Methods. R package version 1.7-4. https://CRAN.R-project.org/package=Matrix.
 }

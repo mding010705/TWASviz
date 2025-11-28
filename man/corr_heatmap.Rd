@@ -45,3 +45,8 @@ many gene expressions. Intended for use for expression of > 500 genes.
 }
 
 }
+\references{
+R Core Team (2024). R: A Language and Environment for Statistical
+Computing. R Foundation for Statistical Computing, Vienna, Austria.
+https://www.R-project.org/.
+}

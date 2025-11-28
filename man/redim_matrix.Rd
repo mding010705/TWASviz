@@ -24,7 +24,7 @@ redim_matrix(
 \item{summary_func}{Function with which to down sample the matrix.}
 }
 \value{
-Returns a heatmap image of gene correlations.
+Returns a heatmap image of gene expression correlations.
 }
 \description{
 Produces an a matrix of smaller dimensions from the input matrix, but with
@@ -32,6 +32,9 @@ similar patterns. Adapted from
 https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/ .
 }
 \references{
-Guillaume Devailly. (2021, October 14). Plotting heatmaps from big matrices
-in R. https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/
+Devailly, G. (2021, October 14). Plotting heatmaps from big matrices
+in R. \url{https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/}.
+
+R Core Team (2024). R: A Language and Environment for Statistical Computing.
+R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/.
 }

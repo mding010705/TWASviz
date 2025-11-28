@@ -43,3 +43,11 @@ sgl2txt_file(coef_vec, filename_prefix = "demo_")
 }
 
 }
+\references{
+Wickham H (2025). \emph{stringr: Simple, Consistent Wrappers for Common String
+Operations}. R package version 1.6.0, \url{https://CRAN.R-project.org/package=stringr}.
+
+Liang X, Cohen A, Solón Heinsfeld A, Pestilli F, McDonald DJ (2024). “sparsegl: An
+R Package for Estimating Sparse Group Lasso.” \emph{Journal of Statistical Software},
+\emph{110}(6), 1-23. doi:10.18637/jss.v110.i06 \url{https://doi.org/10.18637/jss.v110.i06}.
+}

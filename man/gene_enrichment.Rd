@@ -58,15 +58,6 @@ for each.
 This function optionally accepts a background/universe gene list for each
 tissue type. If not supplied, enrichGO() uses the entire gene universe
 defined by the OrgDb annotation.
-
-\strong{References}
-\itemize{
-\item Yu, G. (2024). \emph{Thirteen years of clusterProfiler.}
-The Innovation, 5(6):100722.
-\item Yu, G., Wang, L.-G., Han, Y., & He, Q.-Y. (2012).
-\emph{clusterProfiler: an R package for comparing biological themes among
-gene clusters.} OMICS: A Journal of Integrative Biology, 16(5), 284–287.
-}
 }
 \examples{
 \dontrun{
@@ -84,4 +75,25 @@ gene clusters.} OMICS: A Journal of Integrative Biology, 16(5), 284–287.
   enrich_res$Liver
 }
 
+}
+\references{
+Xu, S., Hu, E., Cai, Y., Xie, Z., Luo, X., Zhan, L., Tang, W.,
+Wang, Q., Liu, B., Wang, R., Xie, W., Wu, T., Xie, L., Yu, G. Using
+clusterProfiler to characterize multiomics data. Nature Protocols. 2024,
+19(11):3292-3320.
+
+Carlson M (2024). org.Hs.eg.db: Genome wide annotation for Human. R package
+version 3.20.0.
+
+Aleksander, S. A., Balhoff, J., Carbon, S., Cherry, J. M., Drabkin, H. J., Ebert, D.,
+Feuermann, M., Gaudet, P., Harris, N. L., Hill, D. P., Lee, R., Mi, H., Moxon, S.,
+Mungall, C. J., Muruganugan, A., Mushayahama, T., Sternberg, P. W., Thomas, P. D.,
+Van Auken, K., … Westerfield, M. (2023). The gene ontology knowledgebase in 2023.
+GENETICS, 224(1). https://doi.org/10.1093/genetics/iyad031.
+
+Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler, H., Cherry, J. M.,
+Davis, A. P., Dolinski, K., Dwight, S. S., Eppig, J. T., Harris, M. A., Hill, D. P.,
+Issel-Tarver, L., Kasarskis, A., Lewis, S., Matese, J. C., Richardson, J. E.,
+Ringwald, M., Rubin, G. M., & Sherlock, G. (2000). Gene ontology: Tool for the
+unification of biology. Nature Genetics, 25(1), 25–29. https://doi.org/10.1038/75556.
 }

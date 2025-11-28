@@ -32,13 +32,6 @@ into two adjacency-matrix-like data frames:
 For each SGL model, nonzero coefficients are parsed into gene and pathway
 components. Coefficients belonging to the same gene or pathway are summed.
 Intercepts are removed.
-
-\strong{References}
-\itemize{
-\item Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013).
-\emph{A Sparse-Group Lasso.} Journal of Computational and Graphical Statistics, 22(2), 231–245.
-\item \code{sparsegl} package documentation: https://cran.r-project.org/package=sparsegl
-}
 }
 \examples{
 \dontrun{
@@ -55,4 +48,12 @@ Intercepts are removed.
   out$pathway
 }
 
+}
+\references{
+Wickham H (2025). \emph{stringr: Simple, Consistent Wrappers for Common String
+Operations}. R package version 1.6.0, \url{https://CRAN.R-project.org/package=stringr}.
+
+Liang X, Cohen A, Solón Heinsfeld A, Pestilli F, McDonald DJ (2024). “sparsegl: An
+R Package for Estimating Sparse Group Lasso.” \emph{Journal of Statistical Software},
+\emph{110}(6), 1-23. doi:10.18637/jss.v110.i06 \url{https://doi.org/10.18637/jss.v110.i06}.
 }

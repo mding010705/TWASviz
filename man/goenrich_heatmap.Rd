@@ -14,11 +14,11 @@ goenrich_heatmap(enrich_res, top_n = 5, x_label = "Cell Type")
 \item{x_label}{Label for x-axis (default: \code{"Cell Type"}).}
 }
 \value{
-A ggplot2 heatmap object.
+A ggplot2 heatmap.
 }
 \description{
 Visualizes enriched GO terms by generating a heatmap of
-\eqn{-\log_{10}(adjusted\ p\text{-}values)} across tissues/cell types.
+-log10(adjusted p-values) across tissues/cell types.
 }
 \details{
 Each tissue contributes its \emph{top N} most significant GO terms.
@@ -39,4 +39,13 @@ Terms are clustered and displayed along the y-axis.
   print(p)
 }
 
+}
+\references{
+Wickham, H., François, R., Henry, L., Müller, K., Vaughan, D. (2023).
+dplyr: A Grammar of Data Manipulation. R package version 1.1.4.
+https://CRAN.R-project.org/package=dplyr.
+Wickham, H. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New
+York, 2016.
+Wickham, H. (2025). stringr: Simple, Consistent Wrappers for Common String
+Operations. R package version 1.6.0. https://CRAN.R-project.org/package=stringr.
 }

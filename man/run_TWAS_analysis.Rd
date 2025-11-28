@@ -13,7 +13,7 @@ No return value.
 Launches the Shiny app for TWASviz, providing
 a user interface to interactively produce volcano plots, overlap heatmaps,
 and Gene Ontology term enrichment heatmaps this package.
-The app's code is located in \code{./inst/shiny-scripts}.
+The app's code is located in \code{"./inst/shiny-scripts"}.
 }
 \examples{
 \dontrun{
@@ -22,5 +22,7 @@ The app's code is located in \code{./inst/shiny-scripts}.
 
 }
 \references{
-Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, Xie Y, Allen J, McPherson J, Dipert A, Borges B (2025). \emph{shiny: Web Application Framework for R}. R package version 1.11.1, \url{https://CRAN.R-project.org/package=shiny}.
+Chang, W., Cheng, J., Allaire, J., Sievert, C., Schloerke, B., Xie, Y., Allen, J.,
+McPherson, J., Dipert, A., Borges, B. (2025). shiny: Web Application Framework for R.
+R package version 1.11.1. https://CRAN.R-project.org/package=shiny.
 }
