@@ -14,12 +14,12 @@ will also provide functions that visualize the gene expression data, the
 overlap of sets of important gene transcripts from multiple cell types
 or tissues, and the Gene Ontology term enrichments. Currently, the only
 TWAS visualization related R packages make Manhattan plots and focus on
-single TWASs at a time. However, with the development of cell type
-specific expression-quantitative trait loci and the importance of
-understanding the contribution of multiple tissues to disease, TWASviz
-provides several heatmap-type visualizations that help users compare and
-efficiently present the results of multiple cell type or tissue specific
-TWASs at once.
+single TWASs at a time (Pain & Anney, 2023). However, with the
+development of cell type specific expression-quantitative trait loci and
+the importance of understanding the contribution of multiple tissues to
+disease, TWASviz provides several heatmap-type visualizations that help
+users compare and efficiently present the results of multiple cell type
+or tissue specific TWASs at once.
 
 ## Background
 
@@ -34,7 +34,7 @@ phenotypes. This approach more directly implicates specific genes that
 functionally impact phenotype. As well, to perform a TWAS, you only need
 RNA-seq from a reference panel, and genotype data and phenotype data for
 your sample of interest. No need to perform any RNA sequencing on your
-sample of interest.
+sample of interest!
 
 <figure>
 <img src="./inst/extdata/TWAS_general.png"
@@ -45,17 +45,17 @@ alt="Figure 1. TWAS overview (Wainberg et al., 2019)." />
 
 TWASviz is built to be compatible with the TWAS software
 [PrediXcan](https://github.com/hakyimlab/MetaXcan/wiki/Individual-level-PrediXcan:-introduction,-tutorials-and-manual).
-PrediXcan is can do all 3 steps in the above Figure 1a. However, the
+PrediXcan can do all 3 steps in the above Figure 1a. However, the
 association that PrediXcan does is just a naive simple linear regression
-of predicated gene expression against phenotype data, one gene at a
-line. With TWASviz, PrediXcan is meant to do steps 1. Train and 2.
-Predict, and TWASviz is meant to do step 3. Associate (via sparse group
-lasso) and a new step 4. Visualize. TWASviz supplies functions that are
-meant to take in PrediXcan predicted gene expression data, and even has
-a couple of functions that are meant to deal directly with PrediXcan
-TWAS association results. Since PrediXcan is a very beginner friendly
-TWAS software, TWASviz is meant to attract PrediXcan users, invite them
-to try a different TWAS framework, and to give them some functions to
+of predicted gene expression against phenotype data, one gene at a time.
+With TWASviz, PrediXcan is meant to do steps 1. Train and 2. Predict,
+and TWASviz does step 3. Associate (via sparse group lasso) and a new
+step 4. Visualize! TWASviz supplies functions that are meant to take in
+PrediXcan predicted gene expression data, and even has a couple of
+functions that are meant to deal directly with PrediXcan TWAS
+association results. Since PrediXcan is a very beginner friendly TWAS
+software, TWASviz is meant to attract PrediXcan users, invite them to
+try a different TWAS framework, and to give them some functions to
 produce interesting TWAS summary plots.
 
 ## TWASviz Overview
@@ -243,6 +243,9 @@ reactome pathway knowledgebase 2024. Nucleic Acids Research, 52(D1).
 
 OpenAI. (2025). ChatGPT (GPT-5) large language model.
 <https://chat.openai.com/> (accessed 28 November 2025)
+
+Pain, O. & Anney, R. (2023) TWAS-plotter.
+<https://github.com/opain/TWAS-plotter>
 
 R Core Team (2024). R: A Language and Environment for Statistical
 Computing. R Foundation for Statistical Computing, Vienna, Austria.
