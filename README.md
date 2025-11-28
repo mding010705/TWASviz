@@ -196,6 +196,9 @@ Bates, D., Maechler, M., Jagan, M. (2025). Matrix: Sparse and Dense
 Matrix Classes and Methods. R package version 1.7-4.
 <https://CRAN.R-project.org/package=Matrix>.
 
+BioRender.com. BioRender. <https://www.biorender.com> (accessed 3
+November 2025)
+
 Campitelli, E. (2025). ggnewscale: Multiple Fill and Colour Scales in
 ‘ggplot2’. R package version 0.5.2.
 <https://CRAN.R-project.org/package=ggnewscale>.
@@ -237,6 +240,9 @@ Ragueneau, E., Rothfels, K., Sevilla, C., Shamovsky, V., Stephan, R.,
 Tiwari, K., Varusai, T., Weiser, J., … D’Eustachio, P. (2023). The
 reactome pathway knowledgebase 2024. Nucleic Acids Research, 52(D1).
 <https://doi.org/10.1093/nar/gkad1025>
+
+OpenAI. (2025). ChatGPT (GPT-5) large language model.
+<https://chat.openai.com/> (accessed 28 November 2025)
 
 R Core Team (2024). R: A Language and Environment for Statistical
 Computing. R Foundation for Statistical Computing, Vienna, Austria.

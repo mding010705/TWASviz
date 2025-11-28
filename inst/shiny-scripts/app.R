@@ -200,17 +200,23 @@ ui <- fluidPage(
         </li>
         </ol>')),
                   tabPanel("Volcano Plots",
-                           tags$p("Please wait for the files to read, it could take a few minutes."),
+                           tags$p("Please wait for the files to read, it could take a
+                                  few minutes. Do not press *Make Plots* again while
+                                  waiting for output."),
                            br(),
                            selectInput("fileView", "Select which file to view:",
                                        choices = c()),
                            plotOutput("vol_plot")),
                   tabPanel("Gene Overlap Heatmap",
-                           tags$p("Please wait for the files to read, it could take a few minutes."),
+                           tags$p("Please wait for the files to read, it could take a
+                                  few minutes. Do not press *Make Plots* again while
+                                  waiting for output."),
                            br(),
                            plotOutput("overlap_plot")),
                   tabPanel("Gene Ontology Enrichment Heatmap",
-                           tags$p("Please wait for the GO enrichment to complete, it could take a few minutes."),
+                           tags$p("Please wait for the GO enrichment to complete, it could take
+                                  a few minutes. Do not press *Make Plots* again while
+                                  waiting for output."),
                            br(),
                            plotOutput("go_plot")),
                   tabPanel("References",HTML('
@@ -218,81 +224,163 @@ ui <- fluidPage(
 
       <ul>
         <li>
-          BioRender.com. <em>BioRender</em> [Online]. Available at:
-          <a href="https://www.biorender.com"
-          target="_blank">https://www.biorender.com</a>
-          (accessed 26 October 2025).
+          Aleksander, S. A., Balhoff, J., Carbon, S., Cherry, J. M., Drabkin, H. J.,
+          Ebert, D., Feuermann, M., Gaudet, P., Harris, N. L., Hill, D. P., Lee, R.,
+          Mi, H., Moxon, S., Mungall, C. J., Muruganugan, A., Mushayahama, T.,
+          Sternberg, P. W., Thomas, P. D., Van Auken, K., … Westerfield, M. (2023).
+          The gene ontology knowledgebase in 2023. GENETICS, 224(1).
+          https://doi.org/10.1093/genetics/iyad031
         </li>
-
         <li>
-          Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. (2025).
-          <em>Shiny: Web Application Framework for R — Tabsets example.</em>
-          Shiny Gallery, RStudio.
-          <a href="https://shiny.posit.co/r/gallery/application-layout/tabsets"
-          target="_blank">
-            Link
-          </a>
+          Ashburner, M., Ball, C. A., Blake, J. A., Botstein, D., Butler, H.,
+          Cherry, J. M., Davis, A. P., Dolinski, K., Dwight, S. S., Eppig, J. T.,
+          Harris, M. A., Hill, D. P., Issel-Tarver, L., Kasarskis, A., Lewis, S.,
+          Matese, J. C., Richardson, J. E., Ringwald, M., Rubin, G. M. & Sherlock, G.
+          (2000). Gene ontology: Tool for the unification of biology. Nature Genetics,
+          25(1), 25–29. https://doi.org/10.1038/75556
         </li>
-
         <li>
-          Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. (2025).
-          <em>Shiny: Web Application Framework for R — File upload example.</em>
-          Shiny Gallery, RStudio.
-          <a href="https://shiny.posit.co/r/gallery/widgets/file-upload/"
-          target="_blank">
-            Link
-          </a>
+          Bache, S., Wickham, H. (2022). magrittr: A Forward-Pipe Operator for R.
+          R package version 2.0.3. https://CRAN.R-project.org/package=magrittr.
         </li>
-
         <li>
-          OpenAI. (2025). ChatGPT (GPT-5) large language model.
-          <a href="https://chat.openai.com/" target="_blank">
-          https://chat.openai.com/</a>
+          Barrett, T., Dowle, M., Srinivasan, A., Gorecki, J., Chirico, M.,
+          Hocking, T., Schwendinger, B., Krylov, I. (2025). data.table: Extension
+          of `data.frame`. R package version 1.17.8,
+          https://CRAN.R-project.org/package=data.table.
         </li>
-
         <li>
-          Pagès H, Aboyoun P, Gentleman R & DebRoy S. (2025).
-          <em>Biostrings: Efficient manipulation of biological strings</em>
-          (R package version 2.77.2).
-          <a href="https://bioconductor.org/packages/Biostrings"
-          target="_blank">
-            Bioconductor
-          </a>, doi:10.18129/B9.bioc.Biostrings
+          Bates, D., Maechler, M., Jagan, M. (2025). Matrix: Sparse and Dense
+          Matrix Classes and Methods. R package version 1.7-4.
+          https://CRAN.R-project.org/package=Matrix.
         </li>
-
         <li>
-          Park J, Kaufman E, Valdmanis PN & Bafna V. (2023).
-          <em>TRviz: A Python Library for decomposing and Visualizing
-          Tandem Repeat Sequences.</em>
-          Bioinformatics Advances 3.
+          BioRender.com. BioRender. https://www.biorender.com (accessed 3 November 2025)
         </li>
-
         <li>
-          R Core Team. (2025). <em>R: A Language and Environment for Statistical
-          Computing.</em>
-          Vienna, Austria: R Foundation for Statistical Computing.
-          <a href="https://www.R-project.org/" target="_blank">
-          https://www.R-project.org/</a>
+          Campitelli, E. (2025). ggnewscale: Multiple Fill and Colour Scales in
+          \'ggplot2\'. R package version 0.5.2.
+          https://CRAN.R-project.org/package=ggnewscale.
         </li>
-
         <li>
-          Wickham H. (2016). <em>ggplot2: Elegant Graphics for Data Analysis.
-          </em>
-          Springer-Verlag, New York.
+          Carlson M (2024). org.Hs.eg.db: Genome wide annotation for Human.
+          R package version 3.20.0.
         </li>
-
         <li>
-          Wickham H. (2007). Reshaping data with the reshape package.
-          <em>J. Stat. Softw.</em> 21, 1–20.
+          Chang, W., Cheng, J., Allaire, J., Sievert, C., Schloerke, B., Xie, Y.,
+          Allen, J., McPherson, J., Dipert, A., Borges, B. (2025). shiny: Web
+          Application Framework for R. R package version 1.11.1.
+          https://CRAN.R-project.org/package=shiny.
+        </li>
+        <li>
+          Devailly, G.  (2021, October 14). Plotting heatmaps from big matrices in R.
+          https://gdevailly.netlify.app/post/plotting-big-matrices-in-r/
+        </li>
+        <li>
+          Diamant, I., Clarke, D. J. B., Evangelista, J. E., Lingam, N., & Ma’ayan, A.
+          (2024). Harmonizome 3.0: Integrated knowledge about genes and proteins from
+          diverse multi-omics resources. Nucleic Acids Research, 53(D1).
+          https://doi.org/10.1093/nar/gkae1080
+        </li>
+        <li>
+          Gamazon, E. R., Wheeler, H. E., Shah, K. P., Mozaffari, S. V., Aquino-Michaels,
+          K., Carroll, R. J., Eyler, A. E., Denny, J. C., Nicolae, D. L.,
+          Cox, N. J., & Im, H. K. (2015). A gene-based association method for
+          mapping traits using reference transcriptome data. Nature Genetics, 47(9),
+          1091–1098. https://doi.org/10.1038/ng.3367
+        </li>
+        <li>
+          Kanehisa, M. (2000). Kegg: Kyoto encyclopedia of genes and genomes.
+          Nucleic Acids Research, 28(1), 27–30. https://doi.org/10.1093/nar/28.1.27
+        </li>
+        <li>
+          Liang, X., Cohen, A., Solón Heinsfeld, A., Pestilli, F., McDonald, D.J.
+          (2024). “sparsegl: An R Package for Estimating Sparse Group Lasso.” Journal
+          of Statistical Software, 110(6), 1-23. doi:10.18637/jss.v110.i06.
+          https://doi.org/10.18637/jss.v110.i06.
+        </li>
+        <li>
+          Milacic, M., Beavers, D., Conley, P., Gong, C., Gillespie, M., Griss, J.,
+          Haw, R., Jassal, B., Matthews, L., May, B., Petryszak, R., Ragueneau, E.,
+          Rothfels, K., Sevilla, C., Shamovsky, V., Stephan, R., Tiwari, K.,
+          Varusai, T., Weiser, J., … D’Eustachio, P. (2023). The reactome pathway
+          knowledgebase 2024. Nucleic Acids Research, 52(D1).
+          https://doi.org/10.1093/nar/gkad1025
+        </li>
+        <li>
+          OpenAI. (2025). ChatGPT (GPT-5) large language model. https://chat.openai.com/
+          (accessed 28 November 2025)
+        </li>
+        <li>
+          R Core Team (2024). R: A Language and Environment for Statistical Computing.
+          R Foundation for Statistical Computing, Vienna, Austria.
+          https://www.R-project.org/.
+        </li>
+        <li>
+          Revelle, W. (2025). psych: Procedures for Psychological, Psychometric,
+          and Personality Research. Northwestern University, Evanston, Illinois.
+          R package version 2.5.6, https://CRAN.R-project.org/package=psych.
+        </li>
+        <li>
+          Simon, N., Friedman, J., Hastie, T., & Tibshirani, R. (2013).
+          A sparse-group lasso. Journal of Computational and Graphical Statistics,
+          22(2), 231–245. https://doi.org/10.1080/10618600.2012.681250
+        </li>
+        <li>
+          Slowikowski K (2024). ggrepel: Automatically Position Non-Overlapping
+          Text Labels with \'ggplot2\'. R package version 0.9.6.
+          https://CRAN.R-project.org/package=ggrepel.
+        </li>
+        <li>
+          Storey, J. D., & Tibshirani, R. (2003). Statistical significance for
+          genomewide studies. Proceedings of the National Academy of Sciences,
+          100(16), 9440–9445. https://doi.org/10.1073/pnas.1530509100
+        </li>
+        <li>
+          Tabsets. Shiny. (2014, July 30).
+          https://shiny.posit.co/r/gallery/application-layout/tabsets
+        </li>
+        <li>
+          Wainberg, M., Sinnott-Armstrong, N., Mancuso, N., Barbeira, A. N.,
+          Knowles, D. A., Golan, D., Ermel, R., Ruusalepp, A., Quertermous, T., Hao,
+          K., Björkegren, J. L., Im, H. K., Pasaniuc, B., Rivas, M. A., & Kundaje, A.
+          (2019). Opportunities and challenges for transcriptome-wide association
+          studies. Nature Genetics, 51(4), 592–599.
+          https://doi.org/10.1038/s41588-019-0385-z
+        </li>
+        <li>
+          Wang, N., Ye, Z., & Ma, T. (2024). Tips: A novel pathway-guided joint model
+          for transcriptome-wide association studies. Briefings in Bioinformatics, 25(6).
+          https://doi.org/10.1093/bib/bbae587
+        </li>
+        <li>
+          Wickham, H., François, R., Henry, L., Müller, K., Vaughan, D. (2023).
+          dplyr: A Grammar of Data Manipulation. R package version 1.1.4.
+          https://CRAN.R-project.org/package=dplyr.
+        </li>
+        <li>
+          Wickham, H. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag
+          New York, 2016.
+        </li>
+        <li>
+          Wickham, H. (2025). stringr: Simple, Consistent Wrappers for Common String
+          Operations. R package version 1.6.0. https://CRAN.R-project.org/package=stringr.
+        </li>
+        <li>
+          Wickham, H., Vaughan, D., Girlich, M. (2024). tidyr: Tidy Messy Data.
+          R package version 1.3.1. https://CRAN.R-project.org/package=tidyr.
+        </li>
+        <li>
+          Xu, S., Hu, E., Cai, Y., Xie, Z., Luo, X., Zhan, L., Tang, W., Wang, Q.,
+          Liu, B., Wang, R., Xie, W., Wu, T., Xie, L., Yu, G. Using clusterProfiler
+          to characterize multiomics data. Nature Protocols. 2024, 19(11):3292-3320.
         </li>
 
-      </ul>
-
-    </div>
-  '))
+      </ul>'))
     )
   )
 ))
+
 server <- function(input, output, session) {
   # When run_plots pressed
   save_inputs <- eventReactive(input$run_plots, {
@@ -324,7 +412,7 @@ server <- function(input, output, session) {
         tissue_names[i] <- sub("(.*)\\..*$", "\\1",
                                basename(input$assoc_files[[i, 'name']]))
       }
-
+    # colname input validation
       if (!(input$gene_colname %in% colnames(upload_assoc[[i]]))){
         stop("Gene column name not in your TWAS input files.")
       }
@@ -350,14 +438,14 @@ server <- function(input, output, session) {
     }
 
 
-    if (!(input$pval_colname == "")){
+    if (!(input$pval_colname == "")){ # update drop down selection to include file names
       vol_plot_choices <- seq_along(assoc_fns)
       names(vol_plot_choices) <- basename(assoc_fns)
       updateSelectInput(session, "fileView",
                         label = "Select which file to view:",
                         choices = vol_plot_choices,
                         selected = tail(vol_plot_choices, 1))
-  } else {
+  } else { # no p-values -> no volcano plots
     updateSelectInput(session, "fileView",
                       label = "No p-values, no volcano plot",
                       choices = c())
