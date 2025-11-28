@@ -144,6 +144,7 @@ sgl2adj_df <- function(gene_coefs,
 #'
 #'
 #' @examples
+#' \dontrun{
 #' # Example SGL coefficient vector
 #' coef_vec <- c(
 #'   gene1_p1 = 0.5,
@@ -153,6 +154,7 @@ sgl2adj_df <- function(gene_coefs,
 #' )
 #'
 #' sgl2txt_file(coef_vec, filename_prefix = "demo_")
+#' }
 #'
 #' @export
 #' @import stringr

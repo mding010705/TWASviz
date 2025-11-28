@@ -1,3 +1,5 @@
+library(parallel)
+
 test_that("No error on good input.", {
   expect_no_error(TWASviz::corr_heatmap(gene_expr =
                                   matrix(rnorm(500^2), nrow = 500)))
@@ -7,9 +9,6 @@ test_that("No error on good input.", {
 test_that("Error on empty input.", {
   expect_error(TWASviz::corr_heatmap(gene_expr = matrix()))
 })
-
-library(parallel)
-
 
 # Helper cluster
 

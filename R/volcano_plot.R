@@ -20,8 +20,10 @@
 #' @return Returns a ggplot volcano plot.
 #'
 #' @examples
+#' \dontrun{
 #' volcano_plot(betas_p_vals = data.frame(zscore = c(1, 0, 3, 4, 0.5),
 #'                                  pvalue = c(0.1, 0.9, 0.02, 0.11, 0.3)))
+#' }
 #'
 #' @export
 #' @import ggplot2

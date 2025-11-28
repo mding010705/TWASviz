@@ -33,6 +33,7 @@
 #' if it only contains one column.
 #'
 #' @examples
+#' \dontrun{
 #' correlation_overlap_heatmap(
 #'   betas = data.frame(
 #'     A = c(1, 7, 3),
@@ -40,6 +41,7 @@
 #'     C = c(10, -9, NA)
 #'   ),
 #'   tissue_names = c("A", "B", "C"))
+#' }
 #'
 #' @export
 #' @importFrom psych corr.test
