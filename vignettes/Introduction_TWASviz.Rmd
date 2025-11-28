@@ -24,7 +24,7 @@ To download **TWASviz**, use the following commands:
 #   install.packages("devtools", repos = "http://cran.us.r-project.org")
 # }
 require("devtools")
-devtools::install_github("mding010705/TWASviz", dependencies = TRUE,
+devtools::install_github("mding010705/TWASviz",
                          build_vignettes = TRUE)
 library("TWASviz")
 ```
