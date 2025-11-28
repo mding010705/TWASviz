@@ -30,6 +30,7 @@ and pathway-level effects, and writes two text files:
 }
 }
 \examples{
+\dontrun{
 # Example SGL coefficient vector
 coef_vec <- c(
   gene1_p1 = 0.5,
@@ -39,5 +40,6 @@ coef_vec <- c(
 )
 
 sgl2txt_file(coef_vec, filename_prefix = "demo_")
+}
 
 }

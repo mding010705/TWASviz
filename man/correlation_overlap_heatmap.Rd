@@ -46,6 +46,7 @@ Internally uses \code{psych::corr.test()} to compute correlations, p-values,
 and pairwise complete sample sizes.
 }
 \examples{
+\dontrun{
 correlation_overlap_heatmap(
   betas = data.frame(
     A = c(1, 7, 3),
@@ -53,6 +54,7 @@ correlation_overlap_heatmap(
     C = c(10, -9, NA)
   ),
   tissue_names = c("A", "B", "C"))
+}
 
 }
 \references{

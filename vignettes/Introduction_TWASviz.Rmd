@@ -117,19 +117,21 @@ Let's look at an analysis that performs TWAS with this package, starting from `P
 
 ### Visualizing your Predicted Gene Expression Data with a Heatmap
 `PrediXcan` predicted gene expression output will likely give you expression levels for hundreds or thousands of genes. A nice way to look at the correlation structure of your predicted gene expressions is with a correlation heatmap which shows the pairwise correlation of each gene's expression levels. However, laptop screens are often only 1920 x 1080 pixels. How can I make a correlation matrix with more cells than there are pixels on my screen? Often, your plot viewer will do some image down-sampling to make your detailed heatmap to fit into fewer pixels. With `corr_heatmap`, you can specify the function with which your heatmap is down-sampled through the summary_func argument.
-Compare these two heatmaps (this will take a few minutes to run):
+Compare these two heatmaps:
 
 ```{r}
 # use simulated data since the provided PrediXcan predicted gene expression data only has 100 columns per cellX_gene_expr object in order to make the below TWAS examples run faster.
-library(parallel)
 
 big_gene_expr <- matrix(rgamma(100^2, 2), nrow = 100) %*% matrix(rnorm(200^2), ncol = 400)
+
+# only use 1 core here because vignette builder does not like a parallel backend
 corr_heatmap(gene_expr = big_gene_expr, summary_func = mean, 
-             title = "Summarized with mean")
+             title = "Summarized with mean", n_core = 1)
 
 corr_heatmap(gene_expr = big_gene_expr, 
              summary_func =  function(x) x[which.max(abs(x))], 
-             title = "Summarized with maximum magnitude")
+             title = "Summarized with maximum magnitude", n_core = 1)
+
 ```
 The heatmap summarized with the mean is possibly more faithful to the actual magnitude of the correlation patterns in the data, but the heatmap summarized with the maximum absolute value highlights weak correlation structures that may still be important.
 

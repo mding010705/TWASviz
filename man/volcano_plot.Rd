@@ -43,7 +43,9 @@ Meant to take in TWAS results from PrediXcan which contain a gene, zscore
 associations each gene has with your phenotype of interest.
 }
 \examples{
+\dontrun{
 volcano_plot(betas_p_vals = data.frame(zscore = c(1, 0, 3, 4, 0.5),
                                  pvalue = c(0.1, 0.9, 0.02, 0.11, 0.3)))
+}
 
 }

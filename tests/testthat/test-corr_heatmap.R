@@ -2,7 +2,7 @@ library(parallel)
 
 test_that("No error on good input.", {
   expect_no_error(TWASviz::corr_heatmap(gene_expr =
-                                  matrix(rnorm(500^2), nrow = 500)))
+                                  matrix(rnorm(500^2), nrow = 500), n_core = 1))
 })
 
 
