@@ -107,6 +107,7 @@ enrich_res <- TWASviz::gene_enrichment(genes)
 TWASviz::goenrich_heatmap(enrich_res = enrich_res)
 ```
 
+The entirety of this Application 1 can be done in the R shiny app. Just run *run_TWAS_analysis()* and follow the instructions.
 
 ## Application 2
 
@@ -164,7 +165,7 @@ sgl_fits <- lapply(all_sgl_input, function(sgl_input){
 ### Reformat sgl_TWAS Output
 `sgl_TWAS` will give you the fit sparse group lasso object and the coefficient estimates at the *lambda.1se* value (the most regularized model within one standard error of the minimum CV error). This is the suggested set of coefficients to use, but you can specify other coefficient sets that are more or less regularized. 
 
-The coefficient format from `sgl_TWAS` is not very useful. To make these results compatible with other functions in TWASviz, use `sgl2adj_df` to reformat your many TWAS associations into an adjacency matrix. Or, you can use `sgl2txt_file` to make your sparse group lasso output a text file that is compatible with the R shiny app.
+The coefficient format from `sgl_TWAS` is not very useful. To make these results compatible with other functions in TWASviz, use `sgl2adj_df` to reformat your many TWAS associations into an adjacency matrix. Or, you can use `sgl2txt_file` to make your sparse group lasso output a text file that is compatible with the R shiny app (*run_TWAS_analysis()*).
 
 ```{r}
 # use your actual cell type or tissue names
@@ -175,14 +176,16 @@ all_coefs <- lapply(sgl_fits, function(x){
   x$lambda1se_coef
 })
 names(all_coefs) <- tissue_names
+
+# for use in correlation_overlap_heatmap
 adj_dfs <- TWASviz::sgl2adj_df(all_coefs)
 
 head(adj_dfs)
 
+# for usability outside of R and in the shiny app
 sgl_df <- mapply(TWASviz::sgl2txt_file, 
                  all_coefs, paste0("./inst/extdata/", 
                                    tissue_names, "_sgl_TWAS_"))
-
 ```
 
 Some of the cell type specific predicted gene expressions don't have any genes selected from the sparse group lasso association with the phenotype, after adjusting for covariates. This is meaningful, as this provides evidence for the importance/unimportance of each cell type in the transcriptomic basis of your phenotype of interest.

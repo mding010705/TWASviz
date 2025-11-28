@@ -51,7 +51,6 @@ Imports:
     ggnewscale,
     magrittr,
     shiny,
-    shinyalert,
     tidyr,
     clusterProfiler,
     org.Hs.eg.db,

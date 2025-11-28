@@ -11,7 +11,8 @@ No return value.
 }
 \description{
 Launches the Shiny app for TWASviz, providing
-a user interface to interactively work with the this package.
+a user interface to interactively produce volcano plots, overlap heatmaps,
+and Gene Ontology term enrichment heatmaps this package.
 The app's code is located in \code{./inst/shiny-scripts}.
 }
 \examples{
