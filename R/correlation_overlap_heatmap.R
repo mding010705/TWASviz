@@ -94,8 +94,8 @@ correlation_overlap_heatmap <- function(
   p_adj[is.na(p_adj)] <- 1
   n_mat <- test_cor$n
 
-  # when no NA, test_cor$n is atomic, not matrix
-  if (is.atomic(n_mat)){
+  # when no NA, test_cor$n is an integer, not matrix
+  if (!is.matrix(n_mat)){
     n_mat <- matrix(rep(n_mat, nrow(corr_coef) * ncol(corr_coef)),
                     nrow = nrow(corr_coef), ncol = ncol(corr_coef))
   }
