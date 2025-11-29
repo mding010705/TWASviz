@@ -1,0 +1,14 @@
+citHeader("To cite TWASviz, please use:")
+
+citEntry(entry = "Unpublished",
+  title        = "TWASviz: Sparse Group Lasso TWAS and PrediXcan visualizations",
+  author       = "Megan Ding",
+  note         = "For 2025 BCB410 at the University of Toronto, Ontario, Canada",
+  year         = "2025",
+  url          = "https://github.com/mding010705/TWASviz",
+
+
+  textVersion  =
+  paste("Ding, M. (2025) TWASviz: Sparse Group Lasso TWAS and PrediXcan visualizations.
+        Unpublished. https://github.com/mding010705/TWASviz.")
+)
