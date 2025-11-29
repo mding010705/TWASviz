@@ -45,7 +45,7 @@ data(package = "TWASviz")
 
 ## Components
 
-![TWASviz workflow.](../inst/extdata/TWASviz_workflow.png){width=60%}
+![TWASviz workflow.](../inst/extdata/TWASviz_workflow.png){width=80%}
 
 ## Application 1
 
@@ -79,7 +79,7 @@ adj_df[50:55, ]
 
 The `correlation_overlap_heatmap` function provides a heatmap for pairwise complete correlations for effect sizes of multiple gene sets (from TWASs) in the lower triangle, and number of pairwise complete effect sizes for multiple gene sets in the upper triangle. The diagonal displays the total number of effect sizes for a single gene set.
 
-```{r, fig.width=6, fig.height=6.5}
+```{r, fig.width=5, fig.height=4.5}
 TWASviz::correlation_overlap_heatmap(adj_df, tissue_names = c("a", "b", "c",
                                                      "d", "e", "f"))
 
@@ -89,7 +89,7 @@ TWASviz::correlation_overlap_heatmap(adj_df, tissue_names = c("a", "b", "c",
 
 `volcano_plot` produces a volcano plot of the effect size z-score against the -log10(pvalue). It labels and colors significant genes. The horizontal line is the significance threshold, and the vertical lines are at the normal 2.5 and 97.5th quantile thresholds. Notice that with `PrediXcan` association outputs, the systematic relationship between effect size and p-value is very noticeable due to the constant effect size.
 
-```{r, fig.width=6, fig.height=6}
+```{r, fig.width=5, fig.height=4.5}
 TWASviz::volcano_plot(betas_p_vals = TWASviz::predixcan_twas1[1:1000, c("zscore", "pvalue", "gene")], p_thresh = 0.0006)
 ```
 
@@ -97,7 +97,7 @@ TWASviz::volcano_plot(betas_p_vals = TWASviz::predixcan_twas1[1:1000, c("zscore"
 
 Having a set of significant genes is not useful when you can't summarize their functional associations. `gene_enrichment` allows you to use `clusterProfiler` (Yu, 2024) to do functional gene set enrichment on the gene ontology with multiple separate gene set inputs and `goenrich_heatmap` plots these results in a heatmap. Notice that there are no significant enrichments from a2, a3, and a5, so they don't appear in the heatmap. This will take a couple of minutes to run.
 
-```{r, fig.width=5, fig.height=6}
+```{r, fig.width=5, fig.height=5}
 genes <- list(a1 = TWASviz::predixcan_twas1[, "gene"],
         a2 = TWASviz::predixcan_twas2[predixcan_twas1$pvalue < 0.05, "gene"],
         a3 = TWASviz::predixcan_twas3[predixcan_twas1$pvalue < 0.05, "gene"],
@@ -262,7 +262,7 @@ Wickham, H. (2025). stringr: Simple, Consistent Wrappers for Common String Opera
 Wickham, H., Vaughan, D., Girlich, M. (2024). tidyr: Tidy Messy Data. R package version 1.3.1. https://CRAN.R-project.org/package=tidyr.
 
 Xu, S., Hu, E., Cai, Y., Xie, Z., Luo, X., Zhan, L., Tang, W., Wang, Q., Liu, B., Wang, R., Xie, W., Wu, T., Xie, L., Yu, G. Using clusterProfiler to characterize multiomics data. Nature Protocols. 2024, 19(11):3292-3320.
-------------------------------------------------------------------------
+
 
 ```{r}
 sessionInfo()
