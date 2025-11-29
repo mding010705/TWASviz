@@ -38,7 +38,9 @@ Running under: Windows 11 x64 (build 26100)
 
 To install the latest version of the package:
 ```
-install.packages("devtools")
+if (!requireNamespace("devtools")){
+   install.packages("devtools")
+}
 library("devtools")
 devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
 library(TWASviz)
