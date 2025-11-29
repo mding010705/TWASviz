@@ -78,6 +78,8 @@ To install the latest version of the package:
     devtools::install_github("mding010705/TWASviz", build_vignettes = TRUE)
     library(TWASviz)
 
+Please note that it will take a while to build the vignette.
+
 To run the shinyApp:
 
     TWASviz::run_TWAS_analysis()
