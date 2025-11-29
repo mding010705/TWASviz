@@ -79,7 +79,7 @@ adj_df[50:55, ]
 
 The `correlation_overlap_heatmap` function provides a heatmap for pairwise complete correlations for effect sizes of multiple gene sets (from TWASs) in the lower triangle, and number of pairwise complete effect sizes for multiple gene sets in the upper triangle. The diagonal displays the total number of effect sizes for a single gene set.
 
-```{r, fig.width=5, fig.height=4.5}
+```{r, fig.width=6, fig.height=4.5}
 TWASviz::correlation_overlap_heatmap(adj_df, tissue_names = c("a", "b", "c",
                                                      "d", "e", "f"))
 
@@ -97,7 +97,7 @@ TWASviz::volcano_plot(betas_p_vals = TWASviz::predixcan_twas1[1:1000, c("zscore"
 
 Having a set of significant genes is not useful when you can't summarize their functional associations. `gene_enrichment` allows you to use `clusterProfiler` (Yu, 2024) to do functional gene set enrichment on the gene ontology with multiple separate gene set inputs and `goenrich_heatmap` plots these results in a heatmap. Notice that there are no significant enrichments from a2, a3, and a5, so they don't appear in the heatmap. This will take a couple of minutes to run.
 
-```{r, fig.width=5, fig.height=5}
+```{r, fig.width=6, fig.height=5}
 genes <- list(a1 = TWASviz::predixcan_twas1[, "gene"],
         a2 = TWASviz::predixcan_twas2[predixcan_twas1$pvalue < 0.05, "gene"],
         a3 = TWASviz::predixcan_twas3[predixcan_twas1$pvalue < 0.05, "gene"],
@@ -118,7 +118,7 @@ Let's look at an analysis that performs TWAS with this package, starting from `P
 `PrediXcan` predicted gene expression output will likely give you expression levels for hundreds or thousands of genes. A nice way to look at the correlation structure of your predicted gene expressions is with a correlation heatmap which shows the pairwise correlation of each gene's expression levels. However, laptop screens are often only 1920 x 1080 pixels. How can I make a correlation matrix with more cells than there are pixels on my screen? Often, your plot viewer will do some image down-sampling to make your detailed heatmap to fit into fewer pixels. With `corr_heatmap`, you can specify the function with which your heatmap is down-sampled through the summary_func argument.
 Compare these two heatmaps:
 
-```{r, fig.width=3}
+```{r, fig.width=5}
 # use simulated data since the provided PrediXcan predicted gene expression data only has 100 columns per cellX_gene_expr object in order to make the below TWAS examples run faster.
 
 big_gene_expr <- matrix(rgamma(100^2, 2), nrow = 100) %*% matrix(rnorm(200^2), ncol = 400)
